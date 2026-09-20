@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Grandiflora+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gothic+A1&display=swap');
 :root
 {--main: #3D2A1E;
 --base: #F1E4CF;
@@ -16,10 +17,27 @@ display: flex;
 justify-content: space-between;
 align-items: center;
 gap: 50px;
-font-family: 'Grandiflora One';
-font-size: 142px;
-text-align: center; }
+margin: auto;}
+
+img{margin: auto;}
 
 
+h1
+{font-family: 'Grandiflora One';
+font-size: 125px;
+text-align: center; 
+font-weight: lighter;
+margin: auto;}
+
+.log
+{font-size: 36px;
+font-family: 'Gothi A1';
+text-align: center;
+letter-spacing: 10px;
+border: var(--base) solid 1px;
+padding: 19px;
+border-radius: 15px;
+margin: auto;
+}
 
 p{font-size: medium;}
