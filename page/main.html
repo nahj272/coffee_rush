@@ -15,7 +15,7 @@
             <h1>커피러시</h1>
         </div>
         
-            <button type="button" class="log">로그인</button>
+            <button type="button" class="log" id="loginTrigger">로그인</button>
            <!-- <div class="log">로그인</div> -->
         
         
@@ -68,5 +68,25 @@
     <footer class="bottom-footer">
         <p class="web-info">커피 러시 웹 · v0.1 (MVP)</p>
     </footer>
+
+    <!-- 로그인 모달 -->
+    <div class="login-modal-overlay" id="loginModal">
+        <div class="login-modal-card">
+            <img class="modal-logo" src="../logo/logo_main .svg" alt="커피 러시">
+            <p class="modal-brand">커피 러시</p>
+            <h2 class="modal-title">게임을 시작해 볼까요?</h2>
+            <p class="modal-sub">구글 계정으로 간편하게 시작하세요</p>
+            <button type="button" class="modal-btn-img-wrap" id="googleLoginBtn">
+                <img class="modal-btn-img" src="../logo/Google.svg" alt="Google로 계속하기">
+            </button>
+            <div class="modal-divider"><span class="line"></span><span>또는</span><span class="line"></span></div>
+            <button type="button" class="modal-btn-img-wrap" id="guestLoginBtn">
+                <img class="modal-btn-img" src="../logo/게스트 체험 버튼.svg" alt="게스트로 체험하기">
+            </button>
+            <p class="modal-caption">게스트는 진행 상황 저장 없이 제한된 체험판으로 이용됩니다</p>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
 </body>
 </html>
