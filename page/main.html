@@ -30,7 +30,7 @@
 
         <div class="btn-group">
             <button type="submit" class="btn-start">게임 시작</button>
-            <button type="submit" class="btn-rule">게임 방법</button>
+            <button type="button" class="btn-rule" id="ruleTrigger">게임 방법</button>
         </div>
     </main>
 
@@ -84,6 +84,166 @@
                 <img class="modal-btn-img" src="../logo/게스트 체험 버튼.svg" alt="게스트로 체험하기">
             </button>
             <p class="modal-caption">게스트는 진행 상황 저장 없이 제한된 체험판으로 이용됩니다</p>
+        </div>
+    </div>
+
+    <!-- 게임 방법 모달 -->
+    <div class="rule-modal-overlay" id="ruleModal">
+        <div class="rule-modal-card" role="dialog" aria-modal="true" aria-labelledby="ruleModalTitle">
+            <!-- 상단: 로고 + 제목 + 페이지 번호 + 닫기 -->
+            <div class="rule-top">
+                <img class="rule-top-logo" src="../logo/logo_main .svg" alt="">
+                <span class="rule-top-title" id="ruleModalTitle">게임 방법</span>
+                <span class="rule-page-num" id="rulePageNum">1 / 5</span>
+                <button type="button" class="rule-close" id="ruleClose" aria-label="닫기">✕</button>
+            </div>
+
+            <div class="rule-body">
+                <!-- 1. 목표 -->
+                <section class="rule-page">
+                    <span class="rule-eyebrow">GOAL</span>
+                    <h2 class="rule-title">주문은 많이 처리하고,<br>밀린 주문은 최소로!</h2>
+                    <p class="rule-lead">재료판을 돌며 재료를 모아 컵 3개에 담고, 주문 카드와 똑같은 음료를 만들어 처리하세요. 게임이 끝났을 때 평점이 더 높은 바리스타가 이겨요.</p>
+                    <div class="rule-scores">
+                        <div class="rule-score"><span class="rule-pt plus">+1</span><b>처리한 주문</b><small>카드 1장당</small></div>
+                        <div class="rule-score"><span class="rule-pt plus">+2</span><b>업그레이드</b><small>활성화 1개당</small></div>
+                        <div class="rule-score"><span class="rule-pt minus">−1</span><b>벌점 카드</b><small>밀린 주문 1장당</small></div>
+                    </div>
+                    <span class="rule-badge">2인 규칙 · 나 vs AI 바리스타</span>
+                </section>
+
+                <!-- 2. 내 차례 -->
+                <section class="rule-page" hidden>
+                    <span class="rule-eyebrow">MY TURN</span>
+                    <h2 class="rule-title">내 차례에는 이렇게 해요</h2>
+                    <p class="rule-lead">나와 AI가 한 차례씩 번갈아 진행해요.</p>
+                    <div class="rule-steps">
+                        <div class="rule-step">
+                            <div class="rule-ill">
+                                <div class="rule-grid" aria-hidden="true">
+                                    <i></i><i class="path"></i><i class="me"></i><i></i>
+                                    <i></i><i class="path"></i><i></i><i></i>
+                                    <i></i><i class="start"></i><i></i><i></i>
+                                </div>
+                            </div>
+                            <span class="rule-step-no">STEP 1</span>
+                            <b>이동 · 재료 획득</b>
+                            <p>내 말 1개를 상하좌우 3칸. 1칸마다 그 칸의 재료 1개!</p>
+                        </div>
+                        <span class="rule-arrow" aria-hidden="true">›</span>
+                        <div class="rule-step">
+                            <div class="rule-ill">
+                                <div class="rule-cup"><b class="espresso"></b><b class="milk"></b></div>
+                                <div class="rule-cup"><b class="choco"></b></div>
+                                <div class="rule-cup"></div>
+                            </div>
+                            <span class="rule-step-no">STEP 2</span>
+                            <b>컵에 담기</b>
+                            <p>재료를 컵 3개에 나눠 담아요. 남은 재료는 반납.</p>
+                        </div>
+                        <span class="rule-arrow" aria-hidden="true">›</span>
+                        <div class="rule-step">
+                            <div class="rule-ill">
+                                <div class="rule-cup"><b class="espresso"></b><b class="milk"></b><b class="ice"></b></div>
+                                <span class="rule-check">✓</span>
+                                <span class="rule-give">AI +1</span>
+                            </div>
+                            <span class="rule-step-no">STEP 3</span>
+                            <b>주문 처리</b>
+                            <p>컵이 주문과 같으면 처리! 처리한 수만큼 AI에게 주문 추가.</p>
+                        </div>
+                    </div>
+                    <p class="rule-tip"><b>TIP</b>&nbsp; 차례 시작 때 처리한 주문 3장으로 업그레이드를 켤 수 있어요 (4페이지)</p>
+                </section>
+
+                <!-- 3. 주문 큐 -->
+                <section class="rule-page" hidden>
+                    <span class="rule-eyebrow">ORDER QUEUE</span>
+                    <h2 class="rule-title">주문은 매 차례 한 단씩 밀려와요</h2>
+                    <div class="rule-queue">
+                        <div class="rule-slot"><span class="rule-slot-label">1단 · NEW</span>
+                            <div class="rule-order"><div class="rule-cup"><b class="espresso"></b><b class="water"></b></div>아메리카노</div>
+                            <div class="rule-order special"><div class="rule-cup"><b class="espresso"></b><b class="milk"></b><b class="caramel"></b></div>마키아토</div>
+                        </div>
+                        <div class="rule-slot"><span class="rule-slot-label">2단</span>
+                            <div class="rule-order"><div class="rule-cup"><b class="choco"></b><b class="milk"></b><b class="ice"></b></div>아이스 초코</div>
+                        </div>
+                        <div class="rule-slot"><span class="rule-slot-label">3단</span></div>
+                        <div class="rule-slot warn"><span class="rule-slot-label">4단 ⚠</span>
+                            <div class="rule-order"><div class="rule-cup"><b class="espresso"></b><b class="milk"></b><b class="ice"></b></div>아이스 라떼</div>
+                        </div>
+                        <div class="rule-penalty"><span class="rule-penalty-pt">−1</span><b>벌점</b><small>러시 토큰<br>+1</small></div>
+                    </div>
+                    <div class="rule-queue-flow"><span>내 차례 끝</span><i></i><span class="accent">한 단씩 →</span></div>
+                    <ul class="rule-list two-col">
+                        <li>4단에 있던 주문은 차례가 끝날 때 벌점 카드가 돼요</li>
+                        <li>내 차례가 끝날 때마다 1단에 새 주문 1장</li>
+                        <li>노란 리본 = 스페셜 메뉴, 처리하면 러시 토큰 +1</li>
+                        <li>내가 처리한 수만큼 AI의 1단에도 주문 추가</li>
+                    </ul>
+                </section>
+
+                <!-- 4. 러시 토큰 · 업그레이드 -->
+                <section class="rule-page" hidden>
+                    <span class="rule-eyebrow">BOOST</span>
+                    <h2 class="rule-title">급할 땐 러시, 길게 보면 업그레이드</h2>
+                    <div class="rule-two">
+                        <div class="rule-box">
+                            <div class="rule-box-head"><img src="../logo/mechanism_3.svg" alt=""><div><h3>러시 토큰</h3><span>추가 이동</span></div></div>
+                            <dl>
+                                <dt>사용</dt><dd>1개당 1칸 더 이동해요.<br>한 번에 여러 개도 OK.</dd>
+                                <dt>획득</dt><dd>스페셜 메뉴를 처리하거나,<br>벌점을 받을 때 받은 장수만큼.</dd>
+                            </dl>
+                        </div>
+                        <div class="rule-box">
+                            <div class="rule-box-head"><img src="../logo/mechanism_4.svg" alt=""><div><h3>업그레이드</h3><span>영구 효과 · +2점</span></div></div>
+                            <dl>
+                                <dt>조건</dt><dd>차례 시작 때 처리한 주문 3장을 버리고 타일 1개를 뒤집어요.</dd>
+                                <dt>효과</dt><dd><div class="rule-upgrades"><span>대각선 이동</span><span>게임 말 ×2</span><span>꼭짓점 ×2</span><span>스페셜 재료 ×2</span></div></dd>
+                            </dl>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. 게임 종료 -->
+                <section class="rule-page" hidden>
+                    <span class="rule-eyebrow">GAME END</span>
+                    <h2 class="rule-title">가게 문을 닫을 시간!</h2>
+                    <div class="rule-two">
+                        <div class="rule-box"><h4>이럴 때 끝나요</h4>
+                            <ul class="rule-list">
+                                <li>누군가 벌점 카드 5장 이상</li>
+                                <li>주문 카드 더미가 부족할 때</li>
+                                <li>이번 라운드를 마저 끝내고 종료</li>
+                            </ul>
+                        </div>
+                        <div class="rule-box"><h4>동점이라면?</h4>
+                            <ul class="rule-list">
+                                <li>처리한 주문이 많은 쪽 승리</li>
+                                <li>그래도 같으면 러시 토큰이 많은 쪽</li>
+                                <li>그래도 같으면 공동 승리</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="rule-formula">평점 = 처리 주문 <b class="g">×1</b> + 업그레이드 <b class="g">×2</b> − 벌점 <b class="r">×1</b></p>
+                </section>
+            </div>
+
+            <!-- 하단: 진행 점 + 이전/다음 -->
+            <div class="rule-foot">
+                <div class="rule-dots" id="ruleDots">
+                    <button type="button" class="active" aria-label="1페이지"></button>
+                    <button type="button" aria-label="2페이지"></button>
+                    <button type="button" aria-label="3페이지"></button>
+                    <button type="button" aria-label="4페이지"></button>
+                    <button type="button" aria-label="5페이지"></button>
+                </div>
+                <span class="rule-hint">휠을 굴려보세요.</span>
+                <div class="rule-nav">
+                    <button type="button" class="rule-btn ghost" id="rulePrev">이전</button>
+                    <button type="button" class="rule-btn primary" id="ruleNext">다음</button>
+                </div>
+            </div>
         </div>
     </div>
 
