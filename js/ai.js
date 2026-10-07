@@ -94,11 +94,17 @@ function tryPicks(p, picks) {
 
 // 제일 좋은 길 고르기 (점수가 같으면 무작위)
 // 러시 토큰은 2개까지 써 봄. 토큰 1개 쓸 때마다 점수 -3 (아껴 쓰도록)
+// 쉬움 모드: 반은 아무 길로 가고, 러시 토큰은 안 씀
 function bestPath(p) {
+  if (mode === 'easy' && rand(2) === 0) {
+    const paths = allPaths(p, 3);
+    return paths[rand(paths.length)];
+  }
+
   let best = null;
   let bestScore = -1;
 
-  const extra = Math.min(p.rush, 2);
+  const extra = mode === 'easy' ? 0 : Math.min(p.rush, 2);
   for (let more = 0; more <= extra; more++) {
     shuffle(allPaths(p, 3 + more)).forEach((path) => {
       const score = tryPicks(p, collect(path, p)) - more * 3;
@@ -128,7 +134,7 @@ async function aiTurn() {
     ai.done -= 3;
     ai.doneList.splice(0, 3);
     ai.ups.push(up.key);
-    say(`업그레이드 '${up.name}'을 켰어요`);
+    say(`업그레이드 '${up.name}'${josa(up.name, '을/를', true)} 켰어요`);
     await wait(900);
   }
 
@@ -162,7 +168,7 @@ async function aiTurn() {
     const useful = ai.queue.flat().some((order) => partOf(cup, order.items));
     if (!useful) {
       ai.cups[c] = [];
-      say(`컵 ${c + 1}을 비웠어요`);
+      say(`컵 ${c + 1}${josa(String(c + 1), '을/를', true)} 비웠어요`);
     }
   });
 
@@ -172,7 +178,7 @@ async function aiTurn() {
       ai.cups[pick.cup].push(key);
       say(`${icon(key)} ${ITEMS[key].name} → 컵 ${pick.cup + 1}`);
     } else {
-      say(`${icon(key)} ${ITEMS[key].name}는 쓸 곳이 없어서 버렸어요`);
+      say(`${icon(key)} ${josa(ITEMS[key].name, '은/는')} 쓸 곳이 없어서 버렸어요`);
     }
     await wait(500);
   }
@@ -184,7 +190,7 @@ async function aiTurn() {
     for (let k = ai.queue[r].length - 1; k >= 0; k--) {
       const name = ai.queue[r][k].name;
       if (serve(ai, r, k)) {
-        say(`${r + 1}단 '${name}'를 처리했어요 → 내 1단에 주문 1장`);
+        say(`${r + 1}단 '${name}'${josa(name, '을/를', true)} 처리했어요 → 내 1단에 주문 1장`);
         await wait(800);
       }
     }

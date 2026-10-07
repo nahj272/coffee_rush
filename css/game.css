@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Grandiflora+One&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;700;800&display=swap');
 
 /* ===== 색 (main.css와 같은 이름) ===== */
 :root
-{--main: #3D2A1E;
+{--font: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;   /* 기본(시스템) 글꼴: 윈도우는 맑은 고딕, 맥은 애플 SD 고딕 */
+ --main: #3D2A1E;
  --base: #F1E4CF;
  --btn-orange: #E1552E;
  --mechanism-bg: #EFE6DD;
@@ -21,11 +21,13 @@ img.big
 
 body
 {height: 100vh;
+ -webkit-font-smoothing: antialiased;   /* 글씨 테두리를 부드럽게 */
+ text-rendering: optimizeLegibility;
  display: flex;
  flex-direction: column;
  background: var(--main);
  color: var(--base);
- font-family: 'Gothic A1', sans-serif;
+ font-family: var(--font);
  overflow: hidden;}
 
 button
@@ -93,7 +95,7 @@ button
 {color: #F2876A;}
 
 .stat small
-{font-size: 11px;
+{font-size: 12px;
  opacity: 0.7;}
 
 /* 러시 동전 */
@@ -103,7 +105,7 @@ button
  border-radius: 50%;
  background: #E8B63A;
  color: var(--dark-text);
- font-size: 10px;
+ font-size: 12px;
  font-style: normal;
  font-weight: 800;
  display: grid;
@@ -171,7 +173,7 @@ button
  font-weight: 800;}
 
 .box-head small
-{font-size: 11px;
+{font-size: 12px;
  color: var(--sub-text);}
 
 /* 개인 판: 왼쪽 타일 줄 + 오른쪽 주문 줄 */
@@ -203,7 +205,7 @@ button
  border-radius: 8px;
  background: #4A3426;
  color: #EAD9C0;
- font-size: 10px;
+ font-size: 12px;
  font-weight: 700;
  line-height: 1.2;
  cursor: default;}
@@ -276,7 +278,7 @@ button
  background: #FCE9E2;}
 
 .warn-txt
-{font-size: 10px;
+{font-size: 12px;
  font-weight: 700;
  color: var(--btn-orange);}
 
@@ -312,9 +314,29 @@ button
  padding: 0 5px;
  border-radius: 4px;
  background: #FBE7A1;
- font-size: 9px;
+ font-size: 12px;
  font-style: normal;
  font-weight: 700;}
+
+/* 한 단에 카드가 2장 이상: 이름 옆에 재료를 붙인 한 줄 카드 */
+.many .card
+{display: flex;
+ flex-wrap: wrap;
+ align-items: center;
+ justify-content: space-between;
+ column-gap: 6px;
+ padding: 3px 6px;}
+
+.many .card em
+{display: none;}       /* 스페셜은 노란 왼쪽 띠로 알 수 있음 */
+
+.many .mini
+{gap: 2px;
+ margin-top: 0;}
+
+.many .mini img
+{width: 13px;
+ height: 13px;}
 
 /* 카드 안 작은 재료 아이콘 */
 .mini
@@ -363,22 +385,22 @@ button
 {padding: 2px 6px;
  border-radius: 4px;
  background: #fff;
- font-size: 11px;
+ font-size: 12px;
  color: var(--dark-text);}
 
 .done-list span.special
 {border-left: 3px solid var(--ribbon);}
 
 .done-list small
-{font-size: 11px;
+{font-size: 12px;
  color: var(--sub-text);}
 
 /* 벌점 더미 */
 .trash
 {display: flex;
  align-items: center;
- gap: 10px;
- padding: 8px 10px;
+ gap: 8px;
+ padding: 8px;
  border-radius: 10px;
  background: var(--btn-orange);
  color: #fff;}
@@ -388,7 +410,8 @@ button
  font-size: 13px;}
 
 .trash small
-{font-size: 10px;
+{font-size: 12px;
+ white-space: nowrap;   /* 한 줄로 */
  opacity: 0.85;}
 
 .trash-card
@@ -660,7 +683,7 @@ button
  padding: 6px 8px;
  border-radius: 10px;
  background: #FBF0D6;
- font-size: 11px;}
+ font-size: 12px;}
 
 .rush span
 {flex: 1;
@@ -706,7 +729,7 @@ button
  color: #2F6B25;}
 
 .up-head small
-{font-size: 11px;
+{font-size: 12px;
  color: var(--sub-text);}
 
 .up-btn
@@ -776,7 +799,7 @@ button
 {font-size: 15px;}
 
 .cups-head small
-{font-size: 11px;
+{font-size: 12px;
  color: var(--sub-text);}
 
 .cups
@@ -812,19 +835,19 @@ button
 
 /* 컵 몸통 · 손잡이 · 반짝이 */
 .glass .body
-{fill: rgba(255, 255, 255, 0.7);
- stroke: #CDBFAE;
+{fill: #E3CFB4;          /* 연한 커피색 → 흰 우유 · 스팀이 잘 보임 */
+ stroke: #A68A6A;
  stroke-width: 4;}
 
 .glass .handle
 {fill: none;
- stroke: #CDBFAE;
+ stroke: #A68A6A;
  stroke-width: 6;
  stroke-linecap: round;}
 
 .glass .shine
 {fill: none;
- stroke: #fff;
+ stroke: rgba(255, 255, 255, 0.6);
  stroke-width: 3;
  stroke-linecap: round;}
 
@@ -874,7 +897,7 @@ button
  border: 1px solid var(--line);
  border-radius: 10px;
  background: #fff;
- font-size: 11px;
+ font-size: 12px;
  color: var(--sub-text);}
 
 .cup-empty:hover
@@ -889,12 +912,14 @@ button
 {display: flex;
  flex-direction: column;
  justify-content: flex-end;
- gap: 8px;}
+ gap: 6px;
+ min-height: 0;}
 
+/* 오른쪽 버튼은 작게 → 러시 상자와 같이 있어도 칸 안에 들어감 */
 .actions .btn,
 .actions .btn.main
 {flex: none;
- padding: 12px 8px;
+ padding: 8px;
  font-size: 14px;}
 
 .btn
@@ -1023,7 +1048,7 @@ button
  font-weight: 800;}
 
 .seat-head small
-{font-size: 11px;
+{font-size: 12px;
  color: var(--sub-text);}
 
 .seat .cups
@@ -1072,7 +1097,7 @@ button
  background: rgba(255, 255, 255, 0.12);}
 
 .tray small
-{font-size: 11px;}
+{font-size: 12px;}
 
 /* 지금 가져갈 재료 통 */
 .tray.on
@@ -1088,10 +1113,63 @@ button
  object-fit: contain;
  margin-left: -6px;}
 
-.mid .btn
-{flex: none;
+/* 난이도 고르기 + 게임 시작 버튼 한 줄 */
+.start-row
+{display: flex;
+ gap: 10px;
  width: 100%;
  max-width: 520px;}
+
+.start-row .btn
+{flex: 1;}
+
+.mode
+{display: flex;
+ align-items: center;
+ gap: 6px;
+ padding: 4px 6px 4px 12px;
+ border-radius: 10px;
+ background: rgba(255, 255, 255, 0.08);}
+
+.mode b
+{margin-right: 4px;
+ font-size: 13px;}
+
+.mode button
+{display: flex;
+ flex-direction: column;
+ align-items: center;
+ padding: 6px 12px;
+ border: 2px solid transparent;
+ border-radius: 8px;
+ background: rgba(255, 255, 255, 0.1);
+ color: var(--base);
+ font-size: 15px;
+ font-weight: 800;
+ cursor: pointer;}
+
+.mode button small
+{font-size: 12px;
+ font-weight: 500;
+ opacity: 0.8;}
+
+/* 고른 난이도 */
+.mode button.on
+{border-color: #F2C230;
+ background: #F2C230;
+ color: var(--dark-text);}
+
+/* 맨 위 줄 난이도 표시 */
+.mode-tag
+{padding: 5px 12px;
+ border-radius: 16px;
+ border: 1px solid rgba(241, 228, 207, 0.4);
+ font-size: 13px;
+ font-weight: 700;}
+
+.mode-tag.easy
+{border-color: #F2C230;
+ color: #F2C230;}
 
 /* =========================================
    게임 끝: 결과 창
@@ -1187,3 +1265,392 @@ button
  .card { padding: 4px 7px; }
  .panel { height: 176px; padding: 12px 14px; }
 }
+
+
+/* =========================================
+   게임 방법 창 (오른쪽 위 ? 버튼)
+   작은 그림이 조금씩 움직이며 안내함 (4초마다 반복)
+   ========================================= */
+.help
+{position: fixed;
+ inset: 0;
+ display: grid;
+ place-items: center;
+ padding: 20px;
+ background: rgba(30, 20, 14, 0.7);
+ z-index: 20;}
+
+.help[hidden]
+{display: none;}
+
+.help-card
+{width: min(980px, 100%);
+ max-height: 100%;
+ overflow: auto;
+ padding: 24px 28px 28px;
+ border-radius: 20px;
+ background: var(--paper);
+ color: var(--dark-text);}
+
+.help-head
+{display: flex;
+ align-items: center;
+ justify-content: space-between;
+ margin-bottom: 16px;}
+
+.help-head h2
+{font-size: 22px;
+ font-weight: 800;}
+
+.help-close
+{width: 36px;
+ height: 36px;
+ border-radius: 50%;
+ border: 1px solid var(--line);
+ background: #fff;
+ font-size: 16px;}
+
+/* 3칸 × 2줄 */
+.help-grid
+{display: grid;
+ grid-template-columns: repeat(3, 1fr);
+ gap: 14px;}
+
+.help-box
+{padding: 14px;
+ border-radius: 14px;
+ background: #fff;
+ border: 1px solid var(--line);}
+
+.help-box > b
+{display: flex;
+ align-items: center;
+ gap: 6px;
+ margin-top: 10px;
+ font-size: 16px;
+ font-weight: 800;}
+
+.help-box em
+{display: grid;
+ place-items: center;
+ width: 22px;
+ height: 22px;
+ border-radius: 50%;
+ background: var(--btn-orange);
+ color: #fff;
+ font-size: 13px;
+ font-style: normal;}
+
+.help-box p
+{margin-top: 4px;
+ font-size: 14px;
+ line-height: 1.5;
+ color: #5C4A3D;}
+
+/* 게임 끝 · 점수 상자 */
+.help-box.end
+{background: #FBF0D6;}
+
+.help-box.end > b
+{margin-top: 0;}
+
+.help-box ul
+{margin-top: 8px;
+ list-style: none;
+ font-size: 14px;
+ line-height: 1.5;
+ color: #5C4A3D;}
+
+.help-box li
+{position: relative;
+ padding-left: 12px;
+ margin-bottom: 4px;}
+
+.help-box li::before
+{content: '';
+ position: absolute;
+ left: 0;
+ top: 9px;
+ width: 5px;
+ height: 5px;
+ border-radius: 50%;
+ background: var(--btn-orange);}
+
+/* 움직이는 그림 칸 */
+.demo
+{position: relative;
+ height: 130px;
+ border-radius: 10px;
+ background: #F3EBDF;
+ overflow: hidden;}
+
+.demo img
+{width: 22px;
+ height: 22px;
+ object-fit: contain;}
+
+/* ----- 1 이동: 말이 3칸 움직이고 재료가 하나씩 생김 ----- */
+.mini-board
+{position: absolute;
+ left: 22px;
+ top: 15px;
+ display: grid;
+ grid-template-columns: repeat(3, 30px);
+ gap: 4px;}
+
+.mini-board i
+{height: 30px;
+ border-radius: 6px;
+ background: #D9C9B3;}
+
+/* 지나가는 칸이 차례로 밝아짐 */
+.mini-board .p1 { animation: cell1 4s infinite; }
+.mini-board .p2 { animation: cell2 4s infinite; }
+.mini-board .p3 { animation: cell3 4s infinite; }
+
+@keyframes cell1 { 0%, 15% { background: #D9C9B3; } 20%, 90% { background: #F5B59E; } 100% { background: #D9C9B3; } }
+@keyframes cell2 { 0%, 35% { background: #D9C9B3; } 40%, 90% { background: #F5B59E; } 100% { background: #D9C9B3; } }
+@keyframes cell3 { 0%, 55% { background: #D9C9B3; } 60%, 90% { background: #F5B59E; } 100% { background: #D9C9B3; } }
+
+/* 말: 왼쪽 위 → 오른쪽 → 아래 → 오른쪽 */
+.d-pawn
+{position: absolute;
+ left: 29px;
+ top: 22px;
+ width: 16px;
+ height: 16px;
+ border-radius: 50%;
+ background: var(--me);
+ border: 2px solid #fff;
+ animation: pawn 4s infinite;}
+
+@keyframes pawn
+{0%, 10%  { transform: translate(0, 0); }
+ 20%, 30% { transform: translate(34px, 0); }
+ 40%, 50% { transform: translate(34px, 34px); }
+ 60%, 90% { transform: translate(68px, 34px); }
+ 100%     { transform: translate(0, 0); }}
+
+/* 받은 재료 3개 */
+.d-get
+{position: absolute;
+ right: 22px;
+ top: 50%;
+ display: flex;
+ flex-direction: column;
+ gap: 6px;
+ transform: translateY(-50%);}
+
+.d-get img
+{width: 26px;
+ height: 26px;
+ opacity: 0;}
+
+.d-get .g1 { animation: get1 4s infinite; }
+.d-get .g2 { animation: get2 4s infinite; }
+.d-get .g3 { animation: get3 4s infinite; }
+
+@keyframes get1 { 0%, 15% { opacity: 0; transform: scale(0.5); } 22%, 90% { opacity: 1; transform: scale(1); } 100% { opacity: 0; } }
+@keyframes get2 { 0%, 35% { opacity: 0; transform: scale(0.5); } 42%, 90% { opacity: 1; transform: scale(1); } 100% { opacity: 0; } }
+@keyframes get3 { 0%, 55% { opacity: 0; transform: scale(0.5); } 62%, 90% { opacity: 1; transform: scale(1); } 100% { opacity: 0; } }
+
+/* ----- 2 재료 담기: 우유가 위에서 컵으로 떨어짐 ----- */
+.demo .glass
+{position: absolute;
+ width: 96px;
+ height: 80px;}
+
+.d-cup .glass
+{left: 50%;
+ bottom: 10px;
+ transform: translateX(-50%);}
+
+.d-cup .fill img
+{width: 20px;
+ height: 20px;}
+
+.d-drop
+{position: absolute;
+ left: calc(50% - 16px);
+ top: 0;
+ width: 28px !important;
+ height: 28px !important;
+ animation: drop 4s infinite;}
+
+@keyframes drop
+{0%, 15% { transform: translateY(-30px); opacity: 0; }
+ 25%      { transform: translateY(8px); opacity: 1; }
+ 55%      { transform: translateY(68px) scale(0.75); opacity: 1; }
+ 65%, 100% { transform: translateY(68px) scale(0.75); opacity: 0; }}
+
+/* ----- 3 주문 처리: 완성된 컵 → 주문 카드에 ✓ ----- */
+.d-card
+{position: absolute;
+ left: 14px;
+ top: 26px;
+ width: 116px;
+ padding: 10px;
+ border-radius: 8px;
+ border: 2px solid var(--line);
+ background: #fff;
+ animation: card 4s infinite;}
+
+.d-card strong
+{display: block;
+ font-size: 14px;
+ font-weight: 800;}
+
+.d-card span
+{display: flex;
+ gap: 2px;
+ margin-top: 6px;}
+
+.d-card img
+{width: 18px;
+ height: 18px;}
+
+.d-check
+{position: absolute;
+ top: -10px;
+ right: -10px;
+ display: grid;
+ place-items: center;
+ width: 24px;
+ height: 24px;
+ border-radius: 50%;
+ background: #5BB74A;
+ color: #fff;
+ font-size: 14px;
+ font-style: normal;
+ font-weight: 800;
+ opacity: 0;
+ animation: check 4s infinite;}
+
+@keyframes card
+{0%, 35%  { border-color: var(--line); background: #fff; transform: none; }
+ 45%, 70% { border-color: #5BB74A; background: #F1F9EE; transform: scale(1.05); }
+ 85%, 100% { border-color: var(--line); background: #fff; transform: none; }}
+
+@keyframes check
+{0%, 40%  { opacity: 0; transform: scale(0.3); }
+ 50%, 75% { opacity: 1; transform: scale(1); }
+ 85%, 100% { opacity: 0; }}
+
+.d-arrow
+{position: absolute;
+ left: 140px;
+ top: 50px;
+ font-size: 20px;
+ font-weight: 800;
+ color: #5BB74A;
+ animation: arrow 4s infinite;}
+
+@keyframes arrow
+{0%, 10% { opacity: 0; transform: translateX(10px); }
+ 30%, 60% { opacity: 1; transform: translateX(0); }
+ 80%, 100% { opacity: 0; }}
+
+.d-serve .glass
+{right: 8px;
+ top: 26px;}
+
+/* ----- 4 차례 끝: 주문이 한 단씩 내려가고 4단에서 벌점 ----- */
+.d-rows
+{position: absolute;
+ inset: 10px 14px;
+ display: grid;
+ grid-template-rows: repeat(4, 1fr);
+ gap: 4px;}
+
+.d-rows span
+{display: flex;
+ align-items: center;
+ padding-left: 8px;
+ border-radius: 6px;
+ background: #E6D8C4;
+ font-size: 12px;
+ font-weight: 800;
+ color: #8C6A4E;}
+
+.d-rows .last
+{background: #FCE1D8;
+ color: var(--btn-orange);}
+
+.d-order
+{position: absolute;
+ left: 50%;
+ top: 12px;
+ width: 90px;
+ margin-left: -45px;
+ padding: 2px 0;
+ border-radius: 5px;
+ background: #fff;
+ border: 1px solid var(--line);
+ font-size: 12px;
+ font-weight: 700;
+ text-align: center;
+ animation: down 4s infinite;}
+
+/* 한 칸 = 약 28px */
+@keyframes down
+{0%, 12%  { transform: translateY(0); }
+ 22%, 34% { transform: translateY(28px); }
+ 44%, 56% { transform: translateY(56px); }
+ 66%, 72% { transform: translateY(84px); background: #fff; color: var(--dark-text); }
+ 78%, 92% { transform: translateY(84px); background: var(--btn-orange); color: #fff; }
+ 100%     { transform: translateY(84px); opacity: 0; }}
+
+/* ----- 5 러시 토큰 · 업그레이드 ----- */
+.d-coin
+{position: absolute;
+ left: 26px;
+ top: 26px;
+ display: grid;
+ place-items: center;
+ width: 40px;
+ height: 40px;
+ border-radius: 50%;
+ background: #E8B63A;
+ font-size: 18px;
+ font-weight: 800;
+ animation: coin 4s infinite;}
+
+@keyframes coin
+{0%, 20% { transform: scale(1); }
+ 30%     { transform: scale(1.2); }
+ 40%, 100% { transform: scale(1); }}
+
+.d-plus
+{position: absolute;
+ left: 76px;
+ top: 34px;
+ font-size: 15px;
+ font-weight: 800;
+ color: var(--btn-orange);
+ animation: plus 4s infinite;}
+
+@keyframes plus
+{0%, 25% { opacity: 0; transform: translateX(-8px); }
+ 35%, 60% { opacity: 1; transform: translateX(0); }
+ 70%, 100% { opacity: 0; }}
+
+.d-tile
+{position: absolute;
+ right: 22px;
+ bottom: 20px;
+ padding: 10px 12px;
+ border-radius: 8px;
+ background: #4A3426;
+ color: #EAD9C0;
+ font-size: 13px;
+ font-weight: 700;
+ animation: tile 4s infinite;}
+
+@keyframes tile
+{0%, 50% { background: #4A3426; color: #EAD9C0; }
+ 60%, 90% { background: #5BB74A; color: #fff; }
+ 100% { background: #4A3426; color: #EAD9C0; }}
+
+/* 움직임을 줄이고 싶은 사람은 그림을 멈춤 */
+@media (prefers-reduced-motion: reduce)
+{.demo * { animation: none !important; opacity: 1 !important; }}

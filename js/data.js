@@ -53,21 +53,21 @@ const MENUS = [
   // 라떼 종류
   { name: '카페라떼',           items: ['coffee', 'milk', 'steam'],            copies: 2 },  // ✔
   { name: '아이스 카페라떼',    items: ['coffee', 'milk', 'ice'],              copies: 2 },  // ✔
-  { name: '마키아또',           items: ['coffee', 'coffee', 'milk'],           copies: 2 },
-  { name: '아이스 마키아또',    items: ['coffee', 'coffee', 'milk', 'ice'],    copies: 2 },
+  { name: '마키아토',           items: ['coffee', 'coffee', 'milk'],           copies: 2 },
+  { name: '아이스 마키아토',    items: ['coffee', 'coffee', 'milk', 'ice'],    copies: 2 },
   { name: '라떼 마키아토',      items: ['coffee', 'milk', 'milk', 'steam'],    copies: 2 },
   { name: '콘빤나',             items: ['coffee', 'milk', 'steam'],            copies: 2 },  // ✔
   { name: '아인슈페너',         items: ['coffee', 'water', 'milk', 'steam'],   copies: 2 },
   { name: '아이스 아인슈페너',  items: ['coffee', 'water', 'milk', 'ice'],     copies: 2 },
 
-  // 모카 · 카라멜 종류
+  // 모카 · 캐러멜 종류
   { name: '카페모카',           items: ['coffee', 'chocolate', 'milk', 'steam'], copies: 2 },
   { name: '아이스 카페모카',    items: ['coffee', 'chocolate', 'milk', 'ice'],   copies: 2 },
   { name: '모카치노',           items: ['coffee', 'chocolate', 'steam'],       copies: 2 },
   { name: '아이스 모카치노',    items: ['coffee', 'chocolate', 'ice'],         copies: 2 },
-  { name: '카라멜라떼',         items: ['coffee', 'caramel', 'milk', 'steam'], copies: 2 },
-  { name: '아이스 카라멜라떼',  items: ['coffee', 'caramel', 'milk', 'ice'],   copies: 2 },
-  { name: '카라멜 카페프레도',  items: ['coffee', 'caramel', 'ice'],           copies: 6 },  // ✔
+  { name: '캐러멜라떼',         items: ['coffee', 'caramel', 'milk', 'steam'], copies: 2 },
+  { name: '아이스 캐러멜라떼',  items: ['coffee', 'caramel', 'milk', 'ice'],   copies: 2 },
+  { name: '캐러멜 카페프레도',  items: ['coffee', 'caramel', 'ice'],           copies: 6 },  // ✔
 
   // 차 종류
   { name: '녹차',               items: ['tea', 'water', 'steam'],              copies: 3 },
@@ -81,10 +81,10 @@ const MENUS = [
   { name: '코코아',             items: ['chocolate', 'milk', 'steam'],         copies: 2 },
   { name: '아이스 코코아',      items: ['chocolate', 'milk', 'ice'],           copies: 2 },
   { name: '초코라떼',           items: ['chocolate', 'chocolate', 'milk', 'steam'], copies: 2 },
-  { name: '아이스초코',         items: ['chocolate', 'chocolate', 'milk', 'ice'],   copies: 2 },
+  { name: '아이스 초코',        items: ['chocolate', 'chocolate', 'milk', 'ice'],   copies: 2 },
 
   // 스페셜 메뉴
-  { name: '카라멜 프라페',      items: ['coffee', 'caramel', 'milk', 'ice'],   copies: 2, special: true },  // ✔
+  { name: '캐러멜 프라페',      items: ['coffee', 'caramel', 'milk', 'ice'],   copies: 2, special: true },  // ✔
   { name: '초코쉐이크',         items: ['chocolate', 'milk', 'ice', 'ice'],    copies: 2, special: true },
 ];
 

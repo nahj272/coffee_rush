@@ -17,6 +17,7 @@
         </a>
         <span class="round">라운드 <b id="round">5</b></span>
         <span class="turn" id="turn">내 차례</span>
+        <span class="mode-tag" id="modeTag">보통 모드</span>
 
         <div class="stats">
             <span class="stat">처리 <b id="done">3</b></span>
@@ -25,7 +26,7 @@
             <span class="stat">업그레이드 <span class="dots" id="upgrade"></span></span>
         </div>
 
-        <button class="icon-btn" type="button" title="게임 방법">?</button>
+        <button class="icon-btn" type="button" id="helpBtn" title="게임 방법">?</button>
         <button class="icon-btn" type="button" title="설정">⚙</button>
     </header>
 
@@ -42,7 +43,11 @@
             <div class="mid">
                 <div class="board t-board" id="tBoard"></div>
                 <div class="supply" id="supply"></div>
-                <button class="btn main" type="button" id="startBtn">게임 시작</button>
+                <!-- 난이도 고르기 + 게임 시작 -->
+                <div class="start-row">
+                    <div class="mode" id="modeBox"></div>
+                    <button class="btn main" type="button" id="startBtn">게임 시작</button>
+                </div>
             </div>
 
             <!-- 오른쪽: AI 개인 판 -->
@@ -161,6 +166,96 @@
             <div class="result-btns">
                 <button class="btn" type="button" id="homeBtn">메인으로</button>
                 <button class="btn main" type="button" id="againBtn">다시 하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 게임 방법 (오른쪽 위 ? 버튼) : 짧은 움직이는 그림으로 안내 ===== -->
+    <div class="help" id="help" hidden>
+        <div class="help-card">
+            <div class="help-head">
+                <h2>게임 방법</h2>
+                <button class="help-close" type="button" id="helpClose" title="닫기">✕</button>
+            </div>
+
+            <div class="help-grid">
+                <!-- 1 이동 -->
+                <div class="help-box">
+                    <div class="demo d-move">
+                        <div class="mini-board">
+                            <i></i><i class="p1"></i><i></i>
+                            <i></i><i class="p2"></i><i class="p3"></i>
+                            <i></i><i></i><i></i>
+                        </div>
+                        <span class="d-pawn"></span>
+                        <div class="d-get">
+                            <img class="g1" src="../logo/재료토큰/coffee_beans.png" alt="">
+                            <img class="g2" src="../logo/재료토큰/milk_drop.png" alt="">
+                            <img class="g3" src="../logo/재료토큰/ice.png" alt="">
+                        </div>
+                    </div>
+                    <b><em>1</em> 이동</b>
+                    <p>내 말을 옆 칸으로 3칸 움직여요.<br>지나온 칸의 재료를 모두 받아요.</p>
+                </div>
+
+                <!-- 2 재료 담기 -->
+                <div class="help-box">
+                    <div class="demo d-cup">
+                        <img class="d-drop" src="../logo/재료토큰/milk_drop.png" alt="">
+                        <span class="glass"><svg viewBox="0 0 120 100" aria-hidden="true"><path class="handle" d="M92 30 C112 28 116 54 90 62"/><path class="body" d="M10 12 H96 V44 C96 74 78 90 53 90 C28 90 10 74 10 44 Z"/><path class="shine" d="M20 22 V44 C20 58 26 68 34 74"/></svg><span class="fill"><img src="../logo/재료토큰/coffee_beans.png" alt=""></span></span>
+                    </div>
+                    <b><em>2</em> 재료 담기</b>
+                    <p>받은 재료를 컵에 담아요.<br>필요 없는 재료는 버려도 돼요.</p>
+                </div>
+
+                <!-- 3 주문 처리 -->
+                <div class="help-box">
+                    <div class="demo d-serve">
+                        <div class="d-card">
+                            <strong>카페라떼</strong>
+                            <span><img src="../logo/재료토큰/coffee_beans.png" alt=""><img src="../logo/재료토큰/milk_drop.png" alt=""><img class="big" src="../logo/재료토큰/steam.svg" alt=""></span>
+                            <i class="d-check">✓</i>
+                        </div>
+                        <span class="d-arrow">←</span>
+                        <span class="glass"><svg viewBox="0 0 120 100" aria-hidden="true"><path class="handle" d="M92 30 C112 28 116 54 90 62"/><path class="body" d="M10 12 H96 V44 C96 74 78 90 53 90 C28 90 10 74 10 44 Z"/><path class="shine" d="M20 22 V44 C20 58 26 68 34 74"/></svg><span class="fill"><img src="../logo/재료토큰/coffee_beans.png" alt=""><img src="../logo/재료토큰/milk_drop.png" alt=""><img class="big" src="../logo/재료토큰/steam.svg" alt=""></span></span>
+                    </div>
+                    <b><em>3</em> 주문 처리</b>
+                    <p>컵 재료가 레시피와 똑같으면<br>주문 카드를 눌러 음료를 내요.</p>
+                </div>
+
+                <!-- 4 차례 끝 -->
+                <div class="help-box">
+                    <div class="demo d-end">
+                        <div class="d-rows">
+                            <span>1</span><span>2</span><span>3</span><span class="last">4</span>
+                        </div>
+                        <span class="d-order">주문</span>
+                    </div>
+                    <b><em>4</em> 차례 끝</b>
+                    <p>주문이 한 단씩 내려가요.<br>4단에 남은 주문은 벌점이 돼요.</p>
+                </div>
+
+                <!-- 5 러시 토큰 · 업그레이드 -->
+                <div class="help-box">
+                    <div class="demo d-rush">
+                        <span class="d-coin">R</span>
+                        <span class="d-plus">+1칸</span>
+                        <span class="d-tile">업그레이드</span>
+                    </div>
+                    <b><em>+</em> 러시 토큰 · 업그레이드</b>
+                    <p>러시 토큰 1개로 1칸 더 가요.<br>처리한 주문 3장으로 업그레이드를 켜요.</p>
+                </div>
+
+                <!-- 게임 끝 · 점수 -->
+                <div class="help-box end">
+                    <b>게임 끝 · 점수</b>
+                    <ul>
+                        <li>벌점 5장이 되면 바로 끝나요 (주문 더미가 다 떨어지면 그 라운드까지 하고 끝)</li>
+                        <li>점수 = 처리한 주문 + 업그레이드 ×2 − 벌점</li>
+                        <li>노란 리본 = 스페셜 메뉴 (처리하면 러시 토큰 +1)</li>
+                        <li>내가 주문을 처리하면 상대방 1단에 주문이 1장 늘어요</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

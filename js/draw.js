@@ -15,6 +15,21 @@ function icon(key) {
 }
 
 
+// 조사 붙이기: 받침이 있으면 앞 글자, 없으면 뒤 글자
+// 예: josa('스팀', '을/를') → '스팀을' · josa('우유', '을/를') → '우유를'
+// onlyJosa가 true면 조사만 돌려줌 ('을')
+function josa(word, pair, onlyJosa) {
+  const [withEnd, noEnd] = pair.split('/');
+  const last = word[word.length - 1];
+  const code = last.charCodeAt(0) - 0xAC00;
+  let end = false;
+  if (code >= 0 && code <= 11171) end = code % 28 > 0;   // 한글: 받침 확인
+  if ('013678'.includes(last)) end = true;               // 숫자: 영 일 삼 육 칠 팔
+  const j = end ? withEnd : noEnd;
+  return onlyJosa ? j : word + j;
+}
+
+
 /* ===== 맨 위 줄 ===== */
 function drawTop() {
   const me = game.me;
@@ -30,6 +45,8 @@ function drawTop() {
     $('turn').textContent = '게임 준비';
     $('turn').className = 'turn';
   }
+  $('modeTag').textContent = mode === 'easy' ? '쉬움 모드' : '보통 모드';
+  $('modeTag').className = 'mode-tag ' + mode;
   $('done').textContent = me.done;
   $('penalty').textContent = me.penalty;
   $('rush').textContent = me.rush;
@@ -75,8 +92,9 @@ function rowsHTML(p, isMe) {
   let html = '';
   p.queue.forEach((row, r) => {
     const last = r === 3;   // 4단은 이번 차례 끝에 벌점이 됨
-    html += `<div class="row ${last ? 'danger' : ''}"><span class="rnum">${r + 1}</span><div class="row-cards">`;
+    html += `<div class="row ${last ? 'danger' : ''}"><span class="rnum">${r + 1}</span><div class="row-cards ${row.length >= 2 ? 'many' : ''}">`;
 
+    // 카드가 2장 이상이면 한 줄짜리 작은 카드로 (이름 옆에 재료)
     row.forEach((order, k) => {
       let cls = 'card';
       if (order.special) cls += ' special';
@@ -261,7 +279,7 @@ function hintText() {
     if (game.upDone && game.path.length === 0) {
       const key = game.me.ups[game.me.ups.length - 1];
       const up = UPGRADES.find((u) => u.key === key);
-      return { text: `업그레이드 '${up.name}'를 켰어요 · 게임 끝까지 유지돼요` };
+      return { text: `업그레이드 '${up.name}'${josa(up.name, '을/를', true)} 켰어요 · 게임 끝까지 유지돼요` };
     }
 
     // 정해진 칸 수를 다 갔는데 멈출 수 없는 경우 (상대 말이 있는 칸)
@@ -363,7 +381,7 @@ function drawPanel() {
 
   // 컵 위 작은 안내
   if (game.step === 2 && game.picks.length) {
-    $('cupsHint').textContent = `${ITEMS[game.picks[game.picked]].name}를 담을 컵을 누르세요`;
+    $('cupsHint').textContent = `${josa(ITEMS[game.picks[game.picked]].name, '을/를')} 담을 컵을 누르세요`;
   } else {
     $('cupsHint').textContent = '';
   }
@@ -422,7 +440,7 @@ function drawRush() {
   const left = game.me.rush - game.rushUse;   // 아직 안 쓴 토큰
   $('rushBox').innerHTML = `
     <i class="coin">R</i>
-    <span>러시 <b>${game.rushUse}</b>개 사용 · 남은 ${left}</span>
+    <span>사용 <b>${game.rushUse}</b> · 남은 ${left}</span>
     <button class="rush-less" type="button" ${game.rushUse ? '' : 'disabled'}>취소</button>
     <button class="rush-more" type="button" ${left ? '' : 'disabled'}>+1칸</button>`;
 }
@@ -438,7 +456,7 @@ function drawUpgrade() {
   // 고른 타일이 있으면 "켜기" 버튼을 글 옆에 붙임
   const up = UPGRADES.find((u) => u.key === game.upPick);
   let html = `<div class="up-head">
-                <b>${up ? `'${up.name}'를 켤까요?` : '업그레이드할 수 있어요'}</b>
+                <b>${up ? `'${up.name}'${josa(up.name, '을/를', true)} 켤까요?` : '업그레이드할 수 있어요'}</b>
                 <small>${up ? '처리한 주문 3장을 써요 · +2점' : '왼쪽 판에서 타일을 고르세요 · 안 켜려면 그냥 움직이세요'}</small>
               </div>`;
   if (up) html += `<button class="up-btn" type="button">켜기</button>`;
@@ -527,6 +545,7 @@ function drawTable() {
   let num = 1;
   let msg = '재료판에서 내 말을 놓을 칸을 누르세요';
   let sub = '파란 동그라미(AI 말)가 있는 칸에는 놓을 수 없어요';
+  if (game.first === 'me') sub = '내가 선플레이어라서 먼저 놓아요 · AI는 내 다음에 놓아요';
   if (placed && game.setup) {
     num = 2;
     msg = `${icon(game.picks[0])} ${ITEMS[game.picks[0]].name} 토큰을 담을 내 컵을 누르세요`;
@@ -535,13 +554,25 @@ function drawTable() {
   if (ready) {
     num = 3;
     msg = '준비 끝! "게임 시작"을 누르세요';
-    sub = game.first === 'me' ? '내가 선플레이어예요' : 'AI가 선플레이어예요';
+    sub = game.first === 'me'
+      ? 'AI도 말을 놓았어요 (파란 동그라미) · 내가 선플레이어예요'
+      : 'AI가 선플레이어예요';
   }
   const steps = ['말 놓기', '재료 담기', '게임 시작']
     .map((t, k) => `<span class="${k + 1 === num ? 'now' : ''}">${k + 1} ${t}</span>`).join(' › ');
 
   $('setupBand').innerHTML = `<i>${num}</i><div><b>${msg}</b><small>${sub}</small></div><p>${steps}</p>`;
   $('startBtn').disabled = !ready;
+
+  // 난이도 고르기 (게임 시작 버튼 왼쪽)
+  const modes = [
+    { key: 'easy', name: '쉬움', desc: '러시 토큰 2개로 시작' },
+    { key: 'normal', name: '보통', desc: '원작 규칙 그대로' },
+  ];
+  $('modeBox').innerHTML = '<b>난이도</b>' + modes.map((m) =>
+    `<button class="${mode === m.key ? 'on' : ''}" type="button" data-mode="${m.key}">
+       ${m.name}<small>${m.desc}</small>
+     </button>`).join('');
 }
 
 

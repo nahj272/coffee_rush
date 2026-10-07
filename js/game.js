@@ -16,6 +16,12 @@
    null이면 (게스트) "내 주문"으로 보임 */
 let nickname = null;
 
+/* ===== 0-2. 난이도 =====
+   'easy' 쉬움 · 'normal' 보통 (세팅 화면에서 고름)
+   나중에 로그인 기능을 만들면 로그인한 사람만 고를 수 있게 바꿀 예정
+   쉬움: 러시 토큰 2개를 갖고 시작 + AI가 덜 꼼꼼하게 길을 고름 */
+let mode = 'normal';
+
 
 /* ===== 1. 무작위 도우미 ===== */
 
@@ -46,7 +52,8 @@ function makeDeck() {
 /* ===== 2. 새 게임 시작 상태 (원작 준비 규칙)
    - 먼저 할 사람은 무작위
    - 처음 주문: 나와 AI 모두 1단 1장 · 2단 1장, 선플레이어만 1단에 1장 더
-   - 말: AI는 아무 칸에, 나는 원하는 칸을 골라서 놓음
+   - 말: 선플레이어가 먼저 놓음
+     AI가 선이면 AI 말이 먼저 있고, 내가 선이면 내가 놓은 다음에 AI가 놓음
    - 말을 놓은 칸의 재료 1개를 컵에 담고 시작
    - 처리 · 벌점 · 러시 · 업그레이드는 모두 0 */
 function newPlayer() {
@@ -62,15 +69,29 @@ function newPlayer() {
   };
 }
 
+// AI 말 놓기: 내 말이 없는 칸 중에서 고르고, 그 칸의 재료 1개를 컵 1에 담음
+// 보통: AI 주문에 많이 들어가는 재료 칸 · 쉬움: 아무 칸
+function placeAi(ai, me) {
+  const free = [];
+  for (let i = 0; i < 16; i++) {
+    if (!me.pawns.includes(i)) free.push(i);
+  }
+  shuffle(free);
+
+  if (mode === 'normal') {
+    // 이 칸의 재료가 들어가는 AI 주문 수
+    const want = (i) => ai.queue.flat().filter((o) => o.items.includes(BOARD[i])).length;
+    free.sort((a, b) => want(b) - want(a));
+  }
+
+  ai.pawns = [free[0]];
+  ai.cups[0].push(BOARD[free[0]]);
+}
+
 function newGame() {
   const deck = makeDeck();
   const me = newPlayer();
   const ai = newPlayer();
-
-  // AI 말은 아무 칸에 놓고, 그 칸의 재료 1개를 컵 1에 담고 시작
-  const aiCell = rand(16);
-  ai.pawns.push(aiCell);
-  ai.cups[0].push(BOARD[aiCell]);
 
   // 먼저 할 사람(선플레이어): 반반 확률
   const first = rand(2) === 0 ? 'me' : 'ai';
@@ -82,13 +103,16 @@ function newGame() {
   });
   (first === 'me' ? me : ai).queue[0].push(deck.pop());
 
+  // AI가 선플레이어면 AI 말을 먼저 놓음 (내가 선이면 내가 놓은 다음에)
+  if (first === 'ai') placeAi(ai, me);
+
   return {
     round: 1,
     first: first,   // 먼저 하는 사람
     turn: first,    // 지금 누구 차례인지: 'me' 또는 'ai'
     step: 0,        // 0 말 놓기 · 1 이동 · 2 재료 담기 · 3 주문 처리 · 4 차례 끝
     over: false,    // 게임이 끝났는지
-    ending: false,  // 끝날 조건이 됨 → 이번 라운드까지만 하고 끝
+    ending: false,  // 주문 더미가 빔 → 이번 라운드까지만 하고 끝 (벌점 5장은 바로 끝)
     deck: deck,     // 남은 주문 더미
     me: me,
     ai: ai,
@@ -224,7 +248,7 @@ function canUpgrade() {
 function clickCell(i) {
   if (game.over) return;
 
-  // 0 말 놓기: AI 말이 없는 칸이면 놓기 (누가 먼저 하든 내가 먼저 놓음)
+  // 0 말 놓기: AI 말이 없는 칸이면 놓기
   // 세팅 화면: 아직 컵에 안 담았으면 말을 다른 칸으로 옮길 수 있음
   if (game.table && game.setup) {
     if (blocked(i)) return;
@@ -289,6 +313,15 @@ function arrive() {
 // (세팅 화면에서 "게임 시작" 버튼을 기다림)
 function finishSetup() {
   game.setup = false;
+  // 내가 선플레이어였으면 이제 AI가 말을 놓음
+  if (game.ai.pawns.length === 0) placeAi(game.ai, game.me);
+  draw();
+}
+
+// 세팅 화면: 난이도 고르기 (게임 시작 전에만)
+function pickMode(key) {
+  if (!game.table) return;
+  mode = key;
   draw();
 }
 
@@ -296,6 +329,7 @@ function finishSetup() {
 function startGame() {
   if (!game.table || game.setup || game.me.pawns.length === 0) return;
   game.table = false;
+  if (mode === 'easy') game.me.rush += 2;   // 쉬움: 러시 토큰 2개로 시작
   if (game.turn === 'me') startTurn();
   else aiTurn();
 }
@@ -463,12 +497,20 @@ function endTurn(player) {
   player.queue = [[], q[0], q[1], q[2]];   // 한 단씩 아래로
   if (game.deck.length) player.queue[0].push(game.deck.pop());
 
-  // 벌점 5장 이상 또는 주문 더미가 비면 → 이번 라운드까지만
-  if (player.penalty >= 5 || game.deck.length === 0) game.ending = true;
+  // 벌점 5장 이상 → 바로 게임 끝 (상대 차례 없이)
+  if (player.penalty >= 5) game.over = true;
+  // 주문 더미가 비면 → 이번 라운드까지만
+  if (game.deck.length === 0) game.ending = true;
 }
 
 // 다음 사람 차례로
 function nextTurn() {
+  // 벌점 5장으로 이미 끝났으면 다음 차례 없이 결과 창
+  if (game.over) {
+    draw();
+    return;
+  }
+
   game.turn = game.turn === 'me' ? 'ai' : 'me';
 
   // 먼저 한 사람에게 돌아오면 한 라운드가 끝난 것
@@ -514,9 +556,11 @@ function winner() {
 
 // 게임이 끝난 이유
 function endReason() {
-  if (game.deck.length === 0) return '주문 더미가 모두 떨어졌어요';
-  const who = game.me.penalty >= 5 ? '내' : 'AI';
-  return `${who} 벌점이 5장이 됐어요`;
+  if (game.me.penalty >= 5 || game.ai.penalty >= 5) {
+    const who = game.me.penalty >= 5 ? '내' : 'AI';
+    return `${who} 벌점이 5장이 됐어요`;
+  }
+  return '주문 더미가 모두 떨어졌어요';
 }
 
 // 다시 하기: 새 게임으로
@@ -546,6 +590,11 @@ $('seatMe').addEventListener('click', (e) => {
 });
 
 $('startBtn').addEventListener('click', startGame);
+
+$('modeBox').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-mode]');
+  if (btn) pickMode(btn.dataset.mode);
+});
 
 // 개인 판의 업그레이드 타일 고르기 (켜기는 오른쪽 패널의 버튼)
 $('myTiles').addEventListener('click', (e) => {
@@ -585,6 +634,22 @@ $('homeBtn').addEventListener('click', () => {
 $('rushBox').addEventListener('click', (e) => {
   if (e.target.closest('.rush-more')) rushMore();
   if (e.target.closest('.rush-less')) rushLess();
+});
+
+// 게임 방법 창: ? 버튼으로 열고, ✕ · 바깥 · ESC로 닫기
+function openHelp() {
+  $('help').hidden = false;
+}
+function closeHelp() {
+  $('help').hidden = true;
+}
+$('helpBtn').addEventListener('click', openHelp);
+$('helpClose').addEventListener('click', closeHelp);
+$('help').addEventListener('click', (e) => {
+  if (e.target === $('help')) closeHelp();   // 어두운 바깥을 누르면 닫힘
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeHelp();
 });
 
 $('nextBtn').addEventListener('click', clickNext);
