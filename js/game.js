@@ -4,7 +4,7 @@
 
    내 차례 순서
    0 말 놓기 (게임 처음 한 번) → 놓은 칸의 재료 1개를 컵에 담고 시작
-   1 이동 (3칸째를 누르면 자동으로 다음 단계, 지나온 칸의 재료를 모두 받음)
+   1 이동 (1~3칸, 원하는 칸에서 "여기서 멈추기" · 3칸째는 자동으로 다음 단계, 지나온 칸의 재료를 모두 받음)
    2 재료 담기 (다 담으면 자동으로 다음 단계)
    3 주문 처리 → "차례 끝내기" 버튼
    ========================================================= */
@@ -69,12 +69,12 @@ function newPlayer() {
   };
 }
 
-// AI 말 놓기: 내 말이 없는 칸 중에서 고르고, 그 칸의 재료 1개를 컵 1에 담음
+// AI 말 1개 놓기: 빈 칸 중에서 고르고, 그 칸의 재료 1개를 빈 컵에 담음
 // 보통: AI 주문에 많이 들어가는 재료 칸 · 쉬움: 아무 칸
 function placeAi(ai, me) {
   const free = [];
   for (let i = 0; i < 16; i++) {
-    if (!me.pawns.includes(i)) free.push(i);
+    if (!me.pawns.includes(i) && !ai.pawns.includes(i)) free.push(i);
   }
   shuffle(free);
 
@@ -84,8 +84,24 @@ function placeAi(ai, me) {
     free.sort((a, b) => want(b) - want(a));
   }
 
-  ai.pawns = [free[0]];
-  ai.cups[0].push(BOARD[free[0]]);
+  ai.pawns.push(free[0]);
+  const cup = ai.cups.findIndex((c) => c.length === 0);   // 빈 컵
+  ai.cups[cup].push(BOARD[free[0]]);
+}
+
+// 말 놓는 순서 (2인 규칙: 말 2개씩, 선플레이어부터 번갈아 하나씩)
+// 예: 내가 선 → ['me', 'ai', 'me', 'ai']
+function placeOrder(first) {
+  const second = first === 'me' ? 'ai' : 'me';
+  return [first, second, first, second];
+}
+
+// AI가 놓을 차례면 놓고 다음으로 (내 차례가 올 때까지)
+function placeAiTurns(g) {
+  while (g.placeIdx < 4 && g.order[g.placeIdx] === 'ai') {
+    placeAi(g.ai, g.me);
+    g.placeIdx += 1;
+  }
 }
 
 function newGame() {
@@ -103,10 +119,7 @@ function newGame() {
   });
   (first === 'me' ? me : ai).queue[0].push(deck.pop());
 
-  // AI가 선플레이어면 AI 말을 먼저 놓음 (내가 선이면 내가 놓은 다음에)
-  if (first === 'ai') placeAi(ai, me);
-
-  return {
+  const g = {
     round: 1,
     first: first,   // 먼저 하는 사람
     turn: first,    // 지금 누구 차례인지: 'me' 또는 'ai'
@@ -127,7 +140,25 @@ function newGame() {
     rushUse: 0,     // 이번 차례에 쓰려고 고른 러시 토큰 수 (+1칸 버튼)
     served: false,  // 이번 차례에 주문을 처리했는지 (되돌리기 막기용)
     log: [],        // AI가 이번 차례에 한 일 (오른쪽 패널에 표시)
+    order: placeOrder(first),   // 말 놓는 순서
+    placeIdx: 0,    // 지금 몇 번째 말을 놓는 중인지 (4가 되면 다 놓음)
+    pick: 0,        // 이번 차례에 움직일 내 말 (0 또는 1)
+    aiPick: 0,      // 이번 차례에 움직이는 AI 말
   };
+
+  // AI가 선플레이어면 AI 말을 먼저 놓음
+  placeAiTurns(g);
+  return g;
+}
+
+// 지금 내가 말을 놓을 차례인지 (세팅 화면)
+function myPlace() {
+  return game.table && game.placeIdx < 4 && game.order[game.placeIdx] === 'me';
+}
+
+// 말을 다 놓았는지
+function allPlaced() {
+  return game.placeIdx >= 4;
 }
 
 let game = newGame();
@@ -168,15 +199,23 @@ function has(key, p = game.me) {
   return p.ups.includes(key);
 }
 
-// 지금 내 말이 있는 칸 (이동 중이면 마지막으로 간 칸)
+// 지금 움직이는 내 말이 있는 칸 (이동 중이면 마지막으로 간 칸)
 function head() {
   if (game.path.length) return game.path[game.path.length - 1];
-  return game.me.pawns[0];
+  return game.me.pawns[game.pick];
 }
 
-// 그 칸에 상대 말이 있는지 (지나갈 순 있지만 멈출 순 없음)
-function blocked(i, p = game.me) {
-  return other(p).pawns.includes(i);
+// 그 칸에 아무 말이나 있는지 (말 놓을 때)
+function taken(i) {
+  return game.me.pawns.includes(i) || game.ai.pawns.includes(i);
+}
+
+// 그 칸에 다른 말이 있는지 (지나갈 순 있지만 멈출 순 없음)
+// 상대 말 2개 + 움직이지 않는 내 다른 말
+// k = 지금 움직이는 말 번호
+function blocked(i, p = game.me, k = (p === game.me ? game.pick : game.aiPick)) {
+  if (other(p).pawns.includes(i)) return true;
+  return p.pawns.some((cell, n) => n !== k && cell === i);
 }
 
 // 이번 차례에 움직일 칸 수 = 3 + 쓰기로 한 러시 토큰
@@ -208,20 +247,23 @@ function cupFor(order, p = game.me) {
 
 // 이동을 끝낼 수 있는지: 정해진 칸 수만큼 + 상대 말이 없는 칸
 // (상대 말이 있는 칸은 지나갈 수만 있고 도착은 못 함)
+// 1칸 이상 갔고, 다른 말이 없는 칸이면 멈출 수 있음 (1~3칸, 러시 토큰을 쓰면 더)
 function canStop() {
-  return game.path.length === maxMove() && !blocked(head());
+  return game.path.length >= 1 && game.path.length <= maxMove() && !blocked(head());
 }
 
 // 지나간 칸 하나에서 받는 재료 개수
-// 보통은 1개. 업그레이드를 켰고 조건이 맞으면 2개
+// 보통은 1개. 켠 업그레이드의 조건이 맞을 때마다 ×2 (겹치면 곱해짐)
 //  - 꼭짓점 ×2: 네 모서리 칸
-//  - 스페셜 재료 ×2: 노란 띠 칸 (캐러멜 · 물 · 찻잎 · 초콜릿)
+//  - 스페셜 재료 ×2: 노란 띠 칸 (카라멜 · 물 · 찻잎 · 초콜릿)
 //  - 게임 말 ×2: 상대 말이 있는 칸을 지나갈 때
+// 예: 꼭짓점 + 게임 말을 켰고, 모서리 칸에 상대 말이 있으면 1 × 2 × 2 = 4개
 function amount(i, p = game.me) {
-  if (has('corner', p) && CORNERS.includes(i)) return 2;
-  if (has('special', p) && ITEMS[BOARD[i]].special) return 2;
-  if (has('pawn', p) && blocked(i, p)) return 2;
-  return 1;
+  let n = 1;
+  if (has('corner', p) && CORNERS.includes(i)) n *= 2;
+  if (has('special', p) && ITEMS[BOARD[i]].special) n *= 2;
+  if (has('pawn', p) && other(p).pawns.includes(i)) n *= 2;
+  return n;
 }
 
 // 이동한 길의 재료를 모두 모으기 (지나간 칸마다)
@@ -248,21 +290,24 @@ function canUpgrade() {
 function clickCell(i) {
   if (game.over) return;
 
-  // 0 말 놓기: AI 말이 없는 칸이면 놓기
-  // 세팅 화면: 아직 컵에 안 담았으면 말을 다른 칸으로 옮길 수 있음
-  if (game.table && game.setup) {
-    if (blocked(i)) return;
-    game.me.pawns = [i];
-    game.picks = [BOARD[i]];
-    draw();
-    return;
-  }
+  // 세팅 화면: 내가 말을 놓을 차례
+  if (game.table) {
+    if (!myPlace()) return;
 
-  if (game.step === 0) {
-    if (blocked(i)) return;
-    game.me.pawns = [i];
+    // 아직 컵에 안 담았으면 방금 놓은 말을 다른 칸으로 옮길 수 있음
+    if (game.setup) {
+      game.me.pawns.pop();
+      if (taken(i)) {
+        game.me.pawns.push(game.picksCell);   // 다른 말이 있는 칸이면 그대로
+        return;
+      }
+    } else if (taken(i)) {
+      return;
+    }
 
-    // 놓은 칸의 재료 1개를 컵에 담고 시작
+    // 말을 놓고, 그 칸의 재료 1개를 컵에 담기
+    game.me.pawns.push(i);
+    game.picksCell = i;
     game.picks = [BOARD[i]];
     game.picked = 0;
     game.placed = [];
@@ -274,6 +319,16 @@ function clickCell(i) {
 
   if (game.turn !== 'me') return;
 
+  // 1 이동 전: 내 다른 말을 누르면 그 말로 바꿈 (말 2개 중 하나만 움직임)
+  if (game.step === 1 && game.path.length === 0) {
+    const k = game.me.pawns.indexOf(i);
+    if (k >= 0 && k !== game.pick) {
+      game.pick = k;
+      draw();
+      return;
+    }
+  }
+
   // 1 이동: 지금 칸의 바로 옆 칸만, 최대 칸 수까지
   if (game.step === 1) {
     if (!neighbors(head()).includes(i)) return;
@@ -283,7 +338,7 @@ function clickCell(i) {
     // 정해진 칸 수를 다 움직였으면 바로 도착 (다음 버튼 필요 없음)
     // 정해진 칸 수를 다 움직였고 남은 러시 토큰이 없으면 바로 도착
     // (러시 토큰이 남아 있으면 "여기서 멈추기"나 "+1칸"을 고를 수 있게 기다림)
-    if (canStop() && rushLeft() === 0) arrive();
+    if (game.path.length === maxMove() && canStop() && rushLeft() === 0) arrive();
     else draw();
   }
 }
@@ -300,8 +355,9 @@ function anyReady() {
 
 // 이동 끝 → 재료 받기 → 2 재료 담기로
 function arrive() {
-  game.me.rush -= game.rushUse;            // 쓰기로 한 러시 토큰 사용
-  game.me.pawns[0] = head();
+  // 3칸을 넘게 간 만큼만 러시 토큰 사용 (+1칸을 눌렀어도 덜 갔으면 안 씀)
+  game.me.rush -= Math.max(0, game.path.length - 3);
+  game.me.pawns[game.pick] = head();
   game.picks = collect(game.path);         // 지나온 칸의 재료를 모두 받음
   game.picked = 0;
   game.placed = [];
@@ -313,8 +369,9 @@ function arrive() {
 // (세팅 화면에서 "게임 시작" 버튼을 기다림)
 function finishSetup() {
   game.setup = false;
-  // 내가 선플레이어였으면 이제 AI가 말을 놓음
-  if (game.ai.pawns.length === 0) placeAi(game.ai, game.me);
+  game.step = 0;
+  game.placeIdx += 1;     // 다음 사람이 말을 놓을 차례
+  placeAiTurns(game);     // AI 차례면 AI가 놓음
   draw();
 }
 
@@ -327,7 +384,7 @@ function pickMode(key) {
 
 // 세팅 화면의 "게임 시작" 버튼 → 게임 화면으로 바꾸고 선플레이어부터 시작
 function startGame() {
-  if (!game.table || game.setup || game.me.pawns.length === 0) return;
+  if (!game.table || game.setup || !allPlaced()) return;
   game.table = false;
   if (mode === 'easy') game.me.rush += 2;   // 쉬움: 러시 토큰 2개로 시작
   if (game.turn === 'me') startTurn();
@@ -351,6 +408,8 @@ function rushLess() {
 }
 
 // 컵을 눌렀을 때 (2 재료 담기)
+// 완성된 컵에도 재료를 더 담을 수 있음 (예: 아이스 초코라테 + 원두 → 아이스 카페 모카)
+// 낼지 더 담을지는 플레이어가 고름
 function clickCup(i) {
   if (game.step !== 2 || game.picks.length === 0) return;
 
@@ -385,9 +444,10 @@ function emptyCup(i) {
   draw();
 }
 
-// 주문 카드를 눌렀을 때 (3 주문 처리)
+// 주문 카드를 눌렀을 때 (3 주문 처리 · 재료를 담는 중에도 낼 수 있음)
 function clickOrder(row, k) {
-  if (game.step !== 3) return;
+  if (game.turn !== 'me' || game.table) return;
+  if (game.step !== 2 && game.step !== 3) return;
 
   if (serve(game.me, row, k)) {
     game.served = true;
@@ -475,6 +535,7 @@ function clickBack() {
 // 내 차례 시작
 function startTurn() {
   game.step = 1;
+  game.pick = 0;
   game.path = [];
   game.picks = [];
   game.placed = [];
@@ -486,7 +547,8 @@ function startTurn() {
   draw();
 }
 
-// 차례 끝: 4단 주문은 벌점, 한 단씩 내려가고, 1단에 새 주문
+// 차례 끝: 4단 주문은 벌점, 한 단씩 내려가고, 1단에 새 주문 1장
+// (상대가 주문을 처리하면 그 수만큼 1단에 더 들어옴 → serve)
 function endTurn(player) {
   const q = player.queue;
 
@@ -495,7 +557,7 @@ function endTurn(player) {
   player.rush += lost;        // 벌점을 받으면 러시 토큰도 받음
 
   player.queue = [[], q[0], q[1], q[2]];   // 한 단씩 아래로
-  if (game.deck.length) player.queue[0].push(game.deck.pop());
+  if (game.deck.length) player.queue[0].push(game.deck.pop());   // 1단에 새 주문 1장
 
   // 벌점 5장 이상 → 바로 게임 끝 (상대 차례 없이)
   if (player.penalty >= 5) game.over = true;

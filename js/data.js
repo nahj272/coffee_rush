@@ -13,11 +13,11 @@
 const ICON = '../logo/재료토큰/';
 
 const ITEMS = {
-  coffee:    { name: '커피',   color: '#2A211D', img: 'coffee_beans.png' },
+  coffee:    { name: '원두',   color: '#2A211D', img: 'coffee_beans.png' },
   milk:      { name: '우유',   color: '#CBB79F', img: 'milk_drop.png' },
   steam:     { name: '스팀',   color: '#D8352B', img: 'steam.svg', big: true },
   ice:       { name: '얼음',   color: '#8CCBEF', img: 'ice.png' },
-  caramel:   { name: '캐러멜', color: '#E87A2C', img: 'caramel.svg',   special: true },
+  caramel:   { name: '카라멜', color: '#E87A2C', img: 'caramel.svg',   special: true },
   tea:       { name: '찻잎',   color: '#3E9B43', img: 'tea-leaf.png',  special: true },
   water:     { name: '물',     color: '#2F74C8', img: 'water_drop.png', special: true },
   chocolate: { name: '초콜릿', color: '#5A2A1B', img: 'chocolate.svg', special: true, big: true },
@@ -38,54 +38,44 @@ const BOARD = [
    items  : 컵에 담아야 하는 재료 (순서는 상관없음)
    copies : 주문 더미에 들어가는 장수
    special: true면 스페셜 메뉴 (처리하면 러시 토큰 1개)
-
-   ✔ = 카드 사진으로 재료를 확인한 것
-   나머지는 "따뜻한 건 스팀, 아이스는 얼음" 규칙으로 짐작한 것 → 실제 카드 보고 고치기 */
+   레시피는 원작 카드 그대로 (2026-10-07 받은 목록) */
 const MENUS = [
-  // 에스프레소 종류
-  { name: '리스트레또',         items: ['coffee', 'steam'],                    copies: 2 },
-  { name: '에스프레소',         items: ['coffee', 'steam'],                    copies: 2 },  // ✔
-  { name: '에스프레소 도피오',  items: ['coffee', 'coffee', 'steam'],          copies: 4 },  // ✔
-  { name: '아메리카노',         items: ['coffee', 'water', 'steam'],           copies: 3 },
-  { name: '아이스 아메리카노',  items: ['coffee', 'water', 'ice'],             copies: 3 },
-  { name: '콜드브루',           items: ['coffee', 'water', 'ice'],             copies: 2 },
-
-  // 라떼 종류
-  { name: '카페라떼',           items: ['coffee', 'milk', 'steam'],            copies: 2 },  // ✔
-  { name: '아이스 카페라떼',    items: ['coffee', 'milk', 'ice'],              copies: 2 },  // ✔
-  { name: '마키아토',           items: ['coffee', 'coffee', 'milk'],           copies: 2 },
-  { name: '아이스 마키아토',    items: ['coffee', 'coffee', 'milk', 'ice'],    copies: 2 },
-  { name: '라떼 마키아토',      items: ['coffee', 'milk', 'milk', 'steam'],    copies: 2 },
-  { name: '콘빤나',             items: ['coffee', 'milk', 'steam'],            copies: 2 },  // ✔
-  { name: '아인슈페너',         items: ['coffee', 'water', 'milk', 'steam'],   copies: 2 },
-  { name: '아이스 아인슈페너',  items: ['coffee', 'water', 'milk', 'ice'],     copies: 2 },
-
-  // 모카 · 캐러멜 종류
-  { name: '카페모카',           items: ['coffee', 'chocolate', 'milk', 'steam'], copies: 2 },
-  { name: '아이스 카페모카',    items: ['coffee', 'chocolate', 'milk', 'ice'],   copies: 2 },
-  { name: '모카치노',           items: ['coffee', 'chocolate', 'steam'],       copies: 2 },
-  { name: '아이스 모카치노',    items: ['coffee', 'chocolate', 'ice'],         copies: 2 },
-  { name: '캐러멜라떼',         items: ['coffee', 'caramel', 'milk', 'steam'], copies: 2 },
-  { name: '아이스 캐러멜라떼',  items: ['coffee', 'caramel', 'milk', 'ice'],   copies: 2 },
-  { name: '캐러멜 카페프레도',  items: ['coffee', 'caramel', 'ice'],           copies: 6 },  // ✔
-
-  // 차 종류
-  { name: '녹차',               items: ['tea', 'water', 'steam'],              copies: 3 },
-  { name: '아이스 녹차',        items: ['tea', 'water', 'ice'],                copies: 3, special: true },  // ✔
-  { name: '홍차',               items: ['tea', 'water', 'steam'],              copies: 3 },
-  { name: '아이스 홍차',        items: ['tea', 'water', 'ice'],                copies: 3, special: true },  // ✔
-  { name: '밀크티',             items: ['tea', 'milk', 'steam'],               copies: 3 },  // ✔
-  { name: '아이스 밀크티',      items: ['tea', 'milk', 'ice'],                 copies: 3 },  // ✔
-
-  // 초코 종류
-  { name: '코코아',             items: ['chocolate', 'milk', 'steam'],         copies: 2 },
-  { name: '아이스 코코아',      items: ['chocolate', 'milk', 'ice'],           copies: 2 },
-  { name: '초코라떼',           items: ['chocolate', 'chocolate', 'milk', 'steam'], copies: 2 },
-  { name: '아이스 초코',        items: ['chocolate', 'chocolate', 'milk', 'ice'],   copies: 2 },
-
-  // 스페셜 메뉴
-  { name: '캐러멜 프라페',      items: ['coffee', 'caramel', 'milk', 'ice'],   copies: 2, special: true },  // ✔
-  { name: '초코쉐이크',         items: ['chocolate', 'milk', 'ice', 'ice'],    copies: 2, special: true },
+  // 기본 메뉴 · 따뜻한 음료
+  { name: '에스프레소',               items: ['coffee', 'steam'],                       copies: 2 },
+  { name: '리스트레토',               items: ['coffee', 'steam'],                       copies: 2 },
+  { name: '에스프레소 도피오',           items: ['coffee', 'coffee', 'steam'],             copies: 4 },
+  { name: '아메리카노',               items: ['coffee', 'water', 'steam'],              copies: 3 },
+  { name: '카페 라테',               items: ['coffee', 'milk', 'steam'],               copies: 2 },
+  { name: '라테 마키아토',             items: ['coffee', 'milk', 'steam'],               copies: 2 },
+  { name: '콘 파냐',                items: ['coffee', 'milk', 'steam'],               copies: 2 },
+  { name: '아인슈페너',               items: ['coffee', 'milk', 'steam'],               copies: 2 },
+  { name: '밀크티',                 items: ['tea', 'milk', 'steam'],                  copies: 3 },
+  { name: '코코아',                 items: ['chocolate', 'milk', 'steam'],            copies: 2 },
+  { name: '초코라테',                items: ['chocolate', 'milk', 'steam'],            copies: 2 },
+  // 기본 메뉴 · 아이스 음료
+  { name: '아이스 아메리카노',           items: ['coffee', 'water', 'ice'],                copies: 3 },
+  { name: '아이스 카페 라테',           items: ['coffee', 'milk', 'ice'],                 copies: 2 },
+  { name: '아이스 아인슈페너',           items: ['coffee', 'milk', 'ice'],                 copies: 2 },
+  { name: '콜드 브루',               items: ['coffee', 'water', 'ice'],                copies: 2 },
+  { name: '아이스 밀크티',             items: ['tea', 'milk', 'ice'],                    copies: 3 },
+  { name: '아이스 코코아',             items: ['chocolate', 'milk', 'ice'],              copies: 2 },
+  { name: '아이스 초코라테',            items: ['chocolate', 'milk', 'ice'],              copies: 2 },
+  { name: '카라멜 카페 프레도',          items: ['coffee', 'caramel', 'ice'],              copies: 6 },
+  { name: '초코 쉐이크',              items: ['chocolate', 'milk', 'ice'],              copies: 2 },
+  // 스페셜 메뉴 (처리하면 러시 토큰 1개)
+  { name: '카페 모카',               items: ['coffee', 'chocolate', 'milk', 'steam'],  copies: 2, special: true },
+  { name: '모카치노',                items: ['coffee', 'chocolate', 'milk', 'steam'],  copies: 2, special: true },
+  { name: '카라멜 마키아토',            items: ['coffee', 'caramel', 'milk', 'steam'],    copies: 2, special: true },
+  { name: '카라멜 카페라테',            items: ['coffee', 'caramel', 'milk', 'steam'],    copies: 2, special: true },
+  { name: '녹차',                  items: ['tea', 'water', 'steam'],                 copies: 3, special: true },
+  { name: '홍차',                  items: ['tea', 'water', 'steam'],                 copies: 3, special: true },
+  { name: '아이스 카페 모카',           items: ['coffee', 'chocolate', 'milk', 'ice'],    copies: 2, special: true },
+  { name: '아이스 모카치노',            items: ['coffee', 'chocolate', 'milk', 'ice'],    copies: 2, special: true },
+  { name: '아이스 카라멜 마키아토',        items: ['coffee', 'caramel', 'milk', 'ice'],      copies: 2, special: true },
+  { name: '아이스 카라멜 카페라테',        items: ['coffee', 'caramel', 'milk', 'ice'],      copies: 2, special: true },
+  { name: '아이스 녹차',              items: ['tea', 'water', 'ice'],                   copies: 3, special: true },
+  { name: '아이스 홍차',              items: ['tea', 'water', 'ice'],                   copies: 3, special: true },
+  { name: '카라멜 프라페',             items: ['coffee', 'caramel', 'milk', 'ice'],      copies: 2, special: true },
 ];
 
 

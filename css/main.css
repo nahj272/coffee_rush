@@ -106,7 +106,7 @@ button:hover
 .main-title 
 {font-family: var(--font);
  font-size: 34px;
- font-weight: 700;
+ font-weight: 500;   /* 굵게 하면 뚱뚱해 보여서 보통 두께 */
  color: var(--base);
  letter-spacing: 0;
  margin-bottom: 12px;}
@@ -445,6 +445,7 @@ button:hover
  flex-direction: column;
  color: var(--dark-text);
  font-family: var(--font);
+ word-break: keep-all;   /* 한글을 낱말 단위로 줄바꿈 → 읽기 쉽게 */
  overflow: hidden;}
 
 /* 모달 안 버튼은 전역 button:hover 배경을 쓰지 않음 */
@@ -512,7 +513,7 @@ button:hover
 .rule-title
 {font-size: 31px;
  font-weight: 800;
- letter-spacing: -0.5px;
+ letter-spacing: -0.2px;
  line-height: 1.35;
  margin: 10px 0;
  color: var(--dark-text);}
@@ -571,6 +572,35 @@ button:hover
 .rule-cup b
 {display: block;
  height: 12.5px;}
+
+/* 컵 안 재료 토큰 (아래부터 쌓임) */
+.rule-cup
+{align-items: center;
+ gap: 1px;
+ padding: 4px 0 6px;
+ background: #F3EADC;}
+
+.rule-cup img
+{width: 19px;
+ height: 19px;
+ object-fit: contain;}
+
+/* 2쪽 그림의 컵: 게임 컵과 같은 색 + 재료 2개씩 쌓기 (재료가 잘 보이게) */
+.rule-ill .rule-cup
+{width: 60px;
+ height: 64px;
+ flex-direction: row;
+ flex-wrap: wrap-reverse;
+ justify-content: center;
+ align-content: flex-start;
+ gap: 2px;
+ padding: 6px 8px 8px;
+ background: #E3CFB4;
+ box-shadow: inset 0 0 0 2px #A68A6A;}
+
+.rule-ill .rule-cup img
+{width: 21px;
+ height: 21px;}
 
 .rule-cup .espresso {background: #6B4226;}
 .rule-cup .milk     {background: #F7F1E6; box-shadow: inset 0 0 0 1px #E6DCCB;}
@@ -641,7 +671,7 @@ button:hover
  border-radius: 20px;}
 
 .rule-ill
-{height: 96px;
+{height: 86px;
  border-radius: 15px;
  background: var(--mechanism-bg);
  display: flex;
@@ -662,7 +692,8 @@ button:hover
 .rule-step p
 {font-size: 15px;
  color: var(--sub-text);
- line-height: 1.55;}
+ line-height: 1.6;
+ word-break: keep-all;}   /* 낱말 중간에서 줄이 안 바뀌게 */
 
 .rule-grid
 {display: grid;
@@ -693,7 +724,8 @@ button:hover
  justify-content: center;}
 
 .rule-give
-{padding: 4px 7.5px;
+{white-space: nowrap;
+ padding: 4px 6px;
  border-radius: 7.5px;
  background: var(--main);
  color: #FFFFFF;
@@ -743,16 +775,27 @@ button:hover
 
 .rule-order
 {display: flex;
- align-items: center;
- gap: 6px;
- padding: 9px 7.5px;
+ flex-direction: column;
+ align-items: flex-start;
+ gap: 5px;
+ padding: 8px 9px;
  border: 1px solid var(--divider);
  border-radius: 11px;
  background: #FFFFFF;
- font-size: 13px;
+ font-size: 13.5px;
  font-weight: 700;
- letter-spacing: -0.3px;
- white-space: nowrap;}
+ line-height: 1.3;
+ word-break: keep-all;   /* 이름이 길면 낱말 단위로 줄바꿈 → 상자가 글자에 맞춰 커짐 */}
+
+/* 주문 카드 안 재료 아이콘 줄 */
+.rule-mini
+{display: flex;
+ gap: 3px;}
+
+.rule-mini img
+{width: 18px;
+ height: 18px;
+ object-fit: contain;}
 
 .rule-order .rule-cup
 {width: 25px;
@@ -957,6 +1000,12 @@ button:hover
  background: var(--btn-orange);
  color: #FFFFFF;}
 
+/* 마지막 쪽 "게임 시작": 커피러시 로고 글꼴 */
+.rule-btn.brand
+{font-family: 'Grandiflora One', serif;
+ font-size: 23px;
+ font-weight: 400;}
+
 .rule-btn.primary:hover
 {background-color: #CB4720;}
 
@@ -1037,4 +1086,32 @@ button:hover
     .rule-hint {
         display: none;
     }
+}
+
+/* =====PC · 노트북: 메인 화면 전체가 스크롤 없이 한 화면에 들어가게=====
+   vh = 화면 세로 길이의 1% → 화면이 작으면 로고 · 컵 · 버튼도 같이 작아짐
+   min(원래 크기, 화면에 맞춘 크기) 중 작은 쪽을 씀 */
+@media (min-width: 769px) {
+    body { height: 100vh; }
+    header { height: min(240px, 17vh); flex: none; }
+    .logo-wrap { gap: min(36px, 2.6vh); }
+    .logo { width: min(200px, 13vh); height: min(200px, 13vh); }
+    h1 { font-size: min(142px, 10vh); }
+    .log { width: auto; height: min(90px, 7.5vh); padding: 0 min(22px, 2vh); font-size: min(30px, 2.8vh); border-radius: min(20px, 1.8vh); }
+
+    .main-content { flex: 1; min-height: 0; padding: 1vh 20px 2.5vh; }
+    .cup { width: min(374px, 25vh); height: min(374px, 25vh); margin-bottom: 2.2vh; }
+    .main-title { font-size: min(34px, 3.6vh); margin-bottom: 0.8vh; }
+    .sub-title { font-size: min(15px, 1.9vh); margin-bottom: 2.6vh; }
+    .btn-start, .btn-rule { width: min(195px, 19vh); height: min(72px, 7.2vh); }
+    .btn-start { font-size: min(32px, 3.2vh); }
+    .btn-rule { font-size: min(26px, 2.6vh); }
+
+    .mechanism-section { flex: none; padding-top: 2.2vh; }
+    .features { margin-bottom: 1.6vh; }
+    .feature-item img { width: min(69px, 5.6vh); height: min(71px, 5.8vh); margin-bottom: 0.8vh; }
+    .feature-item h3 { font-size: min(16px, 1.9vh); margin-bottom: 2px; }
+    .feature-item p { font-size: min(13px, 1.6vh); }
+    .original-wrap { padding: 1vh 20px; }
+    .bottom-footer { flex: none; padding: 0.8vh 20px; }
 }

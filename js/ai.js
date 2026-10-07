@@ -4,7 +4,7 @@
 
    AI가 하는 일
    0 업그레이드: 처리한 주문이 3장 이상이면 켬
-   1 이동: 갈 수 있는 3칸 길을 모두 따져 보고, 지나온 칸의 재료가 제일 쓸모 있는 길로
+   1 이동: 갈 수 있는 1~3칸 길을 모두 따져 보고, 지나온 칸의 재료가 제일 쓸모 있는 길로
           (러시 토큰이 있으면 더 좋을 때 씀)
    2 담기: 더 이상 어떤 주문도 될 수 없는 컵은 비우고,
           받은 재료를 주문에 맞게 가는 컵에 담음 (쓸 곳 없는 재료는 버림)
@@ -57,8 +57,9 @@ function bestCup(p, key) {
 }
 
 // steps칸으로 갈 수 있는 길을 모두 찾기
+// k = 움직일 말 번호 (말이 2개)
 // 돌려주는 값: [[칸, 칸, 칸], [칸, 칸, 칸], ...]
-function allPaths(p, steps) {
+function allPaths(p, steps, k) {
   const paths = [];
 
   function go(path) {
@@ -66,14 +67,14 @@ function allPaths(p, steps) {
       paths.push(path);
       return;
     }
-    const now = path.length ? path[path.length - 1] : p.pawns[0];
+    const now = path.length ? path[path.length - 1] : p.pawns[k];
     neighbors(now, p).forEach((n) => go([...path, n]));
   }
 
   go([]);
 
-  // 마지막 칸에 상대 말이 있으면 못 멈춤 (지나가는 건 됨)
-  return paths.filter((path) => !blocked(path[path.length - 1], p));
+  // 마지막 칸에 다른 말이 있으면 못 멈춤 (지나가는 건 됨)
+  return paths.filter((path) => !blocked(path[path.length - 1], p, k));
 }
 
 // 받은 재료들을 컵에 담아 보면 몇 점짜리인지 (실제로 담지는 않음)
@@ -95,31 +96,54 @@ function tryPicks(p, picks) {
 // 제일 좋은 길 고르기 (점수가 같으면 무작위)
 // 러시 토큰은 2개까지 써 봄. 토큰 1개 쓸 때마다 점수 -3 (아껴 쓰도록)
 // 쉬움 모드: 반은 아무 길로 가고, 러시 토큰은 안 씀
+// 말 2개를 모두 따져 봄. 돌려주는 값: { path: 길, k: 움직일 말 번호 }
 function bestPath(p) {
+  const pawns = p.pawns.map((cell, k) => k);
+
   if (mode === 'easy' && rand(2) === 0) {
-    const paths = allPaths(p, 3);
-    return paths[rand(paths.length)];
+    const k = pawns[rand(pawns.length)];
+    const paths = allPaths(p, 3, k);
+    return { path: paths[rand(paths.length)], k: k };
   }
 
   let best = null;
   let bestScore = -1;
 
   const extra = mode === 'easy' ? 0 : Math.min(p.rush, 2);
-  for (let more = 0; more <= extra; more++) {
-    shuffle(allPaths(p, 3 + more)).forEach((path) => {
-      const score = tryPicks(p, collect(path, p)) - more * 3;
-      if (score > bestScore) {
-        best = path;
-        bestScore = score;
-      }
-    });
-  }
+  pawns.forEach((k) => {
+    // 1칸 ~ 3칸 (러시 토큰이 있으면 더). 3칸을 넘는 칸마다 점수 -3
+    for (let n = 1; n <= 3 + extra; n++) {
+      const more = Math.max(0, n - 3);
+      shuffle(allPaths(p, n, k)).forEach((path) => {
+        const score = tryPicks(p, collect(path, p)) - more * 3;
+        if (score > bestScore) {
+          best = { path: path, k: k };
+          bestScore = score;
+        }
+      });
+    }
+  });
 
   return best;
 }
 
 
 /* ===== AI 차례 진행 ===== */
+
+// 낼 수 있는 주문을 모두 냄 (4단부터 위로)
+async function aiServe() {
+  const ai = game.ai;
+  for (let r = 3; r >= 0; r--) {
+    for (let k = ai.queue[r].length - 1; k >= 0; k--) {
+      const name = ai.queue[r][k].name;
+      if (serve(ai, r, k)) {
+        say(`${r + 1}단 '${name}'${josa(name, '을/를', true)} 처리했어요 → 내 1단에 주문 1장`);
+        await wait(800);
+      }
+    }
+  }
+}
+
 async function aiTurn() {
   const ai = game.ai;
   game.step = 1;
@@ -138,11 +162,13 @@ async function aiTurn() {
     await wait(900);
   }
 
-  // 1 이동: 한 칸씩 움직이는 모습 보여주기
-  const path = bestPath(ai);
+  // 1 이동: 말 2개 중 하나를 골라 한 칸씩 움직이는 모습 보여주기
+  const best = bestPath(ai);
+  const path = best.path;
+  game.aiPick = best.k;
   for (const cell of path) {
     game.path.push(cell);
-    ai.pawns[0] = cell;
+    ai.pawns[best.k] = cell;
     draw();
     await wait(450);
   }
@@ -173,6 +199,7 @@ async function aiTurn() {
   });
 
   for (const key of picks) {
+    await aiServe();   // 완성된 컵이 있으면 먼저 주문 처리
     const pick = bestCup(ai, key);
     if (pick.cup >= 0) {
       ai.cups[pick.cup].push(key);
@@ -183,18 +210,10 @@ async function aiTurn() {
     await wait(500);
   }
 
-  // 3 처리: 4단부터 위로 보면서 낼 수 있는 주문은 모두 냄
+  // 3 처리: 낼 수 있는 주문은 모두 냄
   game.step = 3;
   draw();
-  for (let r = 3; r >= 0; r--) {
-    for (let k = ai.queue[r].length - 1; k >= 0; k--) {
-      const name = ai.queue[r][k].name;
-      if (serve(ai, r, k)) {
-        say(`${r + 1}단 '${name}'${josa(name, '을/를', true)} 처리했어요 → 내 1단에 주문 1장`);
-        await wait(800);
-      }
-    }
-  }
+  await aiServe();
 
   // 4 차례 끝
   game.step = 4;

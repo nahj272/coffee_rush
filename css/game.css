@@ -308,9 +308,7 @@ button
 {border-left: 4px solid var(--ribbon);}
 
 .card em
-{position: absolute;
- top: 5px;
- right: 6px;
+{margin-left: auto;      /* 재료 아이콘 줄의 오른쪽 끝 */
  padding: 0 5px;
  border-radius: 4px;
  background: #FBE7A1;
@@ -341,6 +339,7 @@ button
 /* 카드 안 작은 재료 아이콘 */
 .mini
 {display: flex;
+ align-items: center;
  gap: 5px;
  margin-top: 3px;}
 
@@ -439,9 +438,8 @@ button
    가운데: 단계 · 안내 · 버튼 + 재료판
    ========================================= */
 .center
-{display: flex;
- flex-direction: column;
- align-items: center;
+{display: grid;
+ grid-template-rows: auto auto minmax(0, 1fr);   /* 단계 · 안내 · 남은 공간은 재료판 */
  gap: 10px;
  min-height: 0;}
 
@@ -449,9 +447,16 @@ button
 .center .panel
 {width: 100%;}
 
-/* 재료판: 화면 높이에 맞춰 정사각형 */
+/* 재료판 자리: 남은 공간 (cqw · cqh = 이 상자 폭 · 높이의 1%) */
+.board-box
+{min-height: 0;
+ container-type: size;
+ display: flex;
+ justify-content: center;}
+
+/* 재료판: 남은 공간에 맞춰 정사각형 (안내 칸이 커지면 재료판이 줄어듦) */
 .board
-{width: min(100%, calc(100vh - 346px));
+{width: min(100cqw, 100cqh);
  aspect-ratio: 1;
  display: grid;
  grid-template-columns: repeat(4, 1fr);
@@ -560,6 +565,11 @@ button
 {opacity: 0.35;}
 .pawn.ai { background: var(--ai); }
 
+/* 이번 차례에 움직일 내 말: 노란 테두리 (다른 내 말을 누르면 바뀜) */
+.pawn.sel
+{border-color: #F2C230;
+ box-shadow: 0 0 0 3px rgba(242, 194, 48, 0.5);}
+
 
 /* =========================================
    안내 패널 · 단계 표시 (가운데 위)
@@ -645,7 +655,7 @@ button
 /* 흰 안내 패널: 왼쪽 안내 · 오른쪽 버튼 */
 .panel
 {flex-shrink: 0;
- height: 196px;
+ min-height: 196px;
  display: grid;
  grid-template-columns: 1fr 150px;
  gap: 16px;
@@ -654,10 +664,9 @@ button
  background: var(--paper);
  color: var(--dark-text);}
 
-/* 안내 내용 (넘치면 이 안에서 스크롤) */
+/* 안내 내용 (넘치면 안내 칸이 커지고 재료판이 줄어듦 → 스크롤 없음) */
 .panel-main
 {min-height: 0;
- overflow-y: auto;
  display: flex;
  flex-direction: column;}
 
@@ -744,16 +753,18 @@ button
 
 /* 받은 재료 버튼 */
 .picks
-{display: grid;
- grid-template-columns: repeat(4, 1fr);
- gap: 8px;}
-
-.pick
 {display: flex;
+ flex-wrap: wrap;
+ gap: 6px;}
+
+/* 받은 재료 한 개 (작게 → 한 줄에 6개까지) */
+.pick
+{width: 66px;
+ display: flex;
  flex-direction: column;
  align-items: center;
- gap: 4px;
- padding: 10px 0 8px;
+ gap: 3px;
+ padding: 7px 0 5px;
  border: 1.5px solid var(--line);
  border-radius: 10px;
  background: #F3EDE4;
@@ -761,8 +772,8 @@ button
  color: var(--dark-text);}
 
 .pick img
-{width: 26px;
- height: 26px;
+{width: 24px;
+ height: 24px;
  object-fit: contain;}
 
 .pick.on
@@ -884,21 +895,37 @@ button
 
 /* 컵 + 비우기 버튼 묶음 */
 .cup-box
-{position: relative;}
+{display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 4px;}
+
+/* 컵 아래 한 줄: 컵 이름 + 비우기 */
+.cup-foot
+{display: flex;
+ flex-wrap: wrap;
+ justify-content: center;
+ align-items: center;
+ gap: 4px;
+ min-height: 20px;
+ font-size: 12px;
+ color: var(--sub-text);
+ text-align: center;}
+
+/* 완성된 컵 이름 (초록) */
+.cup-done
+{color: #2F7D25;
+ font-weight: 800;}
 
 /* 컵 비우기 (컵에 든 재료 모두 버림) */
 .cup-empty
 {white-space: nowrap;
- position: absolute;
- top: -6px;
- left: 50%;
- transform: translateX(-50%);
- padding: 2px 8px;
+ padding: 1px 7px;
  border: 1px solid var(--line);
  border-radius: 10px;
  background: #fff;
  font-size: 12px;
- color: var(--sub-text);}
+ color: var(--dark-text);}
 
 .cup-empty:hover
 {border-color: var(--btn-orange);
@@ -993,7 +1020,7 @@ button
 .band b
 {display: block;
  font-size: 19px;
- font-weight: 800;}
+ font-weight: 500;}   /* 굵게 하면 뚱뚱해 보여서 보통 두께 */
 
 .band b img
 {display: inline-block;   /* reset.css가 그림을 줄 하나로 떼어 놓아서 글자 옆에 붙임 */
@@ -1261,9 +1288,40 @@ button
 {
  .glass { height: 84px; }            /* 컵 조금 낮게 */
  .orders .glass { height: 58px; }    /* 왼쪽 컵은 더 낮게 → 주문 칸이 넓어짐 */
+ .orders .fill img { width: 20px; height: 20px; }   /* 낮은 컵에 맞춰 재료도 작게 */
  .orders .cups-head { margin-top: 6px; padding-top: 4px; }
  .card { padding: 4px 7px; }
- .panel { height: 176px; padding: 12px 14px; }
+ .panel { min-height: 176px; padding: 12px 14px; }
+}
+
+/* 노트북 화면 (세로가 짧을 때): 전체를 조금 더 작게 */
+@media (max-height: 720px)
+{
+ .top { padding: 8px 24px; }
+ .brand img { width: 34px; height: 34px; }
+ .game { gap: 16px; padding: 2px 24px 12px; }
+ .orders .glass { height: 48px; }
+ .orders .fill img { width: 17px; height: 17px; }
+ .glass { height: 72px; }
+ .orders .cups-head { margin-top: 4px; padding-top: 2px; }
+ .piles { margin-top: 6px; }
+ .done-box, .trash { padding: 6px 8px; }
+ .panel { min-height: 168px; }
+
+ /* 세팅 화면 */
+ .table { gap: 10px; padding: 2px 24px 12px; }
+ .band { padding: 8px 16px; }
+ .band b { font-size: 17px; }
+ .band i { width: 30px; height: 30px; font-size: 16px; }
+ .mid { gap: 8px; }
+ .t-board { width: min(100%, calc(100vh - 380px)); }
+ .supply { padding: 8px; }
+ .trays { gap: 6px; }
+ .tray { flex-direction: row; justify-content: center; gap: 6px; padding: 4px; }
+ .pile img { width: 18px; height: 18px; }
+ .seat { padding: 10px; gap: 6px; }
+ .seat .glass { height: 54px; }
+ .mode button { padding: 4px 10px; }
 }
 
 
@@ -1356,6 +1414,7 @@ button
 
 .help-box ul
 {margin-top: 8px;
+ padding: 0;            /* 기본 들여쓰기 없애서 한쪽으로 쏠리지 않게 */
  list-style: none;
  font-size: 14px;
  line-height: 1.5;
@@ -1651,6 +1710,42 @@ button
  60%, 90% { background: #5BB74A; color: #fff; }
  100% { background: #4A3426; color: #EAD9C0; }}
 
+/* 노트북 화면: 게임 방법 창도 조금 작게 */
+@media (max-height: 720px)
+{
+ .help-card { padding: 18px 22px 20px; }
+ .help-head { margin-bottom: 10px; }
+ .help-grid { gap: 10px; }
+ .help-box { padding: 10px; }
+ .demo { zoom: 0.8; }   /* 움직이는 그림을 통째로 작게 */
+ .help-box p, .help-box ul { font-size: 13px; }
+}
+
 /* 움직임을 줄이고 싶은 사람은 그림을 멈춤 */
 @media (prefers-reduced-motion: reduce)
 {.demo * { animation: none !important; opacity: 1 !important; }}
+
+
+/* "게임 시작" 버튼은 커피러시 로고 글꼴로 통일 */
+#startBtn
+{font-family: 'Grandiflora One', serif;
+ font-size: 24px;
+ font-weight: 400;}
+
+/* AI 차례: 안내 칸 높이를 고정하고 기록은 그 안에서 스크롤 */
+.panel.fix
+{height: 196px;
+ grid-template-rows: minmax(0, 1fr);}
+
+.panel.fix .panel-main
+{overflow: hidden;}
+
+/* 제목은 그대로 두고 기록 부분만 스크롤 */
+.panel.fix .panel-text
+{flex: 1;
+ min-height: 0;
+ overflow-y: auto;
+ margin-bottom: 0;}
+
+@media (max-height: 820px) { .panel.fix { height: 176px; } }
+@media (max-height: 720px) { .panel.fix { height: 168px; } }

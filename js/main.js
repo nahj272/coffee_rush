@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     rulePrev.disabled = currentPage === 0;
     // 마지막 페이지에서는 '다음' 대신 '게임 시작'
     ruleNext.textContent = currentPage === lastPage ? '게임 시작' : '다음';
+    ruleNext.classList.toggle('brand', currentPage === lastPage);   // '게임 시작'은 로고 글꼴
 
     // 페이지가 바뀌면 본문 스크롤을 맨 위로 (작은 화면 대비)
     ruleModal.querySelector('.rule-body').scrollTop = 0;
