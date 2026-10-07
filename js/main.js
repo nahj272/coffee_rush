@@ -1,5 +1,14 @@
 // 로그인 모달 / 게임 방법 모달 열기·닫기
 document.addEventListener('DOMContentLoaded', () => {
+  /* ===== 게임 시작: 게임 화면(page/game.html)으로 이동 ===== */
+  const goGame = () => {
+    location.href = 'page/game.html';
+  };
+
+  // 메인 가운데 '게임 시작' 버튼
+  const startBtn = document.querySelector('.btn-start');
+  if (startBtn) startBtn.addEventListener('click', goGame);
+
   /* ===== 로그인 모달 ===== */
   const loginTrigger = document.getElementById('loginTrigger');
   const loginModal = document.getElementById('loginModal');
@@ -78,10 +87,10 @@ document.addEventListener('DOMContentLoaded', () => {
     ruleModal.querySelector('.rule-body').scrollTop = 0;
   };
 
-  // 기본 750×700 기준 → 약 772×720, 작은 화면에선 화면에 맞춰 줄임
+  // 기본 750×720 기준 → 약 771×740, 작은 화면에선 화면에 맞춰 줄임
   const RULE_BASE_W = 750;
-  const RULE_BASE_H = 700;
-  const RULE_MAX_SCALE = 720 / 700; // 최대 높이 720px
+  const RULE_BASE_H = 720;
+  const RULE_MAX_SCALE = 740 / 720; // 최대 높이 740px
   const ruleCard = ruleModal ? ruleModal.querySelector('.rule-modal-card') : null;
   const ruleBody = ruleModal ? ruleModal.querySelector('.rule-body') : null;
 
@@ -130,8 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentPage < lastPage) {
         showRulePage(currentPage + 1);
       } else {
-        // TODO: 게임 화면으로 이동 (메인의 '게임 시작'과 같은 동작 연결)
-        closeRuleModal();
+        // 마지막(5번째) 페이지의 '게임 시작' → 게임 화면으로
+        goGame();
       }
     });
 

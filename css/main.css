@@ -435,7 +435,7 @@ button:hover
 .rule-modal-card
 {width: 750px;
  max-width: 100%;
- height: 700px;
+ height: 720px;   /* 2·3페이지가 스크롤 없이 들어가도록 700 → 720 */
  max-height: calc(100vh - 50px);
  background: #FFFFFF;
  border-radius: 30px;

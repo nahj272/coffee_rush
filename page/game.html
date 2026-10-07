@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>coffee rush - 게임</title>
+    <link rel="stylesheet" href="../css/reset.css">
+    <link rel="stylesheet" href="../css/game.css">
+</head>
+<body>
+
+    <!-- ===== 맨 위 줄: 로고 · 라운드 · 점수 ===== -->
+    <header class="top">
+        <a class="brand" href="../index.html">
+            <img src="../logo/logo_main .svg" alt="">
+            <span>커피러시</span>
+        </a>
+        <span class="round">라운드 <b id="round">5</b></span>
+        <span class="turn" id="turn">내 차례</span>
+
+        <div class="stats">
+            <span class="stat">처리 <b id="done">3</b></span>
+            <span class="stat red">벌점 <b id="penalty">1</b> <small>/5</small></span>
+            <span class="stat"><i class="coin">R</i> 러시 <b id="rush">2</b></span>
+            <span class="stat">업그레이드 <span class="dots" id="upgrade"></span></span>
+        </div>
+
+        <button class="icon-btn" type="button" title="게임 방법">?</button>
+        <button class="icon-btn" type="button" title="설정">⚙</button>
+    </header>
+
+    <!-- ===== 세팅 화면 (게임 시작 전 테이블) ===== -->
+    <section class="table" id="table">
+        <!-- 지금 할 일 안내 띠 -->
+        <div class="band" id="setupBand"></div>
+
+        <div class="tgrid">
+            <!-- 왼쪽: 내 개인 판 -->
+            <div class="seat me" id="seatMe"></div>
+
+            <!-- 가운데: 재료판 · 재료 토큰 · 게임 시작 -->
+            <div class="mid">
+                <div class="board t-board" id="tBoard"></div>
+                <div class="supply" id="supply"></div>
+                <button class="btn main" type="button" id="startBtn">게임 시작</button>
+            </div>
+
+            <!-- 오른쪽: AI 개인 판 -->
+            <div class="seat ai" id="seatAi"></div>
+        </div>
+    </section>
+
+    <main class="game" id="gameMain">
+
+        <!-- ===== 왼쪽: 내 개인 판 ===== -->
+        <section class="orders me">
+            <div class="box-head">
+                <h2 id="myName">내 주문</h2>
+                <small>매 차례 한 단씩 ↓</small>
+            </div>
+            <!-- 개인 판: 왼쪽 업그레이드 타일 4개 · 오른쪽 주문 1~4단 (draw.js가 채움) -->
+            <div class="pboard">
+                <div class="tiles" id="myTiles"></div>
+                <div class="rows" id="queue"></div>
+            </div>
+
+            <!-- 내 컵 3개 (업그레이드 판 밑) -->
+            <div class="cups-head">
+                <b>내 컵</b>
+                <small id="cupsHint"></small>
+            </div>
+            <div class="cups" id="cups"></div>
+
+            <!-- 처리한 주문 카드 · 벌점 더미 -->
+            <div class="piles">
+            <div class="done-box">
+                <p>처리한 주문 <b id="doneCount">0</b>장</p>
+                <div class="done-list" id="doneList"></div>
+            </div>
+
+            <div class="trash">
+                <span class="trash-card"></span>
+                <div>
+                    <b>벌점 더미 <span id="trashCount">1</span>장</b>
+                    <small>5장이 되면 게임 끝</small>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- ===== 가운데: 단계 · 안내 · 버튼 + 재료판 ===== -->
+        <section class="center">
+            <ol class="steps" id="steps"></ol>
+
+            <div class="panel">
+                <div class="panel-main">
+                    <h2 class="panel-title" id="title"></h2>
+                    <div class="panel-text" id="text"></div>
+
+                    <!-- 업그레이드 안내 (조건이 되면 차례 시작 때만 · 타일은 왼쪽 개인 판에서 고름) -->
+                    <div class="up" id="up"></div>
+
+                    <!-- 받은 재료 -->
+                    <div class="picks" id="picks"></div>
+                    <p class="hint" id="hint"></p>
+                </div>
+
+                <div class="actions">
+                    <!-- 러시 토큰: +1칸 (이동 단계) -->
+                    <div class="rush" id="rushBox"></div>
+                    <button class="btn main" type="button" id="nextBtn">다음</button>
+                    <button class="btn" type="button" id="subBtn">되돌리기</button>
+                </div>
+            </div>
+
+            <!-- 4×4 재료판은 draw.js가 채움 -->
+            <div class="board" id="board"></div>
+        </section>
+
+        <!-- ===== 오른쪽: AI 개인 판 (내 판과 같은 모양 · 보기만 함) ===== -->
+        <section class="orders ai">
+            <div class="box-head">
+                <h2>AI 바리스타</h2>
+                <small id="aiInfo"></small>
+            </div>
+            <div class="pboard">
+                <div class="tiles" id="aiTiles"></div>
+                <div class="rows" id="aiRows"></div>
+            </div>
+
+            <div class="cups-head">
+                <b>AI 컵</b>
+            </div>
+            <div class="cups" id="aiCups"></div>
+
+            <div class="piles">
+                <div class="done-box">
+                    <p>처리한 주문 <b id="aiDoneCount">0</b>장</p>
+                    <div class="done-list" id="aiDoneList"></div>
+                </div>
+                <div class="trash">
+                    <span class="trash-card"></span>
+                    <div>
+                        <b>벌점 더미 <span id="aiTrashCount">0</span>장</b>
+                        <small>5장이 되면 게임 끝</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== 게임 끝: 결과 창 (게임이 끝나면 보임) ===== -->
+    <div class="result" id="result" hidden>
+        <div class="result-card">
+            <img src="../logo/logo_main .svg" alt="">
+            <h2 class="result-title" id="resultTitle"></h2>
+            <p class="result-reason" id="resultReason"></p>
+
+            <table class="score" id="resultTable"></table>
+
+            <div class="result-btns">
+                <button class="btn" type="button" id="homeBtn">메인으로</button>
+                <button class="btn main" type="button" id="againBtn">다시 하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 순서 중요: 정보 → 그리기 → 규칙 → AI -->
+    <script src="../js/data.js"></script>
+    <script src="../js/draw.js"></script>
+    <script src="../js/game.js"></script>
+    <script src="../js/ai.js"></script>
+</body>
+</html>

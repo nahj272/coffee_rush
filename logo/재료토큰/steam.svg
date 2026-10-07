@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <radialGradient id="steamCloud" cx="0.4" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.6" stop-color="#F2F0EF"/>
+      <stop offset="1" stop-color="#D8D2CF"/>
+    </radialGradient>
+    <linearGradient id="steamWisp" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#C9B3AC"/>
+      <stop offset="0.45" stop-color="#EBDDD7"/>
+      <stop offset="1" stop-color="#FFFFFF"/>
+    </linearGradient>
+  </defs>
+  <g id="스팀">
+    <path id="김" d="M44 60 C28 54 20 38 25 17 C28 24 33 29 40 33 C50 39 58 44 60 52 Z" fill="url(#steamWisp)"/>
+    <path id="김-결" d="M27 22 C29 34 35 44 46 52" stroke="#C7AEA6" stroke-width="1.4" stroke-linecap="round" opacity="0.8"/>
+    <g id="거품-외곽" fill="#B8AFAC">
+      <circle cx="55" cy="56" r="14.2"/><circle cx="68" cy="61" r="12.2"/><circle cx="43" cy="67" r="13.2"/>
+      <circle cx="58" cy="72" r="15.2"/><circle cx="72" cy="74" r="11.2"/><circle cx="46" cy="80" r="11.2"/>
+    </g>
+    <g id="거품" fill="url(#steamCloud)">
+      <circle cx="55" cy="56" r="13"/><circle cx="68" cy="61" r="11"/><circle cx="43" cy="67" r="12"/>
+      <circle cx="58" cy="72" r="14"/><circle cx="72" cy="74" r="10"/><circle cx="46" cy="80" r="10"/>
+    </g>
+    <g id="거품-음영" fill="#CFC8C5" opacity="0.7">
+      <ellipse cx="60" cy="83" rx="12" ry="4"/><ellipse cx="44" cy="86" rx="6" ry="2.5"/><ellipse cx="74" cy="80" rx="5" ry="2.5"/>
+    </g>
+    <g id="거품-주름" stroke="#C3BBB8" stroke-width="1.3" stroke-linecap="round" fill="none">
+      <path d="M38 71 C42 74 47 74 50 71"/><path d="M60 62 C63 65 68 65 71 63"/>
+    </g>
+    <g id="물방울" fill="#FFFFFF" stroke="#BDB4B1" stroke-width="1">
+      <circle cx="28" cy="13" r="2.4"/><circle cx="64" cy="37" r="2.8"/><circle cx="70" cy="34" r="1.8"/>
+    </g>
+  </g>
+</svg>
