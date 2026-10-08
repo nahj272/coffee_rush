@@ -1420,8 +1420,26 @@ button
  border-radius: 50%;
  background: var(--btn-orange);
  color: #fff;
+ padding-top: 3px;         /* 숫자가 원 위쪽에 붙어 보여서 조금 내림 */
  font-size: 13px;
  font-style: normal;}
+
+/* "+" 동그라미: 글자 대신 막대 2개로 그려서 원 한가운데에 */
+.help-box em.plus
+{padding-top: 0;}
+
+.help-box em.plus::before,
+.help-box em.plus::after
+{content: "";
+ grid-area: 1 / 1;
+ width: 10px;
+ height: 2px;
+ border-radius: 1px;
+ background: #fff;}
+
+.help-box em.plus::after
+{width: 2px;
+ height: 10px;}
 
 .help-box p
 {margin-top: 4px;
@@ -1471,6 +1489,11 @@ button
 {width: 22px;
  height: 22px;
  object-fit: contain;}
+
+/* 컵 그림은 컵 크기 그대로 (위 22px 규칙에서 빼기) */
+.demo .glass > img
+{width: 100%;
+ height: 100%;}
 
 /* ----- 1 이동: 말이 3칸 움직이고 재료가 하나씩 생김 ----- */
 .mini-board
@@ -2263,34 +2286,48 @@ button
 /* =========================================================
    휴대폰 · 태블릿 (가로 1024px 이하)
    PC용 3칸(내 판 · 재료판 · AI 판)이 들어갈 자리가 없으면 탭 배치로
-   - 위쪽 줄 2줄 (로고 · 라운드 · 차례 · ? · ⚙ / 점수 4개)
-   - 단계 → 안내 · 버튼 → 재료판 → 탭 [내 주문][내 컵][AI] → 고른 탭 내용
+   - 위쪽 줄 2줄 (로고 · 라운드 · 차례 · ? · ⚙ / 나 점수 | AI 점수)
+   - 안내 · 버튼 → 재료판 → 탭 [내 주문][내 컵] → 고른 탭 내용 (AI 판은 뺌)
+   - 기준 크기: 아이폰 미니 (375 × 812)
    - 게임 준비: 안내 띠 → 재료판 → 내 컵 → 난이도 · OPEN
    dvh = 휴대폰 주소창을 뺀 실제 화면 높이의 1%
    ========================================================= */
 
-/* 탭 버튼: PC에서는 숨김 */
-.tabs
+/* 탭 버튼 · AI 점수 · "나 / AI" 글자: PC에서는 숨김
+   .scores는 PC에서 상자가 없는 셈 (안의 내 점수만 그대로 보임) */
+.tabs,
+.ai-stats,
+.who
 {display: none;}
+
+.scores
+{display: contents;}
 
 @media (max-width: 1024px) {
     body { height: 100dvh; }
 
-    /* ----- 위쪽 줄 ----- */
-    .top { flex-wrap: wrap; gap: 6px 8px; padding: 8px 12px 6px; }
+    /* ----- 위쪽 줄 2줄: 로고 · 라운드 · 차례 · ? · ⚙ / 나 점수 | AI 점수 ----- */
+    .top { flex-wrap: wrap; gap: 5px 6px; padding: 6px 12px; }
     .brand { margin-right: 0; font-size: 0; }        /* 글자 숨기고 로고만 */
-    .brand img { width: 28px; height: 28px; }
-    .round { font-size: 12px; }
-    .turn { padding: 4px 10px; font-size: 12px; }
-    .mode-tag { padding: 3px 8px; font-size: 11px; }
-    .icon-btn { width: 32px; height: 32px; font-size: 14px; border-radius: 8px; }
+    .brand img { width: 26px; height: 26px; }
+    .round { font-size: 11px; white-space: nowrap; }
+    .turn { padding: 4px 9px; font-size: 11px; white-space: nowrap; }
+    .mode-tag { display: none; }                     /* "보통 모드"는 게임 준비 때 고름 → 휴대폰에서는 숨김 */
+    .icon-btn { width: 30px; height: 30px; font-size: 13px; border-radius: 8px; flex-shrink: 0; }
     #helpBtn { margin-left: auto; }
-    .stats { order: 10; width: 100%; margin-left: 0; gap: 4px; justify-content: space-between; }
-    .stat { gap: 3px; padding: 4px 6px; font-size: 11px; white-space: nowrap; }
-    .stat b { font-size: 13px; }
-    .stat small { font-size: 10px; }
-    .dots { gap: 3px; }
-    .dots i { width: 9px; height: 9px; }
+
+    .scores { display: flex; order: 10; width: 100%; gap: 6px; }
+    .stats { flex: 1; margin-left: 0; gap: 2px; padding: 2px; border-radius: 9px; background: rgba(0, 0, 0, 0.2); justify-content: space-between; }
+    .ai-stats { display: flex; }
+    .who { display: flex; align-items: center; gap: 4px; padding: 0 4px; font-size: 11px; font-weight: 800; color: var(--base); }
+    .who::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--pawn-me); }
+    .who.ai::before { background: var(--pawn-ai); }
+    .stat { gap: 2px; padding: 3px 5px; font-size: 0; }   /* "좋아요 · 싫어요 · 러시" 글자는 숨기고 아이콘 + 숫자만 */
+    .stat b { font-size: 12px; }
+    .stat small { font-size: 9px; }
+    .stat .hand { width: 12px; height: 12px; }
+    .stat .coin { width: 12px; height: 12px; font-size: 8px; }
+    .stats:not(.ai-stats) .stat:last-child { display: none; }   /* 업그레이드 점: "내 주문" 탭 카드로 확인 */
 
     /* ----- 게임 화면: 위아래로 ----- */
     .game { display: flex; flex-direction: column; gap: 8px; padding: 0 12px 10px; }
@@ -2298,8 +2335,8 @@ button
     .tabs { display: flex; order: 2; flex: none; gap: 4px; padding: 4px; border-radius: 12px; background: rgba(0, 0, 0, 0.22); }
     .orders { order: 3; flex: 1; min-height: 0; padding: 10px; border-radius: 14px; overflow: auto; scrollbar-width: none; }
 
-    .steps { padding: 3px; border-radius: 10px; }
-    .steps li { padding: 4px 6px; font-size: 11px; }
+    .steps { display: none; }                         /* 단계 표시줄: 안내 칸 제목이 같은 내용을 알려줌 */
+    .panel:not(.fix) .panel-text { display: none; }   /* 내 차례 설명 2줄은 숨김 (AI 차례에는 AI 기록이 나오므로 보임) */
 
     /* 안내 칸: 글 위 · 버튼은 아래 한 줄 (러시 · 다음 · 되돌리기) */
     .panel { min-height: 0; grid-template-columns: 1fr; gap: 6px; padding: 8px 10px; border-radius: 12px; }
@@ -2311,7 +2348,7 @@ button
     .actions .btn.main { flex: 1.3; }
     .hint { margin-top: 4px; padding: 5px 8px; font-size: 11px; line-height: 1.4; }
     .panel.fix { height: 150px; }                 /* AI 차례: 안내 칸 높이 고정 · 기록만 스크롤 */
-    .board-box { height: min(calc(100vw - 24px), 34dvh); flex: none; }
+    .board-box { height: min(calc(100vw - 24px), 31dvh); flex: none; }
     .board { gap: 5px; padding: 7px; border-radius: 12px; }
 
     /* 탭 버튼 */
@@ -2319,17 +2356,15 @@ button
     .tabs button.on { background: var(--paper); color: var(--dark-text); }
 
     /* 고른 탭만 보이기 */
-    .game[data-tab="q"] .orders.ai,
-    .game[data-tab="c"] .orders.ai,
-    .game[data-tab="ai"] .orders.me { display: none; }
+    .orders.ai { display: none; }                 /* AI 판은 휴대폰에서 뺌 (AI 점수는 맨 위 둘째 줄) */
+    .orders.me .box-head { display: none; }       /* "내 주문" 제목: 탭 이름과 같아서 숨김 */
     .game[data-tab="q"] .orders.me .cups-head,
     .game[data-tab="q"] .orders.me .cups,
     .game[data-tab="q"] .orders.me .piles,
-    .game[data-tab="c"] .orders.me .box-head,
     .game[data-tab="c"] .orders.me .pboard { display: none; }
     .game[data-tab="c"] .orders.me .cups-head { margin-top: 0; padding-top: 0; border-top: none; }
 
-    .pboard { min-height: 150px; grid-template-columns: 64px 1fr; gap: 6px; padding: 6px; }
+    .pboard { min-height: 250px; grid-template-columns: 64px 1fr; gap: 6px; padding: 6px; }
     .orders .glass { height: 64px; }
     .cups { gap: 8px; margin-top: 8px; }
     .piles { gap: 6px; margin-top: 8px; }
@@ -2363,7 +2398,6 @@ button
 
 /* 세로가 짧은 화면 (예: 휴대폰 360×740 · 가로로 둔 태블릿): 재료판을 조금 작게 → 아래 탭 칸을 넓게 */
 @media (max-width: 1024px) and (max-height: 780px) {
-    .board-box { height: min(calc(100vw - 24px), 30dvh); }
-    .steps li { padding: 3px 6px; }
+    .board-box { height: min(calc(100vw - 24px), 27dvh); }
     .panel-text { font-size: 11px; }
 }

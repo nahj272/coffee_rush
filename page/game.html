@@ -21,11 +21,21 @@
         <span class="turn" id="turn">내 차례</span>
         <span class="mode-tag" id="modeTag">보통 모드</span>
 
-        <div class="stats">
-            <span class="stat like"><img class="hand" src="../logo/아이콘/like-light.svg" alt="">좋아요 <b id="done">3</b></span>
-            <span class="stat red"><img class="hand" src="../logo/아이콘/dislike-light.svg" alt="">싫어요 <b id="penalty">1</b> <small>/5</small></span>
-            <span class="stat"><i class="coin">R</i> 러시 <b id="rush">2</b></span>
-            <span class="stat">업그레이드 <span class="dots" id="upgrade"></span></span>
+        <!-- 점수: PC는 내 점수만 · 휴대폰은 둘째 줄에 나 | AI (scores는 PC에서 없는 셈 = display: contents) -->
+        <div class="scores">
+            <div class="stats">
+                <span class="who me">나</span>
+                <span class="stat like"><img class="hand" src="../logo/아이콘/like-light.svg" alt="">좋아요 <b id="done">3</b></span>
+                <span class="stat red"><img class="hand" src="../logo/아이콘/dislike-light.svg" alt="">싫어요 <b id="penalty">1</b> <small>/5</small></span>
+                <span class="stat"><i class="coin">R</i> 러시 <b id="rush">2</b></span>
+                <span class="stat">업그레이드 <span class="dots" id="upgrade"></span></span>
+            </div>
+            <div class="stats ai-stats">
+                <span class="who ai">AI</span>
+                <span class="stat like"><img class="hand" src="../logo/아이콘/like-light.svg" alt="">좋아요 <b id="aiDone">0</b></span>
+                <span class="stat red"><img class="hand" src="../logo/아이콘/dislike-light.svg" alt="">싫어요 <b id="aiPenalty">0</b> <small>/5</small></span>
+                <span class="stat"><i class="coin">R</i> 러시 <b id="aiRush">0</b></span>
+            </div>
         </div>
 
         <button class="icon-btn" type="button" id="helpBtn" title="게임 방법">?</button>
@@ -128,11 +138,10 @@
             </div>
         </section>
 
-        <!-- ===== 휴대폰에서만 보이는 탭: 내 주문 · 내 컵 · AI (draw.js가 고른 탭을 표시) ===== -->
+        <!-- ===== 휴대폰에서만 보이는 탭: 내 주문 · 내 컵 (draw.js가 고른 탭을 표시 · AI 점수는 맨 위 줄) ===== -->
         <nav class="tabs" id="tabs">
             <button type="button" data-tab="q">내 주문</button>
             <button type="button" data-tab="c">내 컵</button>
-            <button type="button" data-tab="ai">AI</button>
         </nav>
 
         <!-- ===== 오른쪽: AI 개인 판 (내 판과 같은 모양 · 보기만 함) ===== -->
@@ -265,7 +274,7 @@
                         <span class="d-plus">+1칸</span>
                         <span class="d-tile">업그레이드</span>
                     </div>
-                    <b><em>+</em> 러시 토큰 · 업그레이드</b>
+                    <b><em class="plus"></em> 러시 토큰 · 업그레이드</b>
                     <p>러시 토큰 1개로 1칸 더 가요.<br>처리한 주문 3장으로 업그레이드를 켜요.</p>
                 </div>
 

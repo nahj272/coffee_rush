@@ -140,6 +140,7 @@ function serve(p, row, k) {
   p.cups[cup] = [];            // 컵 비우기 (재료는 반납)
   p.queue[row].splice(k, 1);   // 주문 카드 빼기
   p.done += 1;
+  p.total += 1;                     // 누적 (업그레이드에 써도 안 줄어듦)
   p.doneList.push(order);           // 처리한 주문 카드 모아두기
   if (order.special) p.rush += 1;   // 스페셜 메뉴 → 러시 토큰
 

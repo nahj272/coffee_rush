@@ -54,10 +54,13 @@ function drawTop() {
   }
   $('modeTag').textContent = mode === 'easy' ? '쉬움 모드' : '보통 모드';
   $('modeTag').className = 'mode-tag ' + mode;
-  $('done').textContent = me.done;
+  $('done').textContent = me.total;              // 맨 위 좋아요: 지금까지 처리한 주문 수 (누적)
   $('penalty').textContent = me.penalty;
   $('rush').textContent = me.rush;
   $('trashCount').textContent = me.penalty;
+  $('aiDone').textContent = game.ai.total;         // AI 좋아요 누적 (휴대폰 맨 위 둘째 줄에만 보임)
+  $('aiPenalty').textContent = game.ai.penalty;
+  $('aiRush').textContent = game.ai.rush;
 
   // 업그레이드 4칸: 켠 것은 초록 점 (마우스를 올리면 이름)
   let dots = '';
@@ -323,7 +326,7 @@ function hintText() {
       return { text: `재료 ${got}개 · 여기서 멈추거나, +1칸으로 더 가세요` };
     }
     if (got) return { text: `재료 ${got}개 · 여기서 멈추거나 ${left}칸 더 갈 수 있어요` };
-    return { text: `1~${left}칸 움직일 수 있어요 · 가고 싶은 칸을 누르면 그 옆의 내 말이 움직여요` };
+    return { text: `1~${left}칸 움직일 수 있어요` };
   }
 
   if (game.step === 2) {
