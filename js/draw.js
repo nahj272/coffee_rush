@@ -1,6 +1,9 @@
-// 좋아요 · 싫어요 손 아이콘 (색은 CSS의 color를 따라감)
-const LIKE = '<svg class="hand good" viewBox="0 0 24 24"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>';
-const DISLIKE = '<svg class="hand bad" viewBox="0 0 24 24"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>';
+// 그림 파일이 있는 폴더 (logo/아이콘/)
+const UI = '../logo/아이콘/';
+
+// 좋아요 · 싫어요 손 아이콘 (결과 창 점수표)
+const LIKE = `<img class="hand" src="${UI}like.svg" alt="">`;
+const DISLIKE = `<img class="hand" src="${UI}dislike.svg" alt="">`;
 
 /* =========================================================
    커피 러시 - 화면 그리기
@@ -69,14 +72,6 @@ function drawTop() {
 
 /* ===== 개인 판 조각 (세팅 화면 · 게임 화면에서 같이 씀) ===== */
 
-// 업그레이드 타일 그림 (원작 타일 모양을 단순하게)
-const TILE_ICON = {
-  pawn:     '<svg viewBox="0 0 32 32"><circle cx="9" cy="9" r="5"/><rect x="4" y="15" width="10" height="12" rx="3"/><text x="23" y="24" font-size="11" font-weight="800" text-anchor="middle">×2</text></svg>',
-  diagonal: '<svg viewBox="0 0 32 32"><path d="M6 6L26 26M26 6L6 26" stroke-width="3" stroke-linecap="round"/><circle cx="16" cy="16" r="3"/></svg>',
-  corner:   '<svg viewBox="0 0 32 32"><rect x="4" y="4" width="24" height="24" fill="none" stroke-width="2"/><rect x="4" y="4" width="7" height="7"/><rect x="21" y="4" width="7" height="7"/><rect x="4" y="21" width="7" height="7"/><rect x="21" y="21" width="7" height="7"/><text x="16" y="20" font-size="9" font-weight="800" text-anchor="middle">×2</text></svg>',
-  special:  '<svg viewBox="0 0 32 32"><rect x="4" y="4" width="24" height="24" fill="none" stroke-width="2"/><path d="M4 12L12 4H17L4 17Z" fill="#F2C230" stroke="none"/><text x="18" y="23" font-size="10" font-weight="800" text-anchor="middle">×2</text></svg>',
-};
-
 // 업그레이드 타일 4개
 // on: 켠 타일 · can: 지금 누를 수 있음 · pick: 고른 타일
 // me / ai: 켠 타일을 그 사람 말 색으로 칠함
@@ -86,8 +81,10 @@ function tilesHTML(p, clickable) {
     if (has(up.key, p)) cls += ' on';
     else if (clickable) cls += ' can';
     if (clickable && game.upPick === up.key) cls += ' pick';
+    // 그림: 켰거나 고른 타일은 흰색 그림 (tile-○○-on.svg)
+    const white = cls.includes(' on') || cls.includes(' pick') ? '-on' : '';
     return `<button class="${cls}" type="button" data-key="${up.key}" title="${up.desc}">
-              ${TILE_ICON[up.key]}<span>${up.name}</span>
+              <img src="${UI}tile-${up.key}${white}.svg" alt=""><span>${up.name}</span>
             </button>`;
   }).join('');
 }
@@ -161,7 +158,7 @@ function drawAiSide() {
   // AI 컵 3개
   $('aiCups').innerHTML = ai.cups.map((items, i) =>
     `<div class="cup">
-       <span class="glass">${CUP_SVG}<span class="fill">${items.map(icon).join('')}</span></span>
+       <span class="glass">${cupImg(false)}<span class="fill">${items.map(icon).join('')}</span></span>
        <small>컵 ${i + 1}</small>
      </div>`).join('');
 
@@ -251,14 +248,11 @@ function drawSteps() {
 }
 
 
-/* ===== 컵 그림 (손잡이 달린 유리컵) =====
-   body: 컵 몸통 · handle: 손잡이 · shine: 반짝이는 선 */
-const CUP_SVG = `
-  <svg viewBox="0 0 120 100" aria-hidden="true">
-    <path class="handle" d="M92 30 C112 28 116 54 90 62"/>
-    <path class="body" d="M10 12 H96 V44 C96 74 78 90 53 90 C28 90 10 74 10 44 Z"/>
-    <path class="shine" d="M20 22 V44 C20 58 26 68 34 74"/>
-  </svg>`;
+/* ===== 컵 그림 (손잡이 달린 유리컵 · logo/아이콘/cup.svg) =====
+   can: 재료를 담을 수 있는 컵 → 주황 테두리 그림 (cup-can.svg) */
+function cupImg(can) {
+  return `<img src="${UI}cup${can ? '-can' : ''}.svg" alt="">`;
+}
 
 
 /* ===== 오른쪽 패널 ===== */
@@ -445,7 +439,7 @@ function drawPanel() {
     cups += `<div class="cup-box">
                <button class="cup ${can}" type="button" data-i="${i}">
                  <span class="glass">
-                   ${CUP_SVG}
+                   ${cupImg(can)}
                    <span class="fill">${items.map(icon).join('')}</span>
                  </span>
                </button>
@@ -542,7 +536,7 @@ function seatHTML(p, name, isMe) {
   let cups = '';
   p.cups.forEach((items, i) => {
     cups += `<button class="cup ${canCup ? 'can' : ''}" type="button" data-i="${i}">
-               <span class="glass">${CUP_SVG}<span class="fill">${items.map(icon).join('')}</span></span>
+               <span class="glass">${cupImg(canCup)}<span class="fill">${items.map(icon).join('')}</span></span>
                <small>컵 ${i + 1}</small>
              </button>`;
   });
@@ -612,6 +606,26 @@ function drawTable() {
 
 
 /* ===== 전부 그리기 ===== */
+/* ===== 휴대폰 탭 (내 주문 · 내 컵 · AI) =====
+   PC에서는 탭 버튼이 숨겨져 있어서 아무 변화 없음
+   단계가 바뀌면 그 단계에 필요한 탭을 자동으로 보여줌
+   (이동 · 주문 처리 → 내 주문, 재료 담기 → 내 컵) · 탭을 눌러 직접 바꿀 수도 있음 */
+let tab = 'q';
+let tabStep = '';
+
+function drawTabs() {
+  const now = game.turn + game.step;
+  if (now !== tabStep) {
+    tabStep = now;
+    if (game.turn === 'me' && game.step === 2) tab = 'c';
+    if (game.turn === 'me' && (game.step === 1 || game.step === 3)) tab = 'q';
+  }
+  $('gameMain').dataset.tab = tab;
+  document.querySelectorAll('#tabs button').forEach((btn) => {
+    btn.classList.toggle('on', btn.dataset.tab === tab);
+  });
+}
+
 function draw() {
   drawTop();
   drawQueue();
@@ -622,6 +636,7 @@ function draw() {
   drawUpgrade();
   drawResult();
   drawTable();
+  drawTabs();
 
   // AI 차례: 기록의 맨 아래(방금 한 일)가 보이게 스크롤
   if (game.turn === 'ai') {

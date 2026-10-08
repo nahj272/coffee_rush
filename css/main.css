@@ -1034,7 +1034,7 @@ button:hover
     .log { width: auto; height: min(90px, 7.5vh); padding: 0 min(22px, 2vh); font-size: min(30px, 2.8vh); border-radius: min(20px, 1.8vh); }
 
     .main-content { flex: 1; min-height: 0; padding: 1vh 20px 2.5vh; }
-    .cup { width: min(374px, 25vh); height: min(374px, 25vh); margin-bottom: 2.2vh; }
+    .cup { width: min(374px, 25vh); height: min(374px, 25vh); margin-bottom: 7.2vh; }
     .main-title { font-size: min(34px, 3.6vh); margin-bottom: 0.8vh; }
     .sub-title { font-size: min(15px, 1.9vh); margin-bottom: 2.6vh; }
     .btn-start, .btn-rule { width: min(195px, 19vh); height: min(72px, 7.2vh); }
@@ -1051,22 +1051,14 @@ button:hover
 }
 
 /* =========================================
-   좋아요 · 싫어요 손 아이콘 (게임 방법 1쪽)
+   좋아요 · 싫어요 손 아이콘 (게임 방법 1쪽 · logo/아이콘/like · dislike)
    ========================================= */
 .hand
 {display: inline-block;
  width: 1.1em;
  height: 1.1em;
  margin-right: 4px;
- fill: none;
- stroke: currentColor;
- stroke-width: 2;
- stroke-linecap: round;
- stroke-linejoin: round;
  vertical-align: -0.15em;}
-
-.hand.good { color: #4E9A3F; }
-.hand.bad { color: var(--btn-orange); }
 
 /* =========================================
    OPEN 팻말 버튼 (게임 시작)
@@ -1110,29 +1102,11 @@ button:hover
  height: 54px;
  flex: none;}
 
-.rule-ill .glass svg
+.rule-ill .glass > img
 {position: absolute;
  inset: 0;
  width: 100%;
- height: 100%;
- overflow: visible;}
-
-.rule-ill .glass .body
-{fill: #E3CFB4;
- stroke: #A68A6A;
- stroke-width: 4;}
-
-.rule-ill .glass .handle
-{fill: none;
- stroke: #A68A6A;
- stroke-width: 6;
- stroke-linecap: round;}
-
-.rule-ill .glass .shine
-{fill: none;
- stroke: rgba(255, 255, 255, 0.6);
- stroke-width: 3;
- stroke-linecap: round;}
+ height: 100%;}
 
 /* 컵 안 재료: 바닥부터 쌓임 */
 .rule-ill .fill
@@ -1170,3 +1144,152 @@ button:hover
 .rule-ill .fill img
 {width: 12px;
  height: 12px;}
+
+
+/* =========================================================
+   태블릿 (가로 601 ~ 1024px)
+   - 로고 · 로그인 버튼을 한 줄로 (로그인 버튼이 글자와 겹치지 않게)
+   - 메인을 한 화면에
+   ========================================================= */
+@media (min-width: 601px) and (max-width: 1024px) {
+    body { height: 100dvh; min-height: 0; overflow: hidden; }
+
+    header { height: auto; flex: none; flex-direction: row; justify-content: space-between; gap: 0; padding: 20px 32px; }
+    .logo-wrap { gap: 14px; height: auto; }
+    .logo { width: 60px; height: 60px; margin: 0; }
+    h1 { font-size: 46px; }
+    .log { position: static; width: auto; height: 44px; padding: 0 18px; font-size: 16px; letter-spacing: 2px; border-radius: 12px; }
+
+    .main-content { flex: 1; min-height: 0; padding: 2dvh 24px; }
+    .cup { width: min(42vw, 28dvh); height: min(42vw, 28dvh); margin-bottom: 4dvh; }
+    .main-title { font-size: 26px; }
+    .sub-title { font-size: 15px; margin-bottom: 4dvh; }
+    .btn-group { flex-direction: row; gap: 16px; }
+    .btn-start, .btn-rule { width: 190px; max-width: none; height: 64px; }
+    .btn-start { font-size: 30px; }
+    .btn-rule { font-size: 22px; }
+
+    .mechanism-section { flex: none; padding-top: 18px; }
+    .features { flex-wrap: nowrap; gap: 0; margin-bottom: 12px; }
+    .feature-item { width: 25%; }
+    .feature-item img { width: 48px; height: 48px; margin-bottom: 6px; }
+    .original-wrap { padding: 8px 20px; }
+    .bottom-footer { flex: none; padding: 6px 20px; }
+}
+
+
+/* 가로 601 ~ 800px: 게임 방법 2쪽의 화살표가 숨겨지므로 STEP 3칸으로만 나눔 */
+@media (min-width: 601px) and (max-width: 800px) {
+    .rule-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .rule-body { padding-top: 6px; }
+}
+
+
+/* =========================================================
+   휴대폰 (가로 600px 이하 · 세로 화면)
+   - 메인: 한 화면에 (로고 줄 → 컵 · 제목 · 버튼 → 메커니즘 4개 → 원작 표기)
+   - 게임 방법 모달: 화면 가득 · 내용이 길면 손가락으로 위아래로 밀기
+   dvh = 휴대폰 주소창을 뺀 실제 화면 높이의 1%
+   ========================================================= */
+@media (max-width: 600px) {
+    /* ----- 메인 ----- */
+    body { height: 100dvh; min-height: 0; overflow: hidden; }
+
+    header { height: auto; flex: none; flex-direction: row; justify-content: space-between; gap: 0; padding: 14px 16px; }
+    .logo-wrap { gap: 10px; height: auto; }
+    .logo { width: 40px; height: 40px; margin: 0; }
+    h1 { font-size: 30px; }
+    .log { position: static; width: auto; height: 36px; padding: 0 14px; font-size: 14px; letter-spacing: 1px; border-radius: 10px; }
+
+    .main-content { flex: 1; min-height: 0; padding: 2dvh 16px; }
+    .cup { width: min(48vw, 24dvh); height: min(48vw, 24dvh); margin-bottom: 3dvh; }
+    .main-title { font-size: 20px; margin-bottom: 6px; }
+    .sub-title { font-size: 13px; margin-bottom: 3dvh; }
+    .btn-group { flex-direction: row; gap: 10px; width: 100%; }
+    .btn-start, .btn-rule { width: auto; flex: 1; max-width: 170px; height: 54px; }
+    .btn-start { font-size: 26px; }
+    .btn-rule { font-size: 18px; letter-spacing: 1px; }
+
+    .mechanism-section { flex: none; padding-top: 12px; }
+    .features { flex-wrap: nowrap; gap: 0; padding: 0 8px; margin-bottom: 8px; }
+    .feature-item { width: 25%; }
+    .feature-item img { width: 32px; height: 32px; margin-bottom: 4px; }
+    .feature-item h3 { font-size: 12px; margin-bottom: 1px; }
+    .feature-item p { font-size: 10.5px; }
+    .original-wrap { padding: 6px 12px; }
+    .original-text { font-size: 10px; }
+    .bottom-footer { flex: none; padding: 4px 12px; }
+    .web-info { font-size: 10px; }
+
+    /* ----- 게임 방법 모달: 화면 가득 ----- */
+    .rule-modal-overlay { padding: 10px; }
+    .rule-modal-card { height: calc(100dvh - 20px); max-height: none; border-radius: 22px; }
+    .rule-top { padding: 16px 18px 0; }
+    .rule-body { padding: 14px 18px 0; }
+    .rule-eyebrow { font-size: 12px; }
+    .rule-title { font-size: 20px; }
+    .rule-lead { font-size: 14px; }
+    .rule-foot { padding: 12px 18px 16px; }
+    .rule-btn { height: 46px; padding: 0 20px; font-size: 16px; }
+    .rule-btn.open { font-size: 20px; }
+
+    /* 1쪽: 점수 3개를 가로 한 줄씩 (숫자 왼쪽 · 설명 오른쪽) */
+    .rule-scores { grid-template-columns: 1fr; gap: 8px; margin-top: 18px; }
+    .rule-score { display: grid; grid-template-columns: 52px 1fr; align-items: center; column-gap: 12px; padding: 12px 16px; border-radius: 14px; }
+    .rule-pt { grid-row: span 2; font-size: 40px; }
+    .rule-score b { margin-top: 0; font-size: 16px; }
+    .rule-score small { font-size: 13px; }
+    .rule-badge { margin-top: 16px; font-size: 13px; }
+
+    /* 2쪽: STEP을 위아래로 (그림 왼쪽 · 글 오른쪽) */
+    .rule-steps { grid-template-columns: 1fr; gap: 8px; margin-top: 14px; }
+    .rule-arrow { display: none; }
+    .rule-step { display: grid; grid-template-columns: 128px 1fr; column-gap: 12px; padding: 10px; border-radius: 14px; }
+    .rule-ill { grid-row: span 3; height: auto; min-height: 84px; }
+    .rule-step-no { margin-top: 0; font-size: 12px; }
+    .rule-step b { margin: 2px 0 2px; font-size: 16px; }
+    .rule-step p { font-size: 13px; line-height: 1.5; }
+    .rule-ill .glass { width: 36px; height: 30px; }
+    .rule-ill .fill img { width: 9px; height: 9px; }
+    .rule-tip { font-size: 13px; }
+
+    /* 3쪽: 주문 1~4단 2칸씩 */
+    .rule-queue { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
+    .rule-slot { height: auto; min-height: 76px; padding: 8px; }
+    .rule-penalty { grid-column: 1 / -1; flex-direction: row; gap: 10px; padding: 8px; }
+    .rule-penalty-pt { font-size: 24px; }
+    .rule-penalty small br { display: none; }
+    .rule-list.two-col, .rule-two { grid-template-columns: 1fr; }
+    .rule-list li, .rule-list.two-col li { font-size: 14px; margin-bottom: 6px; }
+    .rule-list li::before { margin-top: 8px; }
+
+    /* 4 · 5쪽 */
+    .rule-two { gap: 8px; margin-top: 14px; }
+    .rule-box { padding: 12px 14px; border-radius: 14px; }
+    .rule-box h4 { font-size: 16px; margin-bottom: 8px; }
+    .rule-box-head { gap: 10px; }
+    .rule-box-head img { width: 34px; height: 36px; }
+    .rule-box-head h3 { font-size: 16px; }
+    .rule-box-head span { font-size: 12px; }
+    .rule-box dl { gap: 6px; margin-top: 10px; }
+    .rule-box dt { font-size: 12px; }
+    .rule-box dd { font-size: 13px; line-height: 1.5; }
+    .rule-upgrades { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+    .rule-upgrades span { padding: 6px 2px; font-size: 11px; border-radius: 8px; word-break: keep-all; }
+    .rule-formula { font-size: 14px; padding: 12px; }
+}
+
+/* 세로가 짧은 휴대폰 (예: 360×740): 게임 방법 글자 · 칸을 한 번 더 작게 */
+@media (max-width: 600px) and (max-height: 780px) {
+    .rule-top { padding-top: 12px; }
+    .rule-body { padding-top: 8px; }
+    .rule-title { font-size: 18px; }
+    .rule-lead { font-size: 13px; }
+    .rule-step { grid-template-columns: 104px 1fr; padding: 8px; }
+    .rule-ill { min-height: 72px; }
+    .rule-step p { font-size: 12px; }
+    .rule-slot { min-height: 62px; }
+    .rule-queue-flow { margin-top: 6px; }
+    .rule-list li, .rule-list.two-col li { font-size: 13px; margin-bottom: 3px; }
+    .rule-box dd { font-size: 12.5px; }
+}

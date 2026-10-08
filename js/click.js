@@ -284,6 +284,14 @@ $('queue').addEventListener('click', (e) => {
   if (card) clickOrder(Number(card.dataset.row), Number(card.dataset.k));
 });
 
+// 휴대폰 탭: 누르면 그 탭으로
+$('tabs').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-tab]');
+  if (!btn) return;
+  tab = btn.dataset.tab;
+  drawTabs();
+});
+
 // 내 말 버튼: 누르면 그 말로 · 마우스를 올리면 판 위의 그 말을 크게 보여줌
 $('myPawns').addEventListener('click', (e) => {
   const btn = e.target.closest('.pawn-btn');
