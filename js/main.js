@@ -39,8 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   if (guestLoginBtn) {
+    // 게스트 → 게임 준비 화면으로 가서 게임 방법(?) 창을 바로 열기
     guestLoginBtn.addEventListener('click', () => {
-      // TODO: 게스트 체험판 진입 로직 연결
+      location.href = 'page/game.html?help';
     });
   }
 
@@ -80,9 +81,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     rulePageNum.textContent = `${currentPage + 1} / ${rulePages.length}`;
     rulePrev.disabled = currentPage === 0;
-    // 마지막 페이지에서는 '다음' 대신 '게임 시작'
-    ruleNext.textContent = currentPage === lastPage ? '게임 시작' : '다음';
-    ruleNext.classList.toggle('brand', currentPage === lastPage);   // '게임 시작'은 로고 글꼴
+    // 마지막 페이지에서는 '다음' 대신 'OPEN (게임 시작)'
+    // 마지막 쪽 버튼은 OPEN 팻말 모양
+    ruleNext.textContent = currentPage === lastPage ? 'OPEN' : '다음';
+    ruleNext.classList.toggle('open', currentPage === lastPage);
 
     // 페이지가 바뀌면 본문 스크롤을 맨 위로 (작은 화면 대비)
     ruleModal.querySelector('.rule-body').scrollTop = 0;

@@ -16,12 +16,15 @@
 - `css/main.css` 메인 화면 · `css/game.css` 게임 화면 · `css/reset.css`
 - `js/data.js` 재료 · 재료판 · 음료 카드(레시피) · 업그레이드
 - `js/draw.js` 화면 그리기
-- `js/game.js` 규칙 · 클릭
+- `js/state.js` 게임 준비 · 상태 (닉네임 · 난이도 · 새 게임 · 말 놓기 · `game`)
+- `js/rules.js` 규칙 도우미 (이동 · 재료 개수 · 주문 처리 · 점수 · 승패)
+- `js/turn.js` 차례 진행 (게임 시작 · 차례 시작/끝 · 다음 차례 · 다시 하기)
+- `js/click.js` 클릭 · 버튼 연결 (맨 끝에서 첫 화면을 그림)
 - `js/ai.js` AI 차례
 - `js/main.js` 메인 화면 (게임 시작 · 모달)
 - `logo/` 로고, `logo/재료토큰/` 재료 아이콘
-- `design/` 화면 SVG (예전 모습, 필요하면 새로 만들기)
-- 스크립트 순서: data.js → draw.js → game.js → ai.js
+- `design(figma)/` 화면 SVG (예전 모습) · `design(figma)/최종_1008/` 최신 화면 SVG 9개
+- 스크립트 순서: data.js → draw.js → state.js → rules.js → turn.js → ai.js → click.js
 
 ## 글꼴
 - 기본 글꼴: 시스템 글꼴 (윈도우 맑은 고딕) → CSS 변수 `--font`

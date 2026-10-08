@@ -1220,10 +1220,63 @@ button
  color: var(--dark-text);
  text-align: center;}
 
-.result-card > img
-{width: 64px;
- height: 64px;
- margin: 0 auto;}
+/* CLOSE 팻말 (위에서 내려와 살짝 흔들림) */
+.sign
+{width: 190px;
+ margin: -8px auto 0;
+ transform-origin: top center;
+ animation: hang 1.2s ease-out;}
+
+.rope
+{width: 120px;
+ height: 30px;
+ margin: 0 auto -4px;
+ fill: #8C7B6E;
+ stroke: #8C7B6E;
+ stroke-width: 2;
+ stroke-linejoin: round;}
+
+.rope path
+{fill: none;}
+
+.plate
+{position: relative;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 4px;
+ padding: 12px 0 10px;
+ border-radius: 12px;
+ background: #3B2A20;
+ color: #F3E7D6;
+ box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);}
+
+.plate::after
+{content: "";
+ position: absolute;
+ inset: 5px;
+ border: 1.5px dashed rgba(243, 231, 214, 0.45);
+ border-radius: 8px;}
+
+.plate b
+{font-family: "Grandiflora One", serif;
+ font-size: 30px;
+ font-weight: 400;
+ line-height: 1;
+ letter-spacing: 0.14em;
+ margin-right: -0.14em;}
+
+.plate small
+{font-size: 11px;
+ letter-spacing: 1px;
+ opacity: 0.8;}
+
+@keyframes hang
+{0%   { transform: translateY(-40px) rotate(0deg); opacity: 0; }
+ 35%  { transform: translateY(0) rotate(-6deg); opacity: 1; }
+ 60%  { transform: rotate(4deg); }
+ 80%  { transform: rotate(-2deg); }
+ 100% { transform: rotate(0deg); }}
 
 .result-title
 {margin-top: 8px;
@@ -1749,3 +1802,123 @@ button
 
 @media (max-height: 820px) { .panel.fix { height: 176px; } }
 @media (max-height: 720px) { .panel.fix { height: 168px; } }
+
+/* =========================================
+   좋아요 · 싫어요 손 아이콘
+   ========================================= */
+.hand
+{display: inline-block;
+ width: 1.1em;
+ height: 1.1em;
+ flex-shrink: 0;
+ fill: none;
+ stroke: currentColor;
+ stroke-width: 2;
+ stroke-linecap: round;
+ stroke-linejoin: round;
+ vertical-align: -0.15em;}
+
+.hand.good { color: #4E9A3F; }
+.hand.bad { color: var(--btn-orange); }
+
+/* 위쪽 점수 칸 */
+.stat.like { color: #9BD88E; }
+.stat .hand { color: inherit; }
+
+/* 좋아요 칸 · 싫어요 더미 */
+.done-box p
+{display: flex;
+ align-items: center;
+ gap: 4px;}
+
+.done-box p small
+{margin-left: auto;
+ font-size: 11px;
+ opacity: 0.7;}
+
+.trash-card
+{display: grid;
+ place-items: center;}
+
+.trash-card .hand
+{width: 14px;
+ height: 14px;
+ color: #fff;}
+
+/* 결과 창 점수표 */
+.score th .hand
+{margin-right: 6px;}
+
+.score th small
+{font-size: 12px;
+ color: var(--sub-text);}
+
+/* =========================================
+   OPEN 팻말 버튼 (게임 시작)
+   - 안쪽 점선 테두리 = 카페 문에 거는 팻말
+   - 마우스를 올리면 살짝 흔들림
+   ========================================= */
+.open
+{position: relative;
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ font-family: "Grandiflora One", serif;
+ font-weight: 400;
+ transform-origin: top center;}
+
+.open::after
+{content: "";
+ position: absolute;
+ inset: 5px;
+ border: 1.5px dashed rgba(255, 255, 255, 0.55);
+ border-radius: 10px;
+ pointer-events: none;}
+
+.open:hover:not(:disabled)
+{animation: swing 0.6s ease;}
+
+@keyframes swing
+{0%   { rotate: 0deg; }
+ 30%  { rotate: -3deg; }
+ 60%  { rotate: 2deg; }
+ 100% { rotate: 0deg; }}
+
+/* 게임 끝 · 점수 상자: 게임 끝 / 점수 / 알아두기 세 덩어리 */
+.help-box.end h5
+{margin: 10px 0 2px;
+ font-size: 12px;
+ font-weight: 800;
+ color: var(--btn-orange);}
+
+.help-box.end ul
+{margin-top: 2px;}
+
+.help-box.end li
+{margin-bottom: 2px;}
+
+/* 점수 칩 3개 (한 줄) */
+.pts
+{display: flex;
+ flex-wrap: wrap;     /* 글꼴이 넓어 넘치면 다음 줄로 */
+ gap: 4px;
+ margin-top: 4px;}
+
+.pts span
+{display: flex;
+ align-items: center;
+ gap: 3px;
+ padding: 3px 7px;
+ border-radius: 6px;
+ background: #fff;
+ font-size: 12px;
+ white-space: nowrap;
+ color: #5C4A3D;}
+
+.pts u
+{text-decoration: none;
+ font-weight: 800;
+ color: #4E9A3F;}
+
+.pts .minus u
+{color: var(--btn-orange);}

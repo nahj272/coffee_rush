@@ -1,6 +1,10 @@
+// 좋아요 · 싫어요 손 아이콘 (색은 CSS의 color를 따라감)
+const LIKE = '<svg class="hand good" viewBox="0 0 24 24"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>';
+const DISLIKE = '<svg class="hand bad" viewBox="0 0 24 24"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>';
+
 /* =========================================================
    커피 러시 - 화면 그리기
-   game 상태를 보고 화면을 다시 그림 (규칙은 game.js)
+   game 상태를 보고 화면을 다시 그림 (규칙은 rules.js · turn.js)
    ========================================================= */
 
 
@@ -91,7 +95,7 @@ function tilesHTML(p, clickable) {
 function rowsHTML(p, isMe) {
   let html = '';
   p.queue.forEach((row, r) => {
-    const last = r === 3;   // 4단은 이번 차례 끝에 벌점이 됨
+    const last = r === 3;   // 4단은 이번 차례 끝에 싫어요가 됨
     html += `<div class="row ${last ? 'danger' : ''}"><span class="rnum">${r + 1}</span><div class="row-cards ${row.length >= 2 ? 'many' : ''}">`;
 
     // 카드가 2장 이상이면 한 줄짜리 작은 카드로 (이름 옆에 재료)
@@ -109,7 +113,7 @@ function rowsHTML(p, isMe) {
       html += `</div>`;
     });
 
-    if (last && row.length) html += `<small class="warn-txt">차례 끝에 벌점</small>`;
+    if (last && row.length) html += `<small class="warn-txt">차례 끝에 싫어요</small>`;
     html += `</div></div>`;
   });
   return html;
@@ -140,7 +144,7 @@ function drawQueue() {
 /* ===== 오른쪽: AI 개인 판 (내 판과 같은 모양 · 보기만 함) ===== */
 function drawAiSide() {
   const ai = game.ai;
-  $('aiInfo').textContent = `러시 ${ai.rush} · 처리 ${ai.done} · 벌점 ${ai.penalty}`;
+  $('aiInfo').textContent = `러시 ${ai.rush} · 좋아요 ${ai.done} · 싫어요 ${ai.penalty}`;
 
   // 업그레이드 타일: 켠 것은 초록 (누를 수는 없음)
   $('aiTiles').innerHTML = tilesHTML(ai, false);
@@ -153,7 +157,7 @@ function drawAiSide() {
        <small>컵 ${i + 1}</small>
      </div>`).join('');
 
-  // 처리한 주문 · 벌점 더미
+  // 좋아요(처리한 주문) · 싫어요 더미
   $('aiDoneCount').textContent = ai.doneList.length;
   $('aiDoneList').innerHTML = ai.doneList.length
     ? ai.doneList.map((o) => `<span class="${o.special ? 'special' : ''}">${o.name}</span>`).join('')
@@ -326,9 +330,9 @@ function hintText() {
   if (game.step === 3) {
     const ready = readyText();
     if (ready) return { text: `${ready} · 초록 카드를 누르세요`, warn: true };
-    // 낼 주문이 없으면: 차례를 끝낼 때 벌점이 생기는지 알려줌
+    // 낼 주문이 없으면: 차례를 끝낼 때 싫어요가 생기는지 알려줌
     const lost = game.me.queue[3].length;
-    if (lost) return { text: `차례를 끝내면 4단 주문 ${lost}장이 벌점이 돼요`, warn: true };
+    if (lost) return { text: `차례를 끝내면 4단 주문 ${lost}장이 싫어요가 돼요`, warn: true };
     return { text: '낼 수 있는 주문이 없어요. 차례를 끝내세요' };
   }
 
@@ -452,7 +456,7 @@ function drawRush() {
   if (game.me.rush === 0) {
     $('rushBox').innerHTML = `
       <i class="coin">R</i>
-      <span title="스페셜 메뉴를 내거나 벌점을 받으면 생겨요">러시 토큰 없음</span>
+      <span title="스페셜 메뉴를 내거나 싫어요를 받으면 생겨요">러시 토큰 없음</span>
       <button class="rush-more" type="button" disabled>+1칸</button>`;
     return;
   }
@@ -508,9 +512,9 @@ function drawResult() {
 
   $('resultTable').innerHTML = `
     <tr class="names"><th></th><td>${myName}</td><td>AI 바리스타</td></tr>
-    ${line('처리한 주문 (×1)', `+${me.done}`, `+${ai.done}`)}
+    ${line(`${LIKE}좋아요 (×1)`, `+${me.done}`, `+${ai.done}`)}
     ${line('업그레이드 (×2)', `+${me.ups.length * 2}`, `+${ai.ups.length * 2}`)}
-    ${line('벌점 (×1)', `−${me.penalty}`, `−${ai.penalty}`)}
+    ${line(`${DISLIKE}싫어요 (×1)`, `−${me.penalty}`, `−${ai.penalty}`)}
     ${line('러시 토큰 (동점일 때)', me.rush, ai.rush)}
     <tr class="total"><th>합계</th><td>${score(me)}점</td><td>${score(ai)}점</td></tr>`;
 }
@@ -574,7 +578,7 @@ function drawTable() {
   }
   if (ready) {
     num = 3;
-    msg = '준비 끝! "게임 시작"을 누르세요';
+    msg = '준비 끝! OPEN을 누르세요';
     sub = firstSub;
   }
   const steps = ['말 놓기', '재료 담기', '게임 시작']

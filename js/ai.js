@@ -1,6 +1,6 @@
 /* =========================================================
    커피 러시 - AI 바리스타 차례
-   (규칙 도우미는 game.js에 있는 것을 같이 씀)
+   (규칙 도우미는 rules.js에 있는 것을 같이 씀)
 
    AI가 하는 일
    0 업그레이드: 처리한 주문이 3장 이상이면 켬
@@ -218,7 +218,7 @@ async function aiTurn() {
   // 4 차례 끝
   game.step = 4;
   const lost = ai.queue[3].length;
-  if (lost) say(`4단 주문 ${lost}장이 벌점이 됐어요`);
+  if (lost) say(`4단 주문 ${lost}장이 싫어요가 됐어요`);
   else say('차례를 마쳤어요');
   await wait(900);
 

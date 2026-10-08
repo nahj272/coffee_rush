@@ -20,8 +20,8 @@
         <span class="mode-tag" id="modeTag">보통 모드</span>
 
         <div class="stats">
-            <span class="stat">처리 <b id="done">3</b></span>
-            <span class="stat red">벌점 <b id="penalty">1</b> <small>/5</small></span>
+            <span class="stat like"><svg class="hand good" viewBox="0 0 24 24"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>좋아요 <b id="done">3</b></span>
+            <span class="stat red"><svg class="hand bad" viewBox="0 0 24 24"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>싫어요 <b id="penalty">1</b> <small>/5</small></span>
             <span class="stat"><i class="coin">R</i> 러시 <b id="rush">2</b></span>
             <span class="stat">업그레이드 <span class="dots" id="upgrade"></span></span>
         </div>
@@ -46,7 +46,7 @@
                 <!-- 난이도 고르기 + 게임 시작 -->
                 <div class="start-row">
                     <div class="mode" id="modeBox"></div>
-                    <button class="btn main" type="button" id="startBtn">게임 시작</button>
+                    <button class="btn main open" type="button" id="startBtn" aria-label="게임 시작">OPEN</button>
                 </div>
             </div>
 
@@ -76,17 +76,17 @@
             </div>
             <div class="cups" id="cups"></div>
 
-            <!-- 처리한 주문 카드 · 벌점 더미 -->
+            <!-- 좋아요(처리한 주문 카드) · 싫어요 더미 -->
             <div class="piles">
             <div class="done-box">
-                <p>처리한 주문 <b id="doneCount">0</b>장</p>
+                <p><svg class="hand good" viewBox="0 0 24 24"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>좋아요 <b id="doneCount">0</b> <small>처리한 주문</small></p>
                 <div class="done-list" id="doneList"></div>
             </div>
 
             <div class="trash">
-                <span class="trash-card"></span>
+                <span class="trash-card"><svg class="hand bad" viewBox="0 0 24 24"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg></span>
                 <div>
-                    <b>벌점 더미 <span id="trashCount">1</span>장</b>
+                    <b>싫어요 <span id="trashCount">1</span>장</b>
                     <small>5장이 되면 게임 끝</small>
                 </div>
             </div>
@@ -142,13 +142,13 @@
 
             <div class="piles">
                 <div class="done-box">
-                    <p>처리한 주문 <b id="aiDoneCount">0</b>장</p>
+                    <p><svg class="hand good" viewBox="0 0 24 24"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>좋아요 <b id="aiDoneCount">0</b> <small>처리한 주문</small></p>
                     <div class="done-list" id="aiDoneList"></div>
                 </div>
                 <div class="trash">
-                    <span class="trash-card"></span>
+                    <span class="trash-card"><svg class="hand bad" viewBox="0 0 24 24"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg></span>
                     <div>
-                        <b>벌점 더미 <span id="aiTrashCount">0</span>장</b>
+                        <b>싫어요 <span id="aiTrashCount">0</span>장</b>
                         <small>5장이 되면 게임 끝</small>
                     </div>
                 </div>
@@ -159,7 +159,14 @@
     <!-- ===== 게임 끝: 결과 창 (게임이 끝나면 보임) ===== -->
     <div class="result" id="result" hidden>
         <div class="result-card">
-            <img src="../logo/logo_main .svg" alt="">
+            <!-- CLOSE 팻말: 못 · 줄 · 판 -->
+            <div class="sign">
+                <svg class="rope" viewBox="0 0 120 30"><path d="M14 30 L60 5 L106 30"/><circle cx="60" cy="5" r="4"/></svg>
+                <div class="plate">
+                    <b>CLOSE</b>
+                    <small>오늘 영업 끝</small>
+                </div>
+            </div>
             <h2 class="result-title" id="resultTitle"></h2>
             <p class="result-reason" id="resultReason"></p>
 
@@ -234,7 +241,7 @@
                         <span class="d-order">주문</span>
                     </div>
                     <b><em>4</em> 차례 끝</b>
-                    <p>주문이 한 단씩 내려가고 1단에 새 주문 1장.<br>4단에 남은 주문은 벌점이 돼요.</p>
+                    <p>주문이 한 단씩 내려가고 1단에 새 주문 1장.<br>4단에 남은 주문은 싫어요가 돼요.</p>
                 </div>
 
                 <!-- 5 러시 토큰 · 업그레이드 -->
@@ -251,22 +258,37 @@
                 <!-- 게임 끝 · 점수 -->
                 <div class="help-box end">
                     <b>게임 끝 · 점수</b>
+
+                    <h5>게임 끝</h5>
                     <ul>
-                        <li>벌점 5장 → 바로 끝</li>
+                        <li>싫어요 5장 → 바로 끝</li>
                         <li>주문 더미가 떨어지면 → 그 라운드까지</li>
-                        <li>점수 = 처리한 주문 + 업그레이드 ×2 − 벌점</li>
-                        <li>노란 리본 = 스페셜 메뉴 (처리하면 러시 +1)</li>
-                        <li>내가 처리한 수만큼 상대방 1단에 주문 추가</li>
+                    </ul>
+
+                    <h5>점수</h5>
+                    <div class="pts">
+                        <span><svg class="hand good" viewBox="0 0 24 24"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>좋아요 <u>+1</u></span>
+                        <span>업그레이드 <u>+2</u></span>
+                        <span class="minus"><svg class="hand bad" viewBox="0 0 24 24"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z"/></svg>싫어요 <u>−1</u></span>
+                    </div>
+
+                    <h5>알아두기</h5>
+                    <ul>
+                        <li>스페셜 메뉴 처리 → 러시 토큰 +1</li>
+                        <li>처리한 수만큼 상대 1단에 주문 +1</li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 순서 중요: 정보 → 그리기 → 규칙 → AI -->
+    <!-- 순서 중요: 정보 → 그리기 → 상태 → 규칙 → 차례 → AI → 클릭(맨 끝에서 첫 화면을 그림) -->
     <script src="../js/data.js"></script>
     <script src="../js/draw.js"></script>
-    <script src="../js/game.js"></script>
+    <script src="../js/state.js"></script>
+    <script src="../js/rules.js"></script>
+    <script src="../js/turn.js"></script>
     <script src="../js/ai.js"></script>
+    <script src="../js/click.js"></script>
 </body>
 </html>

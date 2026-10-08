@@ -31,7 +31,7 @@
         <p class="sub-title">4단 주문 큐가 밀려오기 전에, 컵을 채우세요</p>
 
         <div class="btn-group">
-            <button type="submit" class="btn-start">게임 시작</button>
+            <button type="submit" class="btn-start open" aria-label="게임 시작">OPEN</button>
             <button type="button" class="btn-rule" id="ruleTrigger">게임 방법</button>
         </div>
     </main>
@@ -42,7 +42,7 @@
             <div class="feature-item">
                 <img src="logo/mechanism_1.svg" alt="4단 주문 큐">
                 <h3>4단 주문 큐</h3>
-                <p>쌓이면 벌점</p>
+                <p>쌓이면 싫어요</p>
             </div>
             <div class="feature-item">
                 <img src="logo/mechanism_2.svg" alt="컵 3개">
@@ -108,14 +108,24 @@
                     <p class="rule-lead">재료판을 돌며 재료를 모아 컵 3개에 담고, 주문 카드와 똑같은 음료를 만들어 처리하세요. 게임이 끝났을 때 점수가 더 높은 바리스타가
                         이겨요.</p>
                     <div class="rule-scores">
-                        <div class="rule-score"><span class="rule-pt plus">+1</span><b>처리한 주문</b><small>카드 1장당</small>
+                        <div class="rule-score"><span class="rule-pt plus">+1</span><b><svg class="hand good"
+                                    viewBox="0 0 24 24">
+                                    <path d="M7 10v12" />
+                                    <path
+                                        d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
+                                </svg>좋아요</b><small>처리한 주문 1장당</small>
                         </div>
                         <div class="rule-score"><span class="rule-pt plus">+2</span><b>업그레이드</b><small>활성화 1개당</small>
                         </div>
-                        <div class="rule-score"><span class="rule-pt minus">−1</span><b>벌점 카드</b><small>밀린 주문
+                        <div class="rule-score"><span class="rule-pt minus">−1</span><b><svg class="hand bad"
+                                    viewBox="0 0 24 24">
+                                    <path d="M17 14V2" />
+                                    <path
+                                        d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22a3.13 3.13 0 0 1-3-3.88Z" />
+                                </svg>싫어요</b><small>밀린 주문
                                 1장당</small></div>
                     </div>
-                    <span class="rule-badge">2인 규칙 · 나 vs AI 바리스타 · 말은 각자 2개</span>
+                    <span class="rule-badge">2인 규칙 · 나 vs AI 바리스타</span>
                 </section>
 
                 <!-- 2. 내 차례 -->
@@ -139,9 +149,22 @@
                         <span class="rule-arrow" aria-hidden="true">›</span>
                         <div class="rule-step">
                             <div class="rule-ill">
-                                <div class="rule-cup"><img src="logo/재료토큰/coffee_beans.png" alt="원두"><img src="logo/재료토큰/milk_drop.png" alt="우유"></div>
-                                <div class="rule-cup"><img src="logo/재료토큰/chocolate.svg" alt="초콜릿"></div>
-                                <div class="rule-cup"></div>
+                                <span class="glass"><svg viewBox="0 0 120 100" aria-hidden="true">
+                                        <path class="handle" d="M92 30 C112 28 116 54 90 62" />
+                                        <path class="body" d="M10 12 H96 V44 C96 74 78 90 53 90 C28 90 10 74 10 44 Z" />
+                                        <path class="shine" d="M20 22 V44 C20 58 26 68 34 74" />
+                                    </svg><span class="fill"><img src="logo/재료토큰/coffee_beans.png" alt="원두"><img
+                                            src="logo/재료토큰/milk_drop.png" alt="우유"></span></span>
+                                <span class="glass"><svg viewBox="0 0 120 100" aria-hidden="true">
+                                        <path class="handle" d="M92 30 C112 28 116 54 90 62" />
+                                        <path class="body" d="M10 12 H96 V44 C96 74 78 90 53 90 C28 90 10 74 10 44 Z" />
+                                        <path class="shine" d="M20 22 V44 C20 58 26 68 34 74" />
+                                    </svg><span class="fill"><img src="logo/재료토큰/chocolate.svg" alt="초콜릿"></span></span>
+                                <span class="glass"><svg viewBox="0 0 120 100" aria-hidden="true">
+                                        <path class="handle" d="M92 30 C112 28 116 54 90 62" />
+                                        <path class="body" d="M10 12 H96 V44 C96 74 78 90 53 90 C28 90 10 74 10 44 Z" />
+                                        <path class="shine" d="M20 22 V44 C20 58 26 68 34 74" />
+                                    </svg><span class="fill"></span></span>
                             </div>
                             <span class="rule-step-no">STEP 2</span>
                             <b>컵에 담기</b>
@@ -150,7 +173,13 @@
                         <span class="rule-arrow" aria-hidden="true">›</span>
                         <div class="rule-step">
                             <div class="rule-ill">
-                                <div class="rule-cup"><img src="logo/재료토큰/coffee_beans.png" alt="원두"><img src="logo/재료토큰/milk_drop.png" alt="우유"><img src="logo/재료토큰/steam.svg" alt="스팀"></div>
+                                <span class="glass"><svg viewBox="0 0 120 100" aria-hidden="true">
+                                        <path class="handle" d="M92 30 C112 28 116 54 90 62" />
+                                        <path class="body" d="M10 12 H96 V44 C96 74 78 90 53 90 C28 90 10 74 10 44 Z" />
+                                        <path class="shine" d="M20 22 V44 C20 58 26 68 34 74" />
+                                    </svg><span class="fill"><img src="logo/재료토큰/coffee_beans.png" alt="원두"><img
+                                            src="logo/재료토큰/milk_drop.png" alt="우유"><img src="logo/재료토큰/steam.svg"
+                                            alt="스팀"></span></span>
                                 <span class="rule-check">✓</span>
                                 <span class="rule-give">상대 +1</span>
                             </div>
@@ -168,25 +197,33 @@
                     <h2 class="rule-title">주문은 매 차례 한 단씩 밀려와요</h2>
                     <div class="rule-queue">
                         <div class="rule-slot"><span class="rule-slot-label">1단 · NEW</span>
-                            <div class="rule-order"><span>아메리카노</span><i class="rule-mini"><img src="logo/재료토큰/coffee_beans.png" alt="원두"><img src="logo/재료토큰/water_drop.png" alt="물"><img src="logo/재료토큰/steam.svg" alt="스팀"></i></div>
-                            <div class="rule-order special"><span>아이스 녹차</span><i class="rule-mini"><img src="logo/재료토큰/tea-leaf.png" alt="찻잎"><img src="logo/재료토큰/water_drop.png" alt="물"><img src="logo/재료토큰/ice.png" alt="얼음"></i></div>
+                            <div class="rule-order"><span>아메리카노</span><i class="rule-mini"><img
+                                        src="logo/재료토큰/coffee_beans.png" alt="원두"><img src="logo/재료토큰/water_drop.png"
+                                        alt="물"><img src="logo/재료토큰/steam.svg" alt="스팀"></i></div>
+                            <div class="rule-order special"><span>아이스 녹차</span><i class="rule-mini"><img
+                                        src="logo/재료토큰/tea-leaf.png" alt="찻잎"><img src="logo/재료토큰/water_drop.png"
+                                        alt="물"><img src="logo/재료토큰/ice.png" alt="얼음"></i></div>
                         </div>
                         <div class="rule-slot"><span class="rule-slot-label">2단</span>
-                            <div class="rule-order"><span>아이스 초코라테</span><i class="rule-mini"><img src="logo/재료토큰/chocolate.svg" alt="초콜릿"><img src="logo/재료토큰/milk_drop.png" alt="우유"><img src="logo/재료토큰/ice.png" alt="얼음"></i></div>
+                            <div class="rule-order"><span>아이스 초코라테</span><i class="rule-mini"><img
+                                        src="logo/재료토큰/chocolate.svg" alt="초콜릿"><img src="logo/재료토큰/milk_drop.png"
+                                        alt="우유"><img src="logo/재료토큰/ice.png" alt="얼음"></i></div>
                         </div>
                         <div class="rule-slot"><span class="rule-slot-label">3단</span></div>
                         <div class="rule-slot warn"><span class="rule-slot-label">4단 ⚠</span>
-                            <div class="rule-order"><span>카페 라테</span><i class="rule-mini"><img src="logo/재료토큰/coffee_beans.png" alt="원두"><img src="logo/재료토큰/milk_drop.png" alt="우유"><img src="logo/재료토큰/steam.svg" alt="스팀"></i></div>
+                            <div class="rule-order"><span>카페 라테</span><i class="rule-mini"><img
+                                        src="logo/재료토큰/coffee_beans.png" alt="원두"><img src="logo/재료토큰/milk_drop.png"
+                                        alt="우유"><img src="logo/재료토큰/steam.svg" alt="스팀"></i></div>
                         </div>
-                        <div class="rule-penalty"><span class="rule-penalty-pt">−1</span><b>벌점</b><small>러시
+                        <div class="rule-penalty"><span class="rule-penalty-pt">−1</span><b>싫어요</b><small>러시
                                 토큰<br>+1</small></div>
                     </div>
                     <div class="rule-queue-flow"><span>내 차례 끝</span><i></i><span class="accent">한 단씩 →</span></div>
                     <ul class="rule-list two-col">
-                        <li>4단 주문은 차례 끝에 벌점 카드</li>
+                        <li>4단 주문은 차례 끝에 싫어요 카드</li>
                         <li>차례가 끝나면 1단에 새 주문 1장</li>
                         <li>상대가 처리한 수만큼 내 1단에 주문 +1</li>
-                        <li>노란 리본 = 스페셜 (처리하면 러시 +1)</li>
+                        <li>스페셜 메뉴 처리 → 러시 토큰 +1</li>
                         <li>시작 주문: 선플레이어 3장, 상대 2장</li>
                     </ul>
                 </section>
@@ -204,9 +241,9 @@
                             </div>
                             <dl>
                                 <dt>사용</dt>
-                                <dd>3칸보다 더 가고 싶을 때 1개당 1칸 더!<br>한 차례에 원하는 만큼 OK.</dd>
+                                <dd>3칸보다 더 갈 때 1개당 1칸 더!<br>한 차례에 원하는 만큼 OK.</dd>
                                 <dt>획득</dt>
-                                <dd>스페셜 메뉴를 처리할 때마다 1개,<br>벌점을 받으면 받은 장수만큼.</dd>
+                                <dd>스페셜 메뉴를 처리할 때마다 1개.<br>싫어요를 받으면 받은 장수만큼.</dd>
                             </dl>
                         </div>
                         <div class="rule-box">
@@ -217,7 +254,7 @@
                             </div>
                             <dl>
                                 <dt>조건</dt>
-                                <dd>차례 시작 때 처리한 주문 3장을 버리고 타일 1개를 뒤집어요. 바로 적용되고, 효과는 겹치면 곱해져요(×2×2)!</dd>
+                                <dd>차례 시작 때 처리한 주문 3장으로<br>타일 1개를 켜요. 바로 적용돼요.<br>겹치면 효과가 곱해져요! ×2×2</dd>
                                 <dt>효과</dt>
                                 <dd>
                                     <div class="rule-upgrades"><span>대각선 이동</span><span>게임 말 ×2</span><span>꼭짓점
@@ -231,26 +268,26 @@
                 <!-- 5. 게임 종료 -->
                 <section class="rule-page" hidden>
                     <span class="rule-eyebrow">GAME END</span>
-                    <h2 class="rule-title">가게 문을 닫을 시간!</h2>
+                    <h2 class="rule-title">가게 문 닫을 시간!</h2>
                     <div class="rule-two">
                         <div class="rule-box">
                             <h4>이럴 때 끝나요</h4>
                             <ul class="rule-list">
-                                <li>누군가 벌점 카드 5장 → 바로 종료</li>
+                                <li>누군가 싫어요 5장 → 바로 종료</li>
                                 <li>주문 카드 더미가 부족할 때</li>
-                                <li>→ 이번 라운드를 마저 끝내고 종료</li>
+                                <li class="next">→ 이번 라운드를 마저 끝내고 종료</li>
                             </ul>
                         </div>
                         <div class="rule-box">
                             <h4>동점이라면?</h4>
                             <ul class="rule-list">
-                                <li>처리한 주문이 많은 쪽 승리</li>
-                                <li>그래도 같으면 러시 토큰이 많은 쪽</li>
+                                <li>좋아요가 많은 쪽 승리</li>
+                                <li>그래도 같으면 러시가 많은 쪽</li>
                                 <li>그래도 같으면 공동 승리</li>
                             </ul>
                         </div>
                     </div>
-                    <p class="rule-formula">점수 = 처리 주문 <b class="g">×1</b> + 업그레이드 <b class="g">×2</b> − 벌점 <b
+                    <p class="rule-formula">점수 = 좋아요 <b class="g">×1</b> + 업그레이드 <b class="g">×2</b> − 싫어요 <b
                             class="r">×1</b></p>
                 </section>
             </div>
