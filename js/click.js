@@ -38,14 +38,28 @@ function clickCell(i) {
 
   if (game.turn !== 'me') return;
 
-  // 1 이동 전: 내 다른 말을 누르면 그 말로 바꿈 (말 2개 중 하나만 움직임)
+  // 1 이동 전: 움직일 말 고르기 (말 2개 중 하나만 움직임)
+  // - 가고 싶은 칸을 누르면 → 그 칸 옆에 있는 말이 움직임
+  //   (두 말 모두 옆이면 지금 고른 말 = 노란 테두리)
+  // - 내 말을 누르면 → 그 말로 바꿈 (지금 고른 말을 누르면 다른 말로)
+  // - 단, 지금 고른 말 바로 옆 칸의 다른 내 말을 누르면 → 그 칸으로 지나감
   if (game.step === 1 && game.path.length === 0) {
     const k = game.me.pawns.indexOf(i);
-    if (k >= 0 && k !== game.pick) {
+    const other = 1 - game.pick;
+    const nearNow = neighbors(game.me.pawns[game.pick]).includes(i);
+    const nearOther = neighbors(game.me.pawns[other]).includes(i);
+
+    if (k === game.pick) {              // 지금 고른 말 → 다른 말로
+      game.pick = other;
+      draw();
+      return;
+    }
+    if (k >= 0 && !nearNow) {           // 떨어져 있는 다른 내 말 → 그 말로
       game.pick = k;
       draw();
       return;
     }
+    if (!nearNow && nearOther) game.pick = other;   // 다른 말 옆 칸 → 그 말이 출발
   }
 
   // 1 이동: 지금 칸의 바로 옆 칸만, 최대 칸 수까지
@@ -157,6 +171,13 @@ function clickNext() {
   }
 }
 
+// "내 컵" 줄 끝의 내 말 버튼: 움직일 말 고르기 (이동 전에만)
+function pickPawn(k) {
+  if (game.turn !== 'me' || game.step !== 1 || game.path.length) return;
+  game.pick = k;
+  draw();
+}
+
 // 업그레이드 배너: 고르기
 function pickUpgrade(key) {
   if (!canUpgrade() || has(key)) return;
@@ -187,6 +208,18 @@ function clickBack() {
     game.step = 2;
   }
   draw();
+}
+
+
+/* ===== 다른 화면에서 남긴 표시 읽기 (한 번 읽으면 지움) ===== */
+function takeFlag(key) {
+  try {
+    const on = sessionStorage.getItem(key) === '1';
+    sessionStorage.removeItem(key);
+    return on;
+  } catch (e) {
+    return false;   // 저장이 막힌 브라우저에서는 그냥 열지 않음
+  }
 }
 
 
@@ -251,6 +284,22 @@ $('queue').addEventListener('click', (e) => {
   if (card) clickOrder(Number(card.dataset.row), Number(card.dataset.k));
 });
 
+// 내 말 버튼: 누르면 그 말로 · 마우스를 올리면 판 위의 그 말을 크게 보여줌
+$('myPawns').addEventListener('click', (e) => {
+  const btn = e.target.closest('.pawn-btn');
+  if (btn) pickPawn(Number(btn.dataset.k));
+});
+$('myPawns').addEventListener('mouseover', (e) => {
+  const btn = e.target.closest('.pawn-btn');
+  if (!btn) return;
+  const cell = game.me.pawns[Number(btn.dataset.k)];
+  const pawn = document.querySelector(`#board .cell[data-i="${cell}"] .pawn.me`);
+  if (pawn) pawn.classList.add('peek');
+});
+$('myPawns').addEventListener('mouseout', () => {
+  document.querySelectorAll('#board .pawn.peek').forEach((p) => p.classList.remove('peek'));
+});
+
 $('up').addEventListener('click', (e) => {
   if (e.target.closest('.up-btn')) useUpgrade();
 });
@@ -281,5 +330,6 @@ document.addEventListener('keydown', (e) => {
 /* ===== 시작: 첫 화면 그리기 ===== */
 draw();
 
-// 주소 끝에 ?help 가 붙어 오면 (로그인 창의 '게스트로 체험하기') 게임 방법 창을 바로 열기
-if (location.search.includes('help')) openHelp();
+// '게스트로 체험하기'로 들어왔을 때만 게임 방법 창을 한 번 열기
+// (main.js가 남긴 표시를 읽자마자 지움 → 새로고침하면 게임 준비 화면만 나옴)
+if (takeFlag('coffeeRushHelp')) openHelp();

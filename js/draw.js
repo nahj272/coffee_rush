@@ -79,9 +79,10 @@ const TILE_ICON = {
 
 // 업그레이드 타일 4개
 // on: 켠 타일 · can: 지금 누를 수 있음 · pick: 고른 타일
+// me / ai: 켠 타일을 그 사람 말 색으로 칠함
 function tilesHTML(p, clickable) {
   return UPGRADES.map((up) => {
-    let cls = 'tile';
+    let cls = 'tile ' + (p === game.me ? 'me' : 'ai');
     if (has(up.key, p)) cls += ' on';
     else if (clickable) cls += ' can';
     if (clickable && game.upPick === up.key) cls += ' pick';
@@ -138,6 +139,13 @@ function drawQueue() {
   // 주문 1~4단
   const html = rowsHTML(game.me, true);
   $('queue').innerHTML = html;
+
+  // "내 컵" 줄 끝: 내 말 2개 (이동 전에만 누를 수 있음 · 고른 말은 판과 같은 노란 테두리)
+  const canPick = game.turn === 'me' && !game.over && game.step === 1 && game.path.length === 0;
+  $('myPawns').innerHTML = game.me.pawns.map((cell, k) => {
+    const sel = canPick && k === game.pick ? 'sel' : '';
+    return `<button class="pawn-btn ${sel}" type="button" data-k="${k}" title="이 말로 움직이기" ${canPick ? '' : 'disabled'}></button>`;
+  }).join('');
 }
 
 
@@ -175,6 +183,11 @@ function drawBoard() {
   const myTurn = game.turn === 'me' && !game.over;
   let html = '';
 
+  // 이번에 누를 수 있는 칸: 이동 전에는 두 말의 옆 칸 모두 (누른 칸 옆의 말이 움직임)
+  const reach = game.path.length
+    ? neighbors(head())
+    : game.me.pawns.flatMap((cell) => neighbors(cell));
+
   BOARD.forEach((key, i) => {
     const item = ITEMS[key];
     const step = game.path.indexOf(i);   // 지나온 칸이면 몇 번째인지
@@ -186,8 +199,7 @@ function drawBoard() {
 
     // 지금 누를 수 있는 칸
     if (myPlace() && !taken(i)) cls += ' can';   // 세팅: 말을 놓을 수 있는 칸
-    if (myTurn && game.step === 1 && game.path.length < maxMove()
-        && neighbors(head()).includes(i)) cls += ' can';
+    if (myTurn && game.step === 1 && game.path.length < maxMove() && reach.includes(i)) cls += ' can';
 
     html += `<div class="${cls}" data-i="${i}" style="--c:${item.color}">`;
     html += `<div class="cell-in">${icon(key)}</div>`;
@@ -317,7 +329,7 @@ function hintText() {
       return { text: `재료 ${got}개 · 여기서 멈추거나, +1칸으로 더 가세요` };
     }
     if (got) return { text: `재료 ${got}개 · 여기서 멈추거나 ${left}칸 더 갈 수 있어요` };
-    return { text: `1~${left}칸 움직일 수 있어요 · 다른 내 말을 누르면 그 말로 바꿔요` };
+    return { text: `1~${left}칸 움직일 수 있어요 · 가고 싶은 칸을 누르면 그 옆의 내 말이 움직여요` };
   }
 
   if (game.step === 2) {

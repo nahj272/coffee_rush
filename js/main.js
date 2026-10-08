@@ -26,6 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (loginTrigger && loginModal) {
     loginTrigger.addEventListener('click', openLoginModal);
 
+    // 게임 설정의 '로그인하러 가기'로 왔을 때만 로그인 창을 바로 열기 (한 번 읽으면 지움)
+    try {
+      if (sessionStorage.getItem('coffeeRushLogin') === '1') openLoginModal();
+      sessionStorage.removeItem('coffeeRushLogin');
+    } catch (e) {}
+
     // 모달 바깥(오버레이) 클릭 시 닫기
     loginModal.addEventListener('click', (e) => {
       if (e.target === loginModal) closeLoginModal();
@@ -41,7 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (guestLoginBtn) {
     // 게스트 → 게임 준비 화면으로 가서 게임 방법(?) 창을 바로 열기
     guestLoginBtn.addEventListener('click', () => {
-      location.href = 'page/game.html?help';
+      try { sessionStorage.setItem('coffeeRushHelp', '1'); } catch (e) {}
+      location.href = 'page/game.html';
     });
   }
 

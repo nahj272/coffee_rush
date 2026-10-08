@@ -141,6 +141,7 @@ function newGame() {
     placeIdx: 0,    // 지금 몇 번째 말을 놓는 중인지 (4가 되면 다 놓음)
     pick: 0,        // 이번 차례에 움직일 내 말 (0 또는 1)
     aiPick: 0,      // 이번 차례에 움직이는 AI 말
+    recorded: false,   // 이 판의 결과를 기록했는지 (settings.js)
   };
 
   // AI가 선플레이어면 AI 말을 먼저 놓음
