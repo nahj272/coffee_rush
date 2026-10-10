@@ -567,8 +567,9 @@ button:hover
  background: #FBF8F3;}
 
 .rule-pt
-{font-family: 'Grandiflora One', serif;
+{font-family: var(--font);
  font-size: 57.5px;
+ font-weight: 800;
  line-height: 1;}
 
 .rule-pt.plus  {color: #4CAF3C;}
@@ -756,8 +757,9 @@ button:hover
  text-align: center;}
 
 .rule-penalty-pt
-{font-family: 'Grandiflora One', serif;
+{font-family: var(--font);
  font-size: 45px;
+ font-weight: 800;
  line-height: 1;}
 
 .rule-penalty b
