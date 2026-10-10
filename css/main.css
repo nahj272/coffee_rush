@@ -934,11 +934,18 @@ button:hover
  background: var(--btn-orange);
  color: #FFFFFF;}
 
-/* 마지막 쪽 OPEN 팻말: 글자 크기 */
-.rule-btn.open
-{font-family: "Grandiflora One", serif;
+/* 마지막 쪽 튜토리얼 버튼: 커피러시 글꼴 + 두꺼운 화살표 */
+.rule-btn.tut
+{display: inline-flex;
+ align-items: center;
+ gap: 8px;
+ font-family: "Grandiflora One", serif;
  font-size: 23px;
  font-weight: 400;}
+
+.rule-btn.tut img
+{width: 22px;
+ height: 22px;}
 
 .rule-btn.primary:hover
 {background-color: #CB4720;}
@@ -1231,7 +1238,7 @@ button:hover
     .rule-lead { font-size: 14px; }
     .rule-foot { padding: 12px 18px 16px; }
     .rule-btn { height: 46px; padding: 0 20px; font-size: 16px; }
-    .rule-btn.open { font-size: 20px; }
+    .rule-btn.tut { font-size: 20px; }
 
     /* 1쪽: 점수 3개를 가로 한 줄씩 (숫자 왼쪽 · 설명 오른쪽) */
     .rule-scores { grid-template-columns: 1fr; gap: 8px; margin-top: 18px; }
@@ -1249,8 +1256,11 @@ button:hover
     .rule-step-no { margin-top: 0; font-size: 12px; }
     .rule-step b { margin: 2px 0 2px; font-size: 16px; }
     .rule-step p { font-size: 13px; line-height: 1.5; }
+    .rule-ill { gap: 4px; }
     .rule-ill .glass { width: 36px; height: 30px; }
     .rule-ill .fill img { width: 9px; height: 9px; }
+    .rule-check { width: 22px; height: 22px; font-size: 13px; }
+    .rule-give { padding: 3px 5px; font-size: 11px; }
     .rule-tip { font-size: 13px; }
 
     /* 3쪽: 주문 1~4단 2칸씩 */
@@ -1287,6 +1297,10 @@ button:hover
     .rule-lead { font-size: 13px; }
     .rule-step { grid-template-columns: 104px 1fr; padding: 8px; }
     .rule-ill { min-height: 72px; }
+    .rule-ill .glass { width: 28px; height: 24px; }   /* 그림 칸이 104px로 좁아져서 컵 3개가 넘치지 않게 */
+    .rule-ill .fill img { width: 7px; height: 7px; }
+    .rule-check { width: 18px; height: 18px; font-size: 11px; }
+    .rule-give { padding: 2px 4px; font-size: 10px; }
     .rule-step p { font-size: 12px; }
     .rule-slot { min-height: 62px; }
     .rule-queue-flow { margin-top: 6px; }

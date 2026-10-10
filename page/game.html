@@ -24,14 +24,14 @@
         <!-- 점수: PC는 내 점수만 · 휴대폰은 둘째 줄에 나 | AI (scores는 PC에서 없는 셈 = display: contents) -->
         <div class="scores">
             <div class="stats">
-                <span class="who me">나</span>
+                <span class="side me">나</span>
                 <span class="stat like"><img class="hand" src="../logo/아이콘/like-light.svg" alt="">좋아요 <b id="done">3</b></span>
                 <span class="stat red"><img class="hand" src="../logo/아이콘/dislike-light.svg" alt="">싫어요 <b id="penalty">1</b> <small>/5</small></span>
                 <span class="stat"><i class="coin">R</i> 러시 <b id="rush">2</b></span>
                 <span class="stat">업그레이드 <span class="dots" id="upgrade"></span></span>
             </div>
             <div class="stats ai-stats">
-                <span class="who ai">AI</span>
+                <span class="side ai">AI</span>
                 <span class="stat like"><img class="hand" src="../logo/아이콘/like-light.svg" alt="">좋아요 <b id="aiDone">0</b></span>
                 <span class="stat red"><img class="hand" src="../logo/아이콘/dislike-light.svg" alt="">싫어요 <b id="aiPenalty">0</b> <small>/5</small></span>
                 <span class="stat"><i class="coin">R</i> 러시 <b id="aiRush">0</b></span>
@@ -204,6 +204,8 @@
         <div class="help-card">
             <div class="help-head">
                 <h2>게임 방법</h2>
+                <!-- 튜토리얼: 정해진 판에서 한 차례를 직접 해 봄 (tutorial.js) -->
+                <button class="tut-btn" type="button" id="tutBtn">튜토리얼<img src="../logo/아이콘/arrow.svg" alt=""></button>
                 <button class="help-close" type="button" id="helpClose" title="닫기">✕</button>
             </div>
 
@@ -317,6 +319,9 @@
     </div>
 
     <!-- 순서 중요: 정보 → 그리기 → 상태 → 규칙 → 차례 → AI → 설정 → 클릭(맨 끝에서 첫 화면을 그림) -->
+    <!-- ===== 튜토리얼: 어두운 덮개 · 말풍선 (tutorial.js가 채움) ===== -->
+    <div class="tut-layer" id="tutLayer" hidden></div>
+
     <script src="../js/data.js"></script>
     <script src="../js/draw.js"></script>
     <script src="../js/state.js"></script>
@@ -324,6 +329,7 @@
     <script src="../js/turn.js"></script>
     <script src="../js/ai.js"></script>
     <script src="../js/settings.js"></script>
+    <script src="../js/tutorial.js"></script>
     <script src="../js/click.js"></script>
 </body>
 

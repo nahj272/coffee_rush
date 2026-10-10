@@ -54,11 +54,11 @@ function drawTop() {
   }
   $('modeTag').textContent = mode === 'easy' ? '쉬움 모드' : '보통 모드';
   $('modeTag').className = 'mode-tag ' + mode;
-  $('done').textContent = me.total;              // 맨 위 좋아요: 지금까지 처리한 주문 수 (누적)
+  $('done').textContent = me.done;
   $('penalty').textContent = me.penalty;
   $('rush').textContent = me.rush;
   $('trashCount').textContent = me.penalty;
-  $('aiDone').textContent = game.ai.total;         // AI 좋아요 누적 (휴대폰 맨 위 둘째 줄에만 보임)
+  $('aiDone').textContent = game.ai.done;          // AI 점수 (휴대폰 맨 위 둘째 줄에만 보임)
   $('aiPenalty').textContent = game.ai.penalty;
   $('aiRush').textContent = game.ai.rush;
 
@@ -284,8 +284,9 @@ const GUIDE = {
 };
 
 // 낼 수 있는 주문 하나 찾아서 문구로 (없으면 '')
+// 4단부터 찾음 (4단은 안 내면 싫어요가 되니까 먼저 알려줌)
 function readyText() {
-  for (let r = 0; r < 4; r++) {
+  for (let r = 3; r >= 0; r--) {
     for (const order of game.me.queue[r]) {
       const cup = cupFor(order);
       if (cup >= 0) return `낼 수 있는 음료! 컵 ${cup + 1} = ${r + 1}단 '${order.name}'`;
@@ -338,7 +339,8 @@ function hintText() {
 
   if (game.step === 3) {
     const ready = readyText();
-    if (ready) return { text: `${ready} · 초록 카드를 누르세요`, warn: true };
+    if (ready && ready.includes('= 4단')) return { text: `${ready} · 안 내면 싫어요가 돼요`, warn: true };
+    if (ready) return { text: `${ready} · 안 내고 끝내도 돼요` };
     // 낼 주문이 없으면: 차례를 끝낼 때 싫어요가 생기는지 알려줌
     const lost = game.me.queue[3].length;
     if (lost) return { text: `차례를 끝내면 4단 주문 ${lost}장이 싫어요가 돼요`, warn: true };
@@ -380,11 +382,6 @@ function drawPanel() {
     $('nextBtn').disabled = !canStop();
   }
 
-  // 3 주문 처리: 낼 수 있는 음료가 있으면 차례를 못 끝냄
-  if (key === 3 && anyReady()) {
-    $('nextBtn').textContent = '음료 먼저 내기';
-    $('nextBtn').disabled = true;
-  }
   $('subBtn').hidden = !guide.sub;
   $('subBtn').textContent = guide.sub || '';
 
@@ -431,7 +428,7 @@ function drawPanel() {
     if (done && (game.step === 2 || game.step === 3)) label = `<b class="cup-done">컵 ${i + 1} 완성</b>`;
 
     // 컵 비우기 버튼: 내 차례 담기 · 처리 단계에서, 재료가 든 컵에만
-    // (완성된 컵은 먼저 내야 하므로 비우기 없음)
+    // (완성된 컵은 비우기 없음 · 내거나 더 담아서 다른 음료로)
     const canEmpty = game.turn === 'me' && (game.step === 2 || game.step === 3)
       && !game.setup && items.length > 0 && !done;
     const empty = canEmpty
@@ -559,6 +556,7 @@ function drawTable() {
 
   const myName = nickname ? `${nickname} 바리스타` : '나';
   $('seatMe').innerHTML = seatHTML(game.me, myName, true);
+  $('table').classList.toggle('cupping', game.setup);   // 휴대폰: 재료 담을 때만 컵, 그 밖에는 내 주문
   $('seatAi').innerHTML = seatHTML(game.ai, 'AI 바리스타', false);
 
   // 재료 토큰: 위 4개 · 아래 4개. 지금 가져올 재료는 강조
@@ -640,6 +638,7 @@ function draw() {
   drawResult();
   drawTable();
   drawTabs();
+  drawTut();     // 튜토리얼 중이면 덮개 · 말풍선 (tutorial.js)
 
   // AI 차례: 기록의 맨 아래(방금 한 일)가 보이게 스크롤
   if (game.turn === 'ai') {

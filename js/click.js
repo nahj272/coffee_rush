@@ -7,7 +7,7 @@
 
 // 재료판 칸을 눌렀을 때
 function clickCell(i) {
-  if (game.over) return;
+  if (game.over || tutBlock('cell', i)) return;   // 튜토리얼: 안내한 칸만
 
   // 세팅 화면: 내가 말을 놓을 차례
   if (game.table) {
@@ -102,7 +102,7 @@ function rushLess() {
 // 완성된 컵에도 재료를 더 담을 수 있음 (예: 아이스 초코라테 + 원두 → 아이스 카페 모카)
 // 낼지 더 담을지는 플레이어가 고름
 function clickCup(i) {
-  if (game.step !== 2 || game.picks.length === 0) return;
+  if (game.step !== 2 || game.picks.length === 0 || tutBlock('cup', i)) return;
 
   const item = game.picks.splice(game.picked, 1)[0];   // 고른 재료 1개 꺼내기
   game.me.cups[i].push(item);
@@ -129,7 +129,7 @@ function clickPick(k) {
 
 // 컵 비우기: 컵에 든 재료를 모두 버림 (하나만 빼기는 안 됨)
 function emptyCup(i) {
-  if (game.turn !== 'me' || (game.step !== 2 && game.step !== 3)) return;
+  if (game.turn !== 'me' || (game.step !== 2 && game.step !== 3) || tutBlock('empty', i)) return;
   game.me.cups[i] = [];
   game.placed = game.placed.filter((c) => c !== i);   // 되돌리기 목록에서도 빼기
   draw();
@@ -137,7 +137,7 @@ function emptyCup(i) {
 
 // 주문 카드를 눌렀을 때 (3 주문 처리 · 재료를 담는 중에도 낼 수 있음)
 function clickOrder(row, k) {
-  if (game.turn !== 'me' || game.table) return;
+  if (game.turn !== 'me' || game.table || tutBlock('order', row, k)) return;
   if (game.step !== 2 && game.step !== 3) return;
 
   if (serve(game.me, row, k)) {
@@ -164,8 +164,7 @@ function clickNext() {
     game.step = 3;
     draw();
   } else if (game.step === 3) {
-    // "차례 끝내기": 낼 수 있는 음료가 있으면 먼저 내야 함
-    if (anyReady()) return;
+    // "차례 끝내기": 낼 수 있는 음료가 있어도 안 내고 끝낼 수 있음 (다음 차례에 더 담아서 다른 음료로)
     endTurn(game.me);
     nextTurn();
   }
@@ -339,5 +338,7 @@ document.addEventListener('keydown', (e) => {
 draw();
 
 // '게스트로 체험하기'로 들어왔을 때만 게임 방법 창을 한 번 열기
+// 메인 게임 방법 5쪽의 [튜토리얼]로 들어왔으면 튜토리얼 시작
 // (main.js가 남긴 표시를 읽자마자 지움 → 새로고침하면 게임 준비 화면만 나옴)
-if (takeFlag('coffeeRushHelp')) openHelp();
+if (takeFlag('coffeeRushTut')) startTutorial();
+else if (takeFlag('coffeeRushHelp')) openHelp();

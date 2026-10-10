@@ -126,11 +126,6 @@ function rushLeft() {
   return game.me.rush - game.rushUse;
 }
 
-// 낼 수 있는 주문이 있는지 (있으면 차례를 끝내기 전에 내야 함)
-function anyReady() {
-  return game.me.queue.flat().some((order) => cupFor(order) >= 0);
-}
-
 // 주문 처리 (나와 AI가 같이 씀). 처리했으면 true
 function serve(p, row, k) {
   const order = p.queue[row][k];
@@ -140,7 +135,6 @@ function serve(p, row, k) {
   p.cups[cup] = [];            // 컵 비우기 (재료는 반납)
   p.queue[row].splice(k, 1);   // 주문 카드 빼기
   p.done += 1;
-  p.total += 1;                     // 누적 (업그레이드에 써도 안 줄어듦)
   p.doneList.push(order);           // 처리한 주문 카드 모아두기
   if (order.special) p.rush += 1;   // 스페셜 메뉴 → 러시 토큰
 
