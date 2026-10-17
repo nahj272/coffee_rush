@@ -76,16 +76,16 @@ function drawTop() {
 /* ===== 개인 판 조각 (세팅 화면 · 게임 화면에서 같이 씀) ===== */
 
 // 업그레이드 타일 4개
-// on: 켠 타일 · can: 지금 누를 수 있음 · pick: 고른 타일
+// on: 켠 타일 · can: 지금 누를 수 있음 · sel: 고른 타일 (받은 재료 칸 .pick과 겹치지 않게 sel)
 // me / ai: 켠 타일을 그 사람 말 색으로 칠함
 function tilesHTML(p, clickable) {
   return UPGRADES.map((up) => {
     let cls = 'tile ' + (p === game.me ? 'me' : 'ai');
     if (has(up.key, p)) cls += ' on';
     else if (clickable) cls += ' can';
-    if (clickable && game.upPick === up.key) cls += ' pick';
+    if (clickable && game.upPick === up.key) cls += ' sel';
     // 그림: 켰거나 고른 타일은 흰색 그림 (tile-○○-on.svg)
-    const white = cls.includes(' on') || cls.includes(' pick') ? '-on' : '';
+    const white = cls.includes(' on') || cls.includes(' sel') ? '-on' : '';
     return `<button class="${cls}" type="button" data-key="${up.key}" title="${up.desc}">
               <img src="${UI}tile-${up.key}${white}.svg" alt=""><span>${up.name}</span>
             </button>`;

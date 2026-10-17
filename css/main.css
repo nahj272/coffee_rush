@@ -169,6 +169,24 @@ button:hover
  border-color: var(--base);
  transform: translateY(-2px);}
 
+/* 튜토리얼 아래 작은 글씨: 규칙 자세히 보기 (게임 방법 모달) */
+.rule-link
+{margin-top: 14px;
+ padding: 0;
+ border: none;
+ background: none;
+ color: var(--base);
+ opacity: 0.7;
+ font-family: var(--font);
+ font-size: 15px;
+ text-decoration: underline;
+ text-underline-offset: 3px;
+ cursor: pointer;}
+
+.rule-link:hover
+{opacity: 1;
+ background: none;}
+
 /* =====하단 메커니즘 & 원작 영역: width 100%===== */
 .mechanism-section 
 {width: 100%;
@@ -488,7 +506,11 @@ button:hover
 .rule-body
 {flex: 1;
  padding: 27.5px 50px 0;
- overflow-y: auto;}
+ overflow-y: auto;
+ scrollbar-width: none;}   /* 스크롤바는 보이지 않게 (아주 작은 화면에서는 휠로 내릴 수 있음) */
+
+.rule-body::-webkit-scrollbar
+{display: none;}
 
 .rule-page
 {display: flex;
@@ -596,7 +618,7 @@ button:hover
 /* 2. 내 차례 */
 .rule-steps
 {display: grid;
- grid-template-columns: 1fr 22.5px 1fr 22.5px 1fr;
+ grid-template-columns: minmax(0, 1fr) 22.5px minmax(0, 1fr) 22.5px minmax(0, 1fr);   /* STEP 3칸을 같은 너비로 */
  margin-top: 18px;}
 
 .rule-arrow
@@ -936,18 +958,7 @@ button:hover
  background: var(--btn-orange);
  color: #FFFFFF;}
 
-/* 마지막 쪽 튜토리얼 버튼: 커피러시 글꼴 + 두꺼운 화살표 */
-.rule-btn.tut
-{display: inline-flex;
- align-items: center;
- gap: 8px;
- font-family: "Grandiflora One", serif;
- font-size: 23px;
- font-weight: 400;}
 
-.rule-btn.tut img
-{width: 22px;
- height: 22px;}
 
 .rule-btn.primary:hover
 {background-color: #CB4720;}
@@ -1107,8 +1118,8 @@ button:hover
 /* 2쪽 그림의 컵: 게임 화면 컵과 같은 모양 */
 .rule-ill .glass
 {position: relative;
- width: 64px;
- height: 54px;
+ width: 50px;
+ height: 42px;
  flex: none;}
 
 .rule-ill .glass > img
@@ -1131,28 +1142,9 @@ button:hover
  gap: 1px;}
 
 .rule-ill .fill img
-{width: 15px;
- height: 15px;
- object-fit: contain;}
-
-/* 게임 방법 모달: 스크롤바는 보이지 않게 (아주 작은 화면에서는 휠로 내릴 수 있음) */
-.rule-body
-{scrollbar-width: none;}
-
-.rule-body::-webkit-scrollbar
-{display: none;}
-
-/* 2쪽 STEP 3칸을 같은 너비로 → 1칸 글이 좁게 줄바꿈되지 않게 */
-.rule-steps
-{grid-template-columns: minmax(0, 1fr) 22.5px minmax(0, 1fr) 22.5px minmax(0, 1fr);}
-
-.rule-ill .glass
-{width: 50px;
- height: 42px;}
-
-.rule-ill .fill img
 {width: 12px;
- height: 12px;}
+ height: 12px;
+ object-fit: contain;}
 
 
 /* =========================================================
@@ -1240,7 +1232,6 @@ button:hover
     .rule-lead { font-size: 14px; }
     .rule-foot { padding: 12px 18px 16px; }
     .rule-btn { height: 46px; padding: 0 20px; font-size: 16px; }
-    .rule-btn.tut { font-size: 20px; }
 
     /* 1쪽: 점수 3개를 가로 한 줄씩 (숫자 왼쪽 · 설명 오른쪽) */
     .rule-scores { grid-template-columns: 1fr; gap: 8px; margin-top: 18px; }

@@ -9,6 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const startBtn = document.querySelector('.btn-start');
   if (startBtn) startBtn.addEventListener('click', goGame);
 
+  /* ===== 튜토리얼: 게임 화면에서 바로 시작하도록 한 번만 쓰는 표시를 남기고 이동 ===== */
+  const goTutorial = () => {
+    try { sessionStorage.setItem('coffeeRushTut', '1'); } catch (e) {}
+    goGame();
+  };
+  const tutTrigger = document.getElementById('tutTrigger');
+  if (tutTrigger) tutTrigger.addEventListener('click', goTutorial);
+
   /* ===== 로그인 모달 ===== */
   const loginTrigger = document.getElementById('loginTrigger');
   const loginModal = document.getElementById('loginModal');
@@ -88,11 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     rulePageNum.textContent = `${currentPage + 1} / ${rulePages.length}`;
     rulePrev.disabled = currentPage === 0;
-    // 마지막 페이지에서는 '다음' 대신 '튜토리얼' (커피러시 글꼴 + 화살표)
-    ruleNext.innerHTML = currentPage === lastPage
-      ? '튜토리얼<img src="logo/아이콘/arrow.svg" alt="">'
-      : '다음';
-    ruleNext.classList.toggle('tut', currentPage === lastPage);
+    // 마지막 페이지에서는 '다음' 대신 '튜토리얼'
+    ruleNext.textContent = currentPage === lastPage ? '튜토리얼' : '다음';
 
     // 페이지가 바뀌면 본문 스크롤을 맨 위로 (작은 화면 대비)
     ruleModal.querySelector('.rule-body').scrollTop = 0;
@@ -151,8 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showRulePage(currentPage + 1);
       } else {
         // 마지막(5번째) 페이지의 '튜토리얼' → 게임 화면에서 튜토리얼 시작
-        try { sessionStorage.setItem('coffeeRushTut', '1'); } catch (e) {}
-        goGame();
+        goTutorial();
       }
     });
 
