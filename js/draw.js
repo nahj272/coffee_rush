@@ -560,15 +560,18 @@ function drawTable() {
   $('seatAi').innerHTML = seatHTML(game.ai, 'AI 바리스타', false);
 
   // 재료 토큰: 위 4개 · 아래 4개. 지금 가져올 재료는 강조
-  let supply = '<p class="supply-name">재료 토큰</p><div class="trays">';
-  Object.keys(ITEMS).forEach((key) => {
-    const on = game.picks.includes(key) ? 'on' : '';
-    supply += `<div class="tray ${on}">
-                 <span class="pile">${icon(key)}${icon(key)}${icon(key)}</span>
-                 <small>${ITEMS[key].name}</small>
-               </div>`;
-  });
-  $('supply').innerHTML = supply + '</div>';
+  // 재료 토큰: 실제 상자처럼 2×2 칸 상자 2개 (위 상자 4개 · 아래 상자 4개)
+  // 칸마다 토큰 3개를 위 1개 · 아래 2개로 쌓아 둠
+  const tray = (key) => `<div class="tray ${game.picks.includes(key) ? 'on' : ''}">
+                           <span class="pile" data-k="${key}">${icon(key)}${icon(key)}${icon(key)}</span>
+                           <small>${ITEMS[key].name}</small>
+                         </div>`;
+  const keys = Object.keys(ITEMS);
+  $('supply').innerHTML = `<p class="supply-name">재료 토큰</p>
+    <div class="trays">
+      <div class="tray-box">${keys.slice(0, 4).map(tray).join('')}</div>
+      <div class="tray-box">${keys.slice(4).map(tray).join('')}</div>
+    </div>`;
 
   // 안내 띠: 지금 할 일 하나만 크게
   // 말은 2개씩, 선플레이어부터 번갈아 하나씩 놓음 (놓을 때마다 그 칸의 재료 1개)
@@ -588,10 +591,7 @@ function drawTable() {
     msg = '준비 끝! OPEN을 누르세요';
     sub = firstSub;
   }
-  const steps = ['말 놓기', '재료 담기', '게임 시작']
-    .map((t, k) => `<span class="${k + 1 === num ? 'now' : ''}">${k + 1} ${t}</span>`).join(' › ');
-
-  $('setupBand').innerHTML = `<i>${num}</i><div><b>${msg}</b><small>${sub}</small></div><p>${steps}</p>`;
+  $('setupBand').innerHTML = `<i>${num}</i><div><b>${msg}</b><small>${sub}</small></div>`;
   $('startBtn').disabled = !ready;
 
   // 난이도 고르기 (게임 시작 버튼 왼쪽)

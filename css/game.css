@@ -333,6 +333,7 @@ button
 
 .card em
 {margin-left: auto;      /* 재료 아이콘 줄의 오른쪽 끝 */
+ white-space: nowrap;    /* "스 / 페 / 셜"처럼 세로로 깨지지 않게 */
  padding: 0 5px;
  border-radius: 4px;
  background: #FBE7A1;
@@ -1049,23 +1050,25 @@ button
 {font-size: 12px;
  opacity: 0.85;}
 
-.band p
-{margin-left: auto;
- font-size: 13px;
- opacity: 0.85;
- white-space: nowrap;}
-
-.band p .now
-{font-weight: 800;
- text-decoration: underline;}
 
 /* 왼쪽 내 판 · 가운데 · 오른쪽 AI 판 */
+/* 게임 준비 화면 크기 (PC)
+   --seat: 양옆 개인 판 너비 · --side: 재료판 오른쪽 칸 너비 · --below: 재료판 위아래로 쓰는 높이 */
 .tgrid
-{flex: 1;
+{--seat: 340px;
+ --side: 184px;
+ --below: 230px;
+ flex: 1;
  min-height: 0;
  display: grid;
- grid-template-columns: 340px 1fr 340px;
+ grid-template-columns: var(--seat) 1fr var(--seat);
  gap: 24px;}
+
+/* 노트북 가로(1400px 이하): 개인 판을 조금 좁게 → 재료판 · 재료 토큰이 더 커짐 */
+@media (min-width: 1025px) and (max-width: 1400px)
+{
+ .tgrid { --seat: 310px; }
+}
 
 /* ----- 한 사람 자리 ----- */
 .seat
@@ -1101,20 +1104,55 @@ button
 .seat .glass
 {height: 70px;}
 
-/* ----- 가운데: 재료판 · 재료 토큰 · 게임 시작 ----- */
+/* ----- 가운데: 안내 띠 · 재료판 | 오른쪽 칸: 재료 토큰 · 난이도 · OPEN ----- */
 .mid
-{display: flex;
- flex-direction: column;
- align-items: center;
- gap: 12px;
+{display: grid;
+ grid-template-columns: auto var(--side);
+ column-gap: 16px;
+ row-gap: 12px;
+ align-content: center;
+ justify-content: center;
+ align-items: start;
  min-height: 0;}
 
-.t-board
-{width: min(100%, calc(100vh - 450px));}
+/* 안내 띠: 재료판 너비만큼 */
+.mid .band
+{grid-column: 1;
+ grid-row: 1;
+ gap: 12px;
+ padding: 10px 16px;}
 
+.mid .band i
+{width: 30px;
+ height: 30px;
+ font-size: 15px;}
+
+.mid .band b
+{font-size: 17px;}
+
+/* 재료판: 화면 높이와 가운데 칸 너비 중 작은 쪽에 맞춤 (양옆 개인 판 · 오른쪽 칸을 뺀 너비) */
+.t-board
+{grid-column: 1;
+ grid-row: 2;
+ width: min(calc(100vh - var(--below)), calc(100vw - 120px - var(--seat) * 2 - var(--side)), 640px);}   /* 120px = 바깥 여백 + 칸 사이 · 큰 화면에서도 640px까지만 */
+
+/* 재료판 오른쪽 칸 (안내 띠 높이부터 아래로) */
+.side-col
+{grid-column: 2;
+ grid-row: 1 / 3;
+ align-self: stretch;
+ container-type: size;   /* 이 칸은 높이를 늘리지 않음 → 위는 안내 띠, 아래는 재료판 끝에 딱 맞춤 */
+ display: flex;
+ flex-direction: column;
+ gap: 10px;}
+
+/* 재료 토큰: 난이도 · OPEN을 빼고 남은 높이를 다 씀 (상자 크기는 이 칸의 너비 · 높이에 맞춤) */
 .supply
-{width: 100%;
- max-width: 520px;
+{flex: 1;
+ min-height: 0;
+ container-type: size;
+ display: flex;
+ flex-direction: column;
  padding: 10px;
  border-radius: 14px;
  background: rgba(255, 255, 255, 0.08);}
@@ -1124,66 +1162,115 @@ button
  font-size: 13px;
  font-weight: 700;}
 
-/* 재료 토큰 통: 위 4개 · 아래 4개 */
+/* 재료 토큰: 실제 상자처럼 2×2 칸 상자 2개 */
 .trays
-{display: grid;
- grid-template-columns: repeat(4, 1fr);
- gap: 8px;}
+{flex: 1;
+ display: flex;
+ flex-direction: column;
+ justify-content: space-evenly;
+ align-items: center;}
 
+/* 2×2 상자: 정사각형 (칸 너비와, 남은 높이의 절반 중 작은 쪽) */
+.tray-box
+{width: min(100cqw, calc((100cqh - 40px) / 2));
+ aspect-ratio: 1;
+ container-type: size;
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ grid-template-rows: 1fr 1fr;
+ gap: 6px;
+ padding: 6px;
+ border-radius: 12px;
+ background: rgba(0, 0, 0, 0.22);}
+
+/* 재료 칸: 정사각형 (상자를 4등분) · 토큰 크기도 상자에 맞춰 줄어듦 */
 .tray
-{display: flex;
+{--t: 15cqw;
+ min-width: 0;
+ min-height: 0;
+ overflow: hidden;
+ display: flex;
  flex-direction: column;
  align-items: center;
- gap: 2px;
- padding: 6px 4px 4px;
+ justify-content: center;
+ gap: 4px;
+ padding: 6px 4px;
  border: 2px solid transparent;
- border-radius: 8px;
+ border-radius: 10px;
  background: rgba(255, 255, 255, 0.12);}
 
 .tray small
-{font-size: 12px;}
+{font-size: clamp(10px, 7cqw, 12px);
+ line-height: 1.2;}
 
-/* 지금 가져갈 재료 통 */
+/* 지금 가져갈 재료 칸 */
 .tray.on
 {border-color: var(--btn-orange);
  background: rgba(225, 85, 46, 0.3);}
 
+/* 토큰 3개: 위 1개 · 아래 2개, 얼음처럼 서로 붙여 쌓음
+   --t: 토큰 한 개 크기
+   그림마다 둘레 빈 곳이 달라서, 그림이 차지하는 비율(--cw 너비 · --ch 높이)만큼만 자리를 잡고
+   빈 곳이 큰 그림(스팀 · 카라멜 · 초콜릿)은 --s만큼 키움 */
 .pile
-{display: flex;}
+{--s: 1;
+ --cw: 1;
+ --ch: 1;
+ display: grid;
+ grid-template-columns: auto auto;
+ justify-content: center;}
 
 .pile img
-{width: 22px;
- height: 22px;
+{width: var(--t);
+ height: var(--t);
+ max-width: none;   /* reset.css의 max-width: 100% 때문에 줄어들지 않게 */
  object-fit: contain;
- margin-left: -6px;}
+ transform: scale(var(--s));
+ margin: calc((var(--ch) * var(--s) - 1) * var(--t) / 2) calc((var(--cw) * var(--s) - 1) * var(--t) / 2);}
 
-/* 난이도 고르기 + 게임 시작 버튼 한 줄 */
+.pile img:first-child
+{grid-column: 1 / 3;   /* 위 1개는 가운데 */
+ justify-self: center;}
+
+.pile[data-k="coffee"]    { --ch: 0.86; }
+.pile[data-k="milk"]      { --cw: 0.72; }
+.pile[data-k="steam"]     { --s: 1.23; --cw: 0.6; --ch: 0.81; }
+.pile[data-k="ice"]       { --cw: 0.89; }
+.pile[data-k="caramel"]   { --s: 1.22; --cw: 0.82; --ch: 0.81; }
+.pile[data-k="water"]     { --cw: 0.72; }
+.pile[data-k="chocolate"] { --s: 1.59; --cw: 0.59; --ch: 0.63; }
+
+/* 난이도 고르기 + 게임 시작 (오른쪽 칸 맨 아래) */
 .start-row
 {display: flex;
- gap: 10px;
- width: 100%;
- max-width: 520px;}
+ flex-direction: column;
+ gap: 8px;
+ margin-top: auto;}
 
 .start-row .btn
-{flex: 1;}
+{flex: none;
+ height: 64px;}
 
 .mode
 {display: flex;
+ flex-wrap: wrap;
  align-items: center;
  gap: 6px;
- padding: 4px 6px 4px 12px;
+ padding: 6px;
  border-radius: 10px;
  background: rgba(255, 255, 255, 0.08);}
 
 .mode b
-{margin-right: 4px;
+{width: 100%;
+ padding-left: 4px;
  font-size: 13px;}
 
 .mode button
-{display: flex;
+{flex: 1;
+ display: flex;
  flex-direction: column;
  align-items: center;
- padding: 6px 12px;
+ padding: 6px 4px;
  border: 2px solid transparent;
  border-radius: 8px;
  background: rgba(255, 255, 255, 0.1);
@@ -1193,7 +1280,9 @@ button
  cursor: pointer;}
 
 .mode button small
-{font-size: 12px;
+{font-size: 10.5px;
+ text-align: center;
+ word-break: keep-all;
  font-weight: 500;
  opacity: 0.8;}
 
@@ -1202,6 +1291,14 @@ button
 {border-color: #F2C230;
  background: #F2C230;
  color: var(--dark-text);}
+
+/* 오른쪽 칸이 낮을 때(재료판이 작은 화면): 난이도 설명 · "난이도" 글자를 빼서 재료 상자 자리를 넓힘 */
+@container (max-height: 500px)
+{
+ .mode b,
+ .mode button small { display: none; }
+ .start-row .btn { height: 46px; }
+}
 
 /* 맨 위 줄 난이도 표시 */
 .mode-tag
@@ -1372,20 +1469,21 @@ button
  .done-box, .trash { padding: 6px 8px; }
  .panel { min-height: 168px; }
 
- /* 세팅 화면 */
- .table { gap: 10px; padding: 2px 24px 12px; }
- .band { padding: 8px 16px; }
- .band b { font-size: 17px; }
- .band i { width: 30px; height: 30px; font-size: 16px; }
- .mid { gap: 8px; }
- .t-board { width: min(100%, calc(100vh - 380px)); }
+ /* 세팅 화면: 오른쪽 칸을 조금 좁게 · 토큰 작게 */
+ .table { padding: 2px 24px 12px; }
+ .tgrid { --side: 150px; --below: 190px; }
+ .mid { row-gap: 8px; }
+ .mid .band { padding: 8px 14px; }
+ .mid .band b { font-size: 15px; }
  .supply { padding: 8px; }
  .trays { gap: 6px; }
- .tray { flex-direction: row; justify-content: center; gap: 6px; padding: 4px; }
- .pile img { width: 18px; height: 18px; }
+ .tray-box { gap: 4px; padding: 4px; }
+ .tray { gap: 2px; padding: 3px; }
+ .start-row .btn { height: 52px; }
+ .mode button { padding: 5px 2px; }
+ .mode button small { font-size: 9.5px; }   /* 좁은 칸에서 "러시 / 토큰 / …"처럼 한 낱말씩 끊기지 않게 */
  .seat { padding: 10px; gap: 6px; }
  .seat .glass { height: 54px; }
- .mode button { padding: 4px 10px; }
 }
 
 
@@ -2525,13 +2623,12 @@ button
 
     /* ----- 게임 준비 화면 ----- */
     .table { gap: 8px; padding: 0 12px 10px; }
-    .band { padding: 8px 12px; gap: 8px; border-radius: 12px; }
-    .band i { width: 28px; height: 28px; font-size: 14px; }
-    .band b { font-size: 15px; }
-    .band small { font-size: 11px; }
-    .band p { display: none; }                    /* "1 말 놓기 › 2 재료 담기 › 3 게임 시작"은 숨김 (번호 동그라미로 충분) */
+    .mid .band { padding: 8px 12px; gap: 8px; border-radius: 12px; }
+    .mid .band i { width: 28px; height: 28px; font-size: 14px; }
+    .mid .band b { font-size: 15px; }
+    .mid .band small { font-size: 11px; }
     .tgrid { display: flex; flex-direction: column; gap: 8px; }
-    .mid { display: contents; }
+    .mid, .side-col { display: contents; }       /* 안내 띠 → 재료판 → 내 판 → 난이도 · OPEN 순서로 위아래 */
     .t-board { order: 1; width: min(calc(100vw - 24px), 33dvh); align-self: center; gap: 5px; padding: 7px; }
     .seat.me { order: 2; flex: 1; padding: 8px 10px; overflow: auto; scrollbar-width: none; }
     .seat.me .tiles { display: none; }            /* 준비 때는 업그레이드가 모두 꺼져 있어서 숨김 */
@@ -2539,9 +2636,9 @@ button
     .table:not(.cupping) .seat.me .cups { display: none; }   /* 말 놓을 때: 내 주문을 보고 칸 고르기 */
     .table.cupping .seat.me .pboard { display: none; }       /* 재료 담을 때: 내 컵 */
     .seat.ai, .supply { display: none; }
-    .start-row { order: 3; max-width: none; }
+    .start-row { order: 3; flex-direction: row; margin-top: 0; }   /* 난이도 · OPEN 한 줄 */
+    .start-row .btn { flex: 1; height: auto; }
     .mode > b { display: none; }                  /* "난이도" 글자: 좁아서 세로로 깨짐 → 쉬움 · 보통 버튼으로 충분 */
-    .mode small { word-break: keep-all; }         /* "그대 / 로"처럼 낱말 중간에서 안 끊기게 */
     .seat .glass { height: 60px; }
 
     /* ----- 창 (? 게임 방법 · 결과 · 설정) ----- */

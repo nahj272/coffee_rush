@@ -44,21 +44,24 @@
 
     <!-- ===== 세팅 화면 (게임 시작 전 테이블) ===== -->
     <section class="table" id="table">
-        <!-- 지금 할 일 안내 띠 -->
-        <div class="band" id="setupBand"></div>
-
         <div class="tgrid">
             <!-- 왼쪽: 내 개인 판 -->
             <div class="seat me" id="seatMe"></div>
 
-            <!-- 가운데: 재료판 · 재료 토큰 · 게임 시작 -->
+            <!-- 가운데: 안내 띠 · 재료판 | 오른쪽 칸: 재료 토큰 상자 · 난이도 · OPEN -->
             <div class="mid">
+                <!-- 지금 할 일 안내 띠 (재료판 위) -->
+                <div class="band" id="setupBand"></div>
                 <div class="board t-board" id="tBoard"></div>
-                <div class="supply" id="supply"></div>
-                <!-- 난이도 고르기 + 게임 시작 -->
-                <div class="start-row">
-                    <div class="mode" id="modeBox"></div>
-                    <button class="btn main open" type="button" id="startBtn" aria-label="게임 시작">OPEN</button>
+
+                <div class="side-col">
+                    <!-- 재료 토큰: 2×2 칸 상자 2개 (draw.js가 채움) -->
+                    <div class="supply" id="supply"></div>
+                    <!-- 난이도 고르기 + 게임 시작 -->
+                    <div class="start-row">
+                        <div class="mode" id="modeBox"></div>
+                        <button class="btn main open" type="button" id="startBtn" aria-label="게임 시작">OPEN</button>
+                    </div>
                 </div>
             </div>
 
