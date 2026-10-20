@@ -595,14 +595,13 @@ function drawTable() {
   $('startBtn').disabled = !ready;
 
   // 난이도 고르기 (게임 시작 버튼 왼쪽)
+  // 쉬움: 러시 토큰 2개로 시작 · 보통: 원작 규칙 그대로 (설명은 버튼에 쓰지 않음)
   const modes = [
-    { key: 'easy', name: '쉬움', desc: '러시 토큰 2개로 시작' },
-    { key: 'normal', name: '보통', desc: '원작 규칙 그대로' },
+    { key: 'easy', name: '쉬움' },
+    { key: 'normal', name: '보통' },
   ];
-  $('modeBox').innerHTML = '<b>난이도</b>' + modes.map((m) =>
-    `<button class="${mode === m.key ? 'on' : ''}" type="button" data-mode="${m.key}">
-       ${m.name}<small>${m.desc}</small>
-     </button>`).join('');
+  $('modeBox').innerHTML = modes.map((m) =>
+    `<button class="${mode === m.key ? 'on' : ''}" type="button" data-mode="${m.key}">${m.name}</button>`).join('');
 }
 
 

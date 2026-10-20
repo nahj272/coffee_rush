@@ -1053,11 +1053,14 @@ button
 
 /* 왼쪽 내 판 · 가운데 · 오른쪽 AI 판 */
 /* 게임 준비 화면 크기 (PC)
-   --seat: 양옆 개인 판 너비 · --side: 재료판 오른쪽 칸 너비 · --below: 재료판 위아래로 쓰는 높이 */
+   --seat: 양옆 개인 판 너비 · --below: 재료판 위아래로 쓰는 높이
+   --side: 재료판 오른쪽 칸 너비 = 재료판 크기의 절반쯤 → 재료 상자 2개가 칸 높이를 빈틈없이 채움
+   (--board: 오른쪽 칸 너비를 정하려고 미리 어림한 재료판 크기) */
 .tgrid
 {--seat: 340px;
- --side: 184px;
  --below: 230px;
+ --board: min(calc(100vh - var(--below)), 640px, calc((100vw - 88px - var(--seat) * 2) / 1.5));
+ --side: clamp(184px, calc(var(--board) / 2 - 32px), 280px);
  flex: 1;
  min-height: 0;
  display: grid;
@@ -1200,7 +1203,7 @@ button
  background: rgba(255, 255, 255, 0.12);}
 
 .tray small
-{font-size: clamp(10px, 7cqw, 12px);
+{font-size: clamp(10px, 7cqw, 14px);
  line-height: 1.2;}
 
 /* 지금 가져갈 재료 칸 */
@@ -1253,24 +1256,14 @@ button
 
 .mode
 {display: flex;
- flex-wrap: wrap;
- align-items: center;
  gap: 6px;
  padding: 6px;
  border-radius: 10px;
  background: rgba(255, 255, 255, 0.08);}
 
-.mode b
-{width: 100%;
- padding-left: 4px;
- font-size: 13px;}
-
 .mode button
 {flex: 1;
- display: flex;
- flex-direction: column;
- align-items: center;
- padding: 6px 4px;
+ padding: 8px 4px;
  border: 2px solid transparent;
  border-radius: 8px;
  background: rgba(255, 255, 255, 0.1);
@@ -1279,24 +1272,15 @@ button
  font-weight: 800;
  cursor: pointer;}
 
-.mode button small
-{font-size: 10.5px;
- text-align: center;
- word-break: keep-all;
- font-weight: 500;
- opacity: 0.8;}
-
 /* 고른 난이도 */
 .mode button.on
 {border-color: #F2C230;
  background: #F2C230;
  color: var(--dark-text);}
 
-/* 오른쪽 칸이 낮을 때(재료판이 작은 화면): 난이도 설명 · "난이도" 글자를 빼서 재료 상자 자리를 넓힘 */
+/* 오른쪽 칸이 낮을 때(재료판이 작은 화면): OPEN을 조금 낮춰 재료 상자 자리를 넓힘 */
 @container (max-height: 500px)
 {
- .mode b,
- .mode button small { display: none; }
  .start-row .btn { height: 46px; }
 }
 
@@ -1480,8 +1464,6 @@ button
  .tray-box { gap: 4px; padding: 4px; }
  .tray { gap: 2px; padding: 3px; }
  .start-row .btn { height: 52px; }
- .mode button { padding: 5px 2px; }
- .mode button small { font-size: 9.5px; }   /* 좁은 칸에서 "러시 / 토큰 / …"처럼 한 낱말씩 끊기지 않게 */
  .seat { padding: 10px; gap: 6px; }
  .seat .glass { height: 54px; }
 }
@@ -2638,7 +2620,6 @@ button
     .seat.ai, .supply { display: none; }
     .start-row { order: 3; flex-direction: row; margin-top: 0; }   /* 난이도 · OPEN 한 줄 */
     .start-row .btn { flex: 1; height: auto; }
-    .mode > b { display: none; }                  /* "난이도" 글자: 좁아서 세로로 깨짐 → 쉬움 · 보통 버튼으로 충분 */
     .seat .glass { height: 60px; }
 
     /* ----- 창 (? 게임 방법 · 결과 · 설정) ----- */
