@@ -1455,7 +1455,7 @@ button
 
  /* 세팅 화면: 오른쪽 칸을 조금 좁게 · 토큰 작게 */
  .table { padding: 2px 24px 12px; }
- .tgrid { --side: 150px; --below: 190px; }
+ .tgrid { --below: 190px; --side: clamp(150px, calc(var(--board) / 2 - 32px), 280px); }   /* 오른쪽 칸은 150px까지 좁아질 수 있음 */
  .mid { row-gap: 8px; }
  .mid .band { padding: 8px 14px; }
  .mid .band b { font-size: 15px; }
