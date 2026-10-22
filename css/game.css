@@ -714,6 +714,11 @@ button
  font-weight: 800;
  margin-bottom: 2px;}
 
+/* 제목 앞 번호 · 얇은 상태줄: 노트북에서만 보임 (아래 "노트북: 단계 줄 대신 상태줄") */
+.panel-title i,
+.bar
+{display: none;}
+
 .panel-text
 {font-size: 12px;
  color: var(--sub-text);
@@ -1917,6 +1922,41 @@ button
 
 @media (max-height: 820px) { .panel.fix { height: 176px; } }
 @media (max-height: 720px) { .panel.fix { height: 168px; } }
+
+/* 노트북 (세로가 짧을 때): 단계 줄 대신 안내 칸 위 얇은 상태줄 · 안내 칸 낮게 → 재료판이 커짐 */
+@media (min-width: 1025px) and (max-height: 820px)
+{
+ .center { grid-template-rows: auto minmax(0, 1fr); gap: 8px; }
+ .center .steps { display: none; }
+
+ .panel { position: relative; min-height: 150px; padding: 16px 14px 10px; }
+ .panel.fix { height: 150px; }
+ .bar { position: absolute; top: 8px; left: 16px; right: 16px; display: flex; gap: 4px; }
+ .bar span { flex: 1; height: 4px; border-radius: 2px; background: rgba(0, 0, 0, 0.08); }
+ .bar span.on { background: var(--btn-orange); }
+ .bar.ai span.on { background: var(--ai); }
+
+ .panel-title { font-size: 17px; margin-bottom: 0; }
+ .panel-title i
+ {display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--btn-orange);
+  color: #fff;
+  font-style: normal;
+  font-size: 12px;
+  vertical-align: 2px;}
+
+ .panel-text { line-height: 1.4; margin-bottom: 6px; }
+ .up { padding: 6px 10px; margin-bottom: 6px; }
+ .up-btn { padding: 6px 10px; }
+ .hint { margin-top: 8px; padding: 7px 12px; }
+ .pick { padding: 5px 0 4px; }
+ .pick img { width: 22px; height: 22px; }
+}
 
 /* =========================================
    좋아요 · 싫어요 손 아이콘 (logo/아이콘/like · dislike)

@@ -248,6 +248,13 @@ function drawSteps() {
   });
 
   $('steps').innerHTML = html;
+
+  // 노트북: 안내 칸 위의 얇은 상태줄 (지금 단계까지 채움)
+  $('bar').className = game.turn === 'ai' ? 'bar ai' : 'bar';
+  $('bar').innerHTML = STEPS.map((_, i) => {
+    const on = !game.over && !game.setup && i < game.step;
+    return `<span class="${on ? 'on' : ''}"></span>`;
+  }).join('');
 }
 
 
@@ -263,24 +270,24 @@ function cupImg(can) {
 // 상황마다 바뀌는 제목 · 설명 · 버튼 글자
 // sub: 왼쪽 버튼 글자 (없으면 버튼 숨김)
 const GUIDE = {
-  0: { title: '내 말을 놓을 칸을 고르세요',
-       text: '재료판에서 원하는 칸을 누르세요.<br>AI 말(파랑)이 있는 칸은 안 돼요.' },
-  setup: { title: '시작 재료를 컵에 담으세요',
-           text: '말을 놓은 칸의 재료 1개를 갖고 시작해요.<br>담을 컵을 누르세요.',
+  0: { title: '내 말을 놓을 칸을 골라요',
+       text: '재료판에서 원하는 칸을 눌러요.<br>AI 말(파랑)이 있는 칸은 안 돼요.' },
+  setup: { title: '시작 재료를 컵에 담아요',
+           text: '말을 놓은 칸의 재료 1개를 갖고 시작해요.<br>담을 컵을 눌러요.',
            next: '버리고 시작하기' },
-  1: { title: '말을 움직이세요',
-       text: '옆 칸을 하나씩 눌러 1~3칸 움직여요.<br>지나온 칸의 재료를 모두 받아요.',
+  1: { title: '말을 이동시켜요',
+       text: '1~3칸 이동해요.',
        sub: '되돌리기' },
-  2: { title: '받은 재료를 컵에 담으세요',
-       text: '재료를 고르고 담을 컵을 누르세요.<br>담기 싫은 재료는 버려요.',
+  2: { title: '받은 재료를 컵에 담아요',
+       text: '재료를 고르고 담을 컵을 눌러요.<br>담기 싫은 재료는 버려요.',
        next: '남은 재료 버리기', sub: '되돌리기' },
-  3: { title: '주문을 내고 차례를 끝내세요',
-       text: '초록 테두리 주문을 누르면 컵을 내요.<br>다 했으면 "차례 끝내기"를 누르세요.',
+  3: { title: '주문을 내고 차례를 끝내요',
+       text: '초록 테두리 주문을 누르면 컵을 내요.<br>다 했으면 "차례 끝내기"를 눌러요.',
        next: '차례 끝내기', sub: '되돌리기' },
   ai: { title: 'AI 바리스타 차례예요',
         text: '잠시만 기다려 주세요.' },
   over: { title: '게임이 끝났어요',
-          text: '결과 창에서 점수를 확인하세요.' },
+          text: '결과 창에서 점수를 확인해요.' },
 };
 
 // 낼 수 있는 주문 하나 찾아서 문구로 (없으면 '')
@@ -320,13 +327,14 @@ function hintText() {
     // 다른 말이 있는 칸에서는 멈출 수 없음
     if (game.path.length && !canStop()) {
       const more = left ? '한 칸 더 가거나 ' : '';
-      return { text: `다른 말이 있는 칸에서는 멈출 수 없어요. ${more}되돌리기를 누르세요`, warn: true };
+      return { text: `다른 말이 있는 칸에서는 멈출 수 없어요. ${more}되돌리기를 눌러요`, warn: true };
     }
     // 끝까지 갔는데 러시 토큰이 남아 있으면: 멈출지, 더 갈지 고르기
     if (game.path.length && left === 0) {
-      return { text: `재료 ${got}개 · 여기서 멈추거나, +1칸으로 더 가세요` };
+      return { text: `재료 ${got}개 · 여기서 멈추거나, +1칸으로 더 가요` };
     }
     if (got) return { text: `재료 ${got}개 · 여기서 멈추거나 ${left}칸 더 갈 수 있어요` };
+    if (left === 3) return null;   // 위 설명(1~3칸 이동해요)과 같은 말이라 숨김
     return { text: `1~${left}칸 움직일 수 있어요` };
   }
 
@@ -344,7 +352,7 @@ function hintText() {
     // 낼 주문이 없으면: 차례를 끝낼 때 싫어요가 생기는지 알려줌
     const lost = game.me.queue[3].length;
     if (lost) return { text: `차례를 끝내면 4단 주문 ${lost}장이 싫어요가 돼요`, warn: true };
-    return { text: '낼 수 있는 주문이 없어요. 차례를 끝내세요' };
+    return { text: '낼 수 있는 주문이 없어요. 차례를 끝내요' };
   }
 
   return null;
@@ -358,7 +366,9 @@ function drawPanel() {
   if (game.over) key = 'over';
   const guide = GUIDE[key];
 
-  $('title').textContent = guide.title;
+  // 내 차례 1~3단계: 제목 앞 번호 (노트북에서만 보임)
+  const num = [1, 2, 3].includes(key) ? `<i>${key}</i>` : '';
+  $('title').innerHTML = num + guide.title;
   $('text').innerHTML = guide.text;
 
   // AI 차례: AI가 한 일을 한 줄씩 보여줌
@@ -412,7 +422,7 @@ function drawPanel() {
 
   // 컵 위 작은 안내
   if (game.step === 2 && game.picks.length) {
-    $('cupsHint').textContent = `${josa(ITEMS[game.picks[game.picked]].name, '을/를')} 담을 컵을 누르세요`;
+    $('cupsHint').textContent = `${josa(ITEMS[game.picks[game.picked]].name, '을/를')} 담을 컵을 눌러요`;
   } else {
     $('cupsHint').textContent = '';
   }
@@ -487,7 +497,7 @@ function drawUpgrade() {
   const up = UPGRADES.find((u) => u.key === game.upPick);
   let html = `<div class="up-head">
                 <b>${up ? `'${up.name}'${josa(up.name, '을/를', true)} 켤까요?` : '업그레이드할 수 있어요'}</b>
-                <small>${up ? '처리한 주문 3장을 써요 · +2점' : '왼쪽 판에서 타일을 고르세요 · 안 켜려면 그냥 움직이세요'}</small>
+                <small>${up ? '처리한 주문 3장을 써요 · +2점' : '왼쪽 판에서 타일을 골라요 · 안 켜도 돼요'}</small>
               </div>`;
   if (up) html += `<button class="up-btn" type="button">켜기</button>`;
 
@@ -579,16 +589,16 @@ function drawTable() {
   const nth = game.setup ? game.me.pawns.length : game.me.pawns.length + 1;   // 내 몇 번째 말인지
   const firstSub = game.first === 'me' ? '내가 선플레이어예요' : 'AI가 선플레이어예요';
   let num = 1;
-  let msg = `재료판에서 ${nth === 1 ? '첫' : '두'} 번째 말을 놓으세요 (${nth}/2)`;
+  let msg = `재료판에서 ${nth === 1 ? '첫' : '두'} 번째 말을 놓아요 (${nth}/2)`;
   let sub = firstSub;
   if (game.setup) {
     num = 2;
-    msg = `${icon(game.picks[0])} ${ITEMS[game.picks[0]].name} 토큰을 담을 내 컵을 누르세요`;
-    sub = '다른 칸으로 바꾸려면 재료판을 다시 누르세요';
+    msg = `${icon(game.picks[0])} ${ITEMS[game.picks[0]].name} 토큰을 담을 내 컵을 눌러요`;
+    sub = '다른 칸으로 바꾸려면 재료판을 다시 눌러요';
   }
   if (ready) {
     num = 3;
-    msg = '준비 끝! OPEN을 누르세요';
+    msg = '준비 끝! 손님을 받아 볼까요?';
     sub = firstSub;
   }
   $('setupBand').innerHTML = `<i>${num}</i><div><b>${msg}</b><small>${sub}</small></div>`;
