@@ -5,8 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>coffee rush</title>
+    <!-- 로고 글꼴(Grandiflora One): CSS 안 @import 대신 여기서 바로 → 한 단계 덜 기다림 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grandiflora+One&display=swap">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/main.css">
+    <!-- 메인을 보는 동안 게임 화면 파일을 미리 받아 둠 (한가할 때 조용히) → 게임 시작 · 게스트 · 튜토리얼을 누르면 바로 열림 -->
+    <link rel="prefetch" href="page/game.html">
+    <link rel="prefetch" href="css/game.css">
+    <link rel="prefetch" href="js/data.js">
+    <link rel="prefetch" href="js/draw.js">
+    <link rel="prefetch" href="js/state.js">
+    <link rel="prefetch" href="js/rules.js">
+    <link rel="prefetch" href="js/turn.js">
+    <link rel="prefetch" href="js/ai.js">
+    <link rel="prefetch" href="js/settings.js">
+    <link rel="prefetch" href="js/tutorial.js">
+    <link rel="prefetch" href="js/click.js">
+    <link rel="prefetch" href="logo/아이콘/dislike-white.svg">
+    <link rel="prefetch" href="logo/아이콘/tile-pawn.svg">
+    <link rel="prefetch" href="logo/아이콘/tile-diagonal.svg">
+    <link rel="prefetch" href="logo/아이콘/tile-corner.svg">
+    <link rel="prefetch" href="logo/아이콘/tile-special.svg">
+    <link rel="prefetch" href="logo/아이콘/lock.svg">
 </head>
 
 <body>
@@ -18,9 +40,6 @@
         </div>
 
         <button type="button" class="log" id="loginTrigger">로그인</button>
-        <!-- <div class="log">로그인</div> -->
-
-
     </header>
 
     <!-- 중앙 히어로 메인 섹션 -->
@@ -83,6 +102,7 @@
             <button type="button" class="modal-btn-img-wrap" id="googleLoginBtn">
                 <img class="modal-btn-img" src="logo/Google.svg" alt="Google로 계속하기">
             </button>
+            <p class="g-wait">로그인 중…</p>
             <div class="modal-divider"><span class="line"></span><span>또는</span><span class="line"></span></div>
             <button type="button" class="modal-btn-img-wrap" id="guestLoginBtn">
                 <img class="modal-btn-img" src="logo/게스트 체험 버튼.svg" alt="게스트로 체험하기">
@@ -286,11 +306,12 @@
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-    <script src="js/firebase.js"></script>
     <script src="js/main.js"></script>
+    <!-- Firebase는 맨 끝에 defer로: 화면을 먼저 보여 주고 뒤에서 받음 (로그인 버튼을 누를 때만 씀) -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" defer></script>
+    <script src="js/firebase.js" defer></script>
 </body>
 
 </html>

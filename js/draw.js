@@ -533,6 +533,21 @@ function drawResult() {
     ${line(`${DISLIKE}싫어요 (×1)`, `−${me.penalty}`, `−${ai.penalty}`)}
     ${line('러시 토큰 (동점일 때)', me.rush, ai.rush)}
     <tr class="total"><th>합계</th><td>${score(me)}점</td><td>${score(ai)}점</td></tr>`;
+
+  // 게스트: 로그인 안내 (처음 온 사람은 이번 판이 첫 기록) · 여기서 로그인했으면 한 줄 알림
+  const box = $('resultLogin');
+  if (!set.user) {
+    const lead = win === 'me' ? '지금 로그인하면 이번 승리가 첫 기록이 돼요' : '지금 로그인하면 이번 판부터 기록이 시작돼요';
+    box.innerHTML = `<b>${lead}</b>
+      <small>내 닉네임으로 플레이 · 승률 · 전적 기록</small>
+      <button class="g-btn" type="button"><img src="../logo/Google.svg" alt="Google로 계속하기"></button>
+      <small class="g-wait">로그인 중…</small>`;
+  } else if (game.login === 'new') {
+    box.innerHTML = '<b>이번 판이 첫 기록이 됐어요 ✓</b>';
+  } else if (game.login === 'back') {
+    box.innerHTML = '<b>로그인했어요 · 다음 판부터 기록돼요</b>';
+  }
+  box.hidden = !!set.user && !game.login;
 }
 
 
@@ -610,8 +625,13 @@ function drawTable() {
     { key: 'easy', name: '쉬움' },
     { key: 'normal', name: '보통' },
   ];
-  $('modeBox').innerHTML = modes.map((m) =>
-    `<button class="${mode === m.key ? 'on' : ''}" type="button" data-mode="${m.key}">${m.name}</button>`).join('');
+  // 게스트는 [보통]이 잠김 (자물쇠 · 누르면 로그인 안내)
+  $('modeBox').innerHTML = modes.map((m) => {
+    if (m.key === 'normal' && !set.user) {
+      return `<button class="lock" type="button" data-mode="normal" title="로그인하면 보통 난이도를 할 수 있어요"><img src="../logo/아이콘/lock.svg" alt="">${m.name}</button>`;
+    }
+    return `<button class="${mode === m.key ? 'on' : ''}" type="button" data-mode="${m.key}">${m.name}</button>`;
+  }).join('');
 }
 
 

@@ -76,8 +76,13 @@ function clickCell(i) {
 }
 
 // 세팅 화면: 난이도 고르기 (게임 시작 전에만)
+// 게스트가 잠긴 [보통]을 누르면 → 설정 창의 로그인 안내
 function pickMode(key) {
   if (!game.table) return;
+  if (key === 'normal' && !set.user) {
+    openSet();
+    return;
+  }
   mode = key;
   draw();
 }
@@ -337,8 +342,11 @@ document.addEventListener('keydown', (e) => {
 /* ===== 시작: 첫 화면 그리기 ===== */
 draw();
 
-// '게스트로 체험하기'로 들어왔을 때만 게임 방법 창을 한 번 열기
-// 메인 게임 방법 5쪽의 [튜토리얼]로 들어왔으면 튜토리얼 시작
-// (main.js가 남긴 표시를 읽자마자 지움 → 새로고침하면 게임 준비 화면만 나옴)
+// 메인에서 어떻게 들어왔는지에 따라 한 번만 (main.js가 남긴 표시를 읽자마자 지움 → 새로고침하면 게임 준비 화면만 나옴)
+//   [튜토리얼] → 튜토리얼 시작 / '게스트로 체험하기' → 게임 방법 창
+//   구글 로그인 처음 → 닉네임 정하기 창 / 다시 옴 → 인사 / 메인의 닉네임 버튼 → 설정 창
 if (takeFlag('coffeeRushTut')) startTutorial();
 else if (takeFlag('coffeeRushHelp')) openHelp();
+else if (takeFlag('coffeeRushNew')) openWelcome();
+else if (takeFlag('coffeeRushHi')) sayHi();
+else if (takeFlag('coffeeRushSet')) openSet();

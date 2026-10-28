@@ -1,5 +1,6 @@
 // 로그인 모달 / 게임 방법 모달 열기·닫기
-document.addEventListener('DOMContentLoaded', () => {
+// (index.html 맨 아래에서 읽으므로 화면은 이미 다 있음 → 바로 실행)
+(() => {
   /* ===== 게임 시작: 게임 화면(page/game.html)으로 이동 ===== */
   const goGame = () => {
     location.href = 'page/game.html';
@@ -23,6 +24,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const googleLoginBtn = document.getElementById('googleLoginBtn');
   const guestLoginBtn = document.getElementById('guestLoginBtn');
 
+  // 브라우저에 저장된 설정 · 기록 (게임 화면 settings.js와 같은 저장 칸)
+  const readSaved = () => {
+    try { return JSON.parse(localStorage.getItem('coffeeRush')) || {}; } catch (e) { return {}; }
+  };
+
+  // 로그인했으면 오른쪽 위 버튼에 닉네임 (누르면 게임 화면의 설정 창으로)
+  const me = readSaved().user;
+  if (loginTrigger && me) {
+    loginTrigger.textContent = me.nickname;
+    loginTrigger.classList.add('on');
+    loginTrigger.title = '내 정보 · 설정';
+  }
+
   const openLoginModal = () => {
     loginModal.classList.add('active');
   };
@@ -32,13 +46,14 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   if (loginTrigger && loginModal) {
-    loginTrigger.addEventListener('click', openLoginModal);
-
-    // 게임 설정의 '로그인하러 가기'로 왔을 때만 로그인 창을 바로 열기 (한 번 읽으면 지움)
-    try {
-      if (sessionStorage.getItem('coffeeRushLogin') === '1') openLoginModal();
-      sessionStorage.removeItem('coffeeRushLogin');
-    } catch (e) {}
+    loginTrigger.addEventListener('click', () => {
+      if (readSaved().user) {
+        try { sessionStorage.setItem('coffeeRushSet', '1'); } catch (e) {}   // 게임 화면에서 설정 창을 바로 열게
+        goGame();
+      } else {
+        openLoginModal();
+      }
+    });
 
     // 모달 바깥(오버레이) 클릭 시 닫기
     loginModal.addEventListener('click', (e) => {
@@ -46,21 +61,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 구글 로그인 버튼 → 성공하면 기록을 저장해 두고 게임 화면으로
+  // 구글 로그인 버튼 → 게임 화면으로
+  //   다시 온 사람: 저장된 닉네임 · 기록을 넣어 두고 → 게임 화면에서 인사
+  //   처음 온 사람: 아직 기록 없음 → 게임 화면에서 닉네임 정하기
   if (googleLoginBtn) {
     googleLoginBtn.addEventListener('click', async () => {
+      if (typeof googleLogin !== 'function') return;   // Firebase를 아직 받는 중
+      document.body.classList.add('logging');          // 버튼을 흐리게 + "로그인 중…"
       try {
-        const rec = await googleLogin();
-        // 게임 화면(settings.js)이 읽는 저장 칸에 로그인 정보 · 기록을 넣어 둠
-        const saved = JSON.parse(localStorage.getItem('coffeeRush')) || {};
-        saved.user = { nickname: rec.nickname };
-        saved.wins = rec.wins;
-        saved.losses = rec.losses;
-        saved.ties = rec.ties;
+        const rec = await googleLogin();   // 처음 온 사람은 null
+        const saved = readSaved();
+        applyLogin(saved, rec);
         localStorage.setItem('coffeeRush', JSON.stringify(saved));
-        goGame();   // 게스트처럼 바로 게임 화면으로
+        sessionStorage.setItem(rec ? 'coffeeRushHi' : 'coffeeRushNew', '1');
+        goGame();
       } catch (e) {
         console.log('로그인 취소 또는 실패', e);   // 창을 닫았을 때 등 → 그대로 둠
+        document.body.classList.remove('logging');
       }
     });
   }
@@ -255,4 +272,4 @@ document.addEventListener('DOMContentLoaded', () => {
       showRulePage(currentPage - 1);
     }
   });
-});
+})();

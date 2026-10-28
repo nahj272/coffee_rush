@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Grandiflora+One&display=swap');
-
 /* ===== 색 (main.css와 같은 이름) ===== */
 :root
 {--font: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;   /* 기본(시스템) 글꼴: 윈도우는 맑은 고딕, 맥은 애플 SD 고딕 */
@@ -13,8 +11,12 @@
  --line: #E4D8C8;        /* 옅은 선 */
  --me: #E1552E;          /* 내 말 */
  --ai: #4A8FD6;          /* AI 말 */
- --pawn-me: var(--me);   /* 말 · 업그레이드 카드 색 (설정에서 바꿈) */
+ --pawn-me: var(--me);   /* 나 · AI를 나타내는 색: 말 · 업그레이드 · 차례 표시 · 판 강조 · 결과 (설정에서 바꿈) */
  --pawn-ai: var(--ai);
+ --path-me: #F7A88A;     /* 지나온 칸 (옅은 색) */
+ --path-ai: #9CC3EC;
+ --rnum-me: #B83A2A;     /* 개인 판 주문 번호 띠 */
+ --rnum-ai: var(--ai);
  --ribbon: #F2C230;}     /* 스페셜 리본 */
 
 /* 둘레 여백이 큰 아이콘(스팀 · 초콜릿)은 조금 키움 */
@@ -73,9 +75,12 @@ button
  font-size: 14px;
  font-weight: 700;}
 
-/* AI 차례일 때는 파란색 */
+/* 내 차례 · AI 차례는 각자 말 색 (게임 준비 · 게임 끝은 주황) */
+.turn.me
+{background: var(--pawn-me);}
+
 .turn.ai
-{background: var(--ai);}
+{background: var(--pawn-ai);}
 
 .stats
 {display: flex;
@@ -282,7 +287,7 @@ button
  flex-shrink: 0;
  padding-top: 4px;
  border-radius: 5px;
- background: #B83A2A;
+ background: var(--rnum-me);
  color: #fff;
  font-size: 12px;
  font-weight: 800;
@@ -461,16 +466,16 @@ button
  height: 14px;}
 
 
-/* ----- AI 개인 판: 번호 띠 파랑 ----- */
+/* ----- AI 개인 판: 번호 띠는 AI 색 ----- */
 .orders.ai .rnum
-{background: var(--ai);}
+{background: var(--rnum-ai);}
 
-/* 지금 차례인 쪽 판 강조 */
+/* 지금 차례인 쪽 판 강조 (각자 말 색) */
 .orders.on
-{box-shadow: 0 0 0 3px var(--btn-orange);}
+{box-shadow: 0 0 0 3px var(--pawn-me);}
 
 .orders.ai.on
-{box-shadow: 0 0 0 3px var(--ai);}
+{box-shadow: 0 0 0 3px var(--pawn-ai);}
 
 
 /* =========================================
@@ -556,18 +561,18 @@ button
 {transform: translateY(-2px);
  box-shadow: 0 0 0 3px #fff;}
 
-/* AI가 지나온 칸 (파랑) */
+/* AI가 지나온 칸 (AI 색) */
 .cell.path.ai
-{border-color: #9CC3EC;
- box-shadow: 0 0 0 3px #9CC3EC;}
+{border-color: var(--path-ai);
+ box-shadow: 0 0 0 3px var(--path-ai);}
 
 .cell.ai .num
-{background: var(--ai);}
+{background: var(--pawn-ai);}
 
-/* 이번 차례에 지나온 칸 */
+/* 이번 차례에 지나온 칸 (내 색) */
 .cell.path
-{border-color: #F7A88A;
- box-shadow: 0 0 0 3px #F7A88A;}
+{border-color: var(--path-me);
+ box-shadow: 0 0 0 3px var(--path-me);}
 
 /* 지나온 순서 번호 */
 .num
@@ -577,7 +582,7 @@ button
  width: 22px;
  height: 22px;
  border-radius: 50%;
- background: var(--btn-orange);
+ background: var(--pawn-me);
  color: #fff;
  font-size: 12px;
  font-weight: 700;
@@ -643,7 +648,7 @@ button
 {background: #fff;}
 
 .steps li.now
-{background: var(--btn-orange);
+{background: var(--pawn-me);
  color: #fff;}
 
 .steps li.done i,
@@ -654,19 +659,19 @@ button
  display: grid;
  place-items: center;
  background: #fff;
- color: var(--btn-orange);}
+ color: var(--pawn-me);}
 
 .steps li.done i
 {background: var(--line);
  color: var(--sub-text);}
 
-/* AI 차례: 단계 표시 파랑 */
+/* AI 차례: 단계 표시 AI 색 */
 .steps.ai li.now
-{background: var(--ai);}
+{background: var(--pawn-ai);}
 
 .steps.ai li.now i,
 .steps.ai li.done i
-{color: var(--ai);}
+{color: var(--pawn-ai);}
 
 /* AI가 한 일 목록 */
 .log
@@ -1289,6 +1294,18 @@ button
  .start-row .btn { height: 46px; }
 }
 
+/* 게스트: [보통]은 잠김 (자물쇠 · 누르면 설정 창의 로그인 안내) */
+.mode button.lock
+{display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 4px;
+ opacity: 0.6;}
+
+.mode button.lock img
+{width: 15px;
+ height: 15px;}
+
 /* 맨 위 줄 난이도 표시 */
 .mode-tag
 {padding: 5px 12px;
@@ -1309,6 +1326,7 @@ button
  inset: 0;
  display: grid;
  place-items: center;
+ padding: 16px;
  background: rgba(30, 20, 14, 0.7);
  z-index: 10;}
 
@@ -1317,6 +1335,9 @@ button
 
 .result-card
 {width: 540px;
+ max-height: 100%;          /* 세로가 짧은 화면(휴대폰)에서는 카드 안에서 스크롤 */
+ overflow-y: auto;
+ scrollbar-width: none;
  padding: 32px 36px 28px;
  border-radius: 20px;
  background: var(--paper);
@@ -1380,8 +1401,8 @@ button
  font-size: 28px;
  font-weight: 800;}
 
-.result-title.me { color: var(--btn-orange); }
-.result-title.ai { color: var(--ai); }
+.result-title.me { color: var(--pawn-me); }
+.result-title.ai { color: var(--pawn-ai); }
 
 .result-reason
 {margin-top: 4px;
@@ -1415,8 +1436,8 @@ button
 {font-size: 13px;
  color: var(--dark-text);}
 
-.score .names td:nth-child(2) { color: var(--btn-orange); }
-.score .names td:nth-child(3) { color: var(--ai); }
+.score .names td:nth-child(2) { color: var(--pawn-me); }
+.score .names td:nth-child(3) { color: var(--pawn-ai); }
 
 /* 표 맨 아래: 합계 */
 .score .total th,
@@ -1652,7 +1673,7 @@ button
  width: 16px;
  height: 16px;
  border-radius: 50%;
- background: var(--me);
+ background: var(--pawn-me);
  border: 2px solid #fff;
  animation: pawn 4s infinite;}
 
@@ -1933,8 +1954,8 @@ button
  .panel.fix { height: 150px; }
  .bar { position: absolute; top: 8px; left: 16px; right: 16px; display: flex; gap: 4px; }
  .bar span { flex: 1; height: 4px; border-radius: 2px; background: rgba(0, 0, 0, 0.08); }
- .bar span.on { background: var(--btn-orange); }
- .bar.ai span.on { background: var(--ai); }
+ .bar span.on { background: var(--pawn-me); }
+ .bar.ai span.on { background: var(--pawn-ai); }
 
  .panel-title { font-size: 17px; margin-bottom: 0; }
  .panel-title i
@@ -2062,10 +2083,15 @@ button
  .orders .fill { --ing: 17px; }
 }
 
-/* 설정에서 "내 말 색: 파랑"을 고르면 (<html class="blue">) 내 말 파랑 · AI 말 빨강 */
+/* 설정에서 "내 말 색: 파랑"을 고르면 (<html class="blue">) 나 파랑 · AI 빨강
+   말뿐 아니라 나 · AI를 나타내는 색이 모두 바뀜 (차례 표시 · 판 강조 · 지나온 칸 · 단계 · 결과 · 점수표) */
 .blue
 {--pawn-me: var(--ai);
- --pawn-ai: var(--me);}
+ --pawn-ai: var(--me);
+ --path-me: #9CC3EC;
+ --path-ai: #F7A88A;
+ --rnum-me: var(--ai);
+ --rnum-ai: #B83A2A;}
 
 
 /* =========================================
@@ -2172,7 +2198,7 @@ button
 .nick-msg:empty
 {display: none;}
 
-/* 내 기록 3칸 */
+/* 내 기록 2칸: 승률 · 전적 */
 .rec
 {display: grid;
  grid-template-columns: repeat(2, 1fr);
@@ -2324,6 +2350,116 @@ button
 
 .set-note .set-btn
 {margin-top: 10px;}
+
+/* 처음 온 사람: 닉네임 정하기 창 (설정 창 모양을 같이 씀) */
+.hello h2
+{font-size: 20px;
+ font-weight: 800;}
+
+.hello p
+{margin: 4px 0 14px;
+ font-size: 14px;
+ color: var(--sub-text);}
+
+.hello .nick-msg
+{display: block;
+ font-size: 12px;
+ color: var(--btn-orange);}
+
+.hello .nick-msg:empty
+{display: none;}
+
+.hello-btns
+{display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 8px;
+ margin-top: 16px;}
+
+/* 다시 온 사람: 위쪽 가운데에 잠깐 뜨는 인사 */
+.hi
+{position: fixed;
+ top: 70px;
+ left: 50%;
+ max-width: calc(100% - 32px);
+ padding: 10px 20px;
+ border-radius: 20px;
+ background: var(--paper);
+ color: var(--dark-text);
+ font-size: 15px;
+ font-weight: 700;
+ text-align: center;
+ box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+ pointer-events: none;
+ z-index: 25;
+ animation: hi 2.5s ease forwards;}
+
+.hi[hidden]
+{display: none;}
+
+@keyframes hi
+{0% {opacity: 0; transform: translate(-50%, -8px);}
+ 12%, 80% {opacity: 1; transform: translate(-50%, 0);}
+ 100% {opacity: 0; transform: translate(-50%, 0);}}
+
+/* 구글 로그인 버튼 (설정 창 게스트 안내 · 결과 창) — 메인과 같은 그림 */
+.g-btn
+{display: block;
+ width: 100%;
+ margin-top: 10px;
+ padding: 0;
+ border: none;
+ border-radius: 12px;
+ background: none;
+ line-height: 0;
+ cursor: pointer;
+ transition: transform 0.2s ease;}
+
+.g-btn:hover
+{transform: translateY(-2px);}
+
+.g-btn img
+{width: 100%;
+ height: auto;}
+
+/* "로그인 중…": 평소엔 숨김 → 로그인하는 동안(<body class="logging">) 보임 · 버튼은 흐리게 */
+small.g-wait
+{display: none;
+ margin-top: 6px;
+ text-align: center;
+ font-size: 13px;
+ color: var(--sub-text);}
+
+.logging small.g-wait
+{display: block;}
+
+.logging .g-btn
+{opacity: 0.5;
+ pointer-events: none;}
+
+/* 결과 창: 게스트 로그인 안내 */
+.result-login
+{display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 2px;
+ margin: 16px 0 14px;
+ word-break: keep-all;      /* 줄이 바뀌어도 낱말 중간에서 끊기지 않게 */
+ padding: 14px 16px;
+ border-radius: 12px;
+ background: #FBF0D6;}
+
+.result-login[hidden]
+{display: none;}
+
+.result-login b
+{font-size: 15px;}
+
+.result-login small
+{font-size: 12px;
+ color: var(--sub-text);}
+
+.result-login .g-btn
+{max-width: 280px;}
 
 /* 노트북 (세로가 짧을 때): 설정 창 여백을 줄여 한 화면에 */
 @media (max-height: 720px)

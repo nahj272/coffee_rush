@@ -77,7 +77,7 @@ function endTurn(player) {
 function nextTurn() {
   // 싫어요 5장으로 이미 끝났으면 다음 차례 없이 결과 창
   if (game.over) {
-    saveRecord();   // 로그인했으면 연승 · 승률 기록 (settings.js)
+    saveRecord();   // 로그인했으면 승 · 패 · 무 기록 (settings.js)
     draw();
     return;
   }
@@ -101,6 +101,7 @@ function nextTurn() {
 
 // 다시 하기: 새 게임으로
 function restart() {
+  if (!set.user) mode = 'easy';   // 게스트는 쉬움만
   game = newGame();
   draw();
 }

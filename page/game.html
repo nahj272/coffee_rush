@@ -5,8 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>coffee rush - 게임</title>
+    <!-- 로고 글꼴(Grandiflora One): CSS 안 @import 대신 여기서 바로 → 한 단계 덜 기다림 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grandiflora+One&display=swap">
     <link rel="stylesheet" href="../css/reset.css">
     <link rel="stylesheet" href="../css/game.css">
+    <!-- 첫 화면 그림을 JS와 같이 미리 받기 (원래는 JS가 판을 그린 뒤에야 받기 시작해서 그림이 늦게 뜸) -->
+    <link rel="preload" as="image" href="../logo/재료토큰/coffee_beans.png">
+    <link rel="preload" as="image" href="../logo/재료토큰/milk_drop.png">
+    <link rel="preload" as="image" href="../logo/재료토큰/steam.svg">
+    <link rel="preload" as="image" href="../logo/재료토큰/ice.png">
+    <link rel="preload" as="image" href="../logo/재료토큰/caramel.svg">
+    <link rel="preload" as="image" href="../logo/재료토큰/tea-leaf.png">
+    <link rel="preload" as="image" href="../logo/재료토큰/water_drop.png">
+    <link rel="preload" as="image" href="../logo/재료토큰/chocolate.svg">
+    <link rel="preload" as="image" href="../logo/아이콘/cup.svg">
+    <link rel="preload" as="image" href="../logo/아이콘/like.svg">
+    <link rel="preload" as="image" href="../logo/아이콘/dislike.svg">
+    <link rel="preload" as="image" href="../logo/아이콘/dislike-white.svg">
+    <link rel="preload" as="image" href="../logo/아이콘/tile-pawn.svg">
+    <link rel="preload" as="image" href="../logo/아이콘/tile-diagonal.svg">
+    <link rel="preload" as="image" href="../logo/아이콘/tile-corner.svg">
+    <link rel="preload" as="image" href="../logo/아이콘/tile-special.svg">
+    <link rel="preload" as="image" href="../logo/아이콘/lock.svg">
 </head>
 
 <body>
@@ -198,6 +220,9 @@
 
             <table class="score" id="resultTable"></table>
 
+            <!-- 게스트: 로그인 안내 · 로그인했으면 한 줄 알림 (draw.js가 채움) -->
+            <div class="result-login" id="resultLogin" hidden></div>
+
             <div class="result-btns">
                 <button class="btn" type="button" id="homeBtn">메인으로</button>
                 <button class="btn main" type="button" id="againBtn">다시 하기</button>
@@ -324,23 +349,43 @@
         </div>
     </div>
 
-    <!-- 순서 중요: 정보 → 그리기 → 상태 → 규칙 → 차례 → AI → 설정 → 클릭(맨 끝에서 첫 화면을 그림) -->
     <!-- ===== 튜토리얼: 어두운 덮개 · 말풍선 (tutorial.js가 채움) ===== -->
     <div class="tut-layer" id="tutLayer" hidden></div>
 
+    <!-- ===== 처음 온 사람: 닉네임 정하기 (구글 로그인 직후 한 번 · settings.js) ===== -->
+    <div class="set" id="hello" hidden>
+        <div class="set-card hello" role="dialog" aria-modal="true" aria-labelledby="helloTitle">
+            <h2 id="helloTitle">어서 오세요!</h2>
+            <p>게임에서 쓸 닉네임을 정해 주세요</p>
+            <div class="nick">
+                <input id="helloInput" type="text" maxlength="8" placeholder="최대 8글자">
+            </div>
+            <small class="nick-msg" id="helloMsg"></small>
+            <div class="hello-btns">
+                <button class="set-btn" type="button" id="helloTut">튜토리얼 먼저</button>
+                <button class="set-btn main" type="button" id="helloGo">바로 시작</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 다시 온 사람: 인사 (2.5초 뒤 사라짐 · settings.js) ===== -->
+    <div class="hi" id="hi" hidden></div>
+
+    <!-- 순서 중요: 정보 → 그리기 → 상태 → 규칙 → 차례 → AI → 설정 → 튜토리얼 → 클릭(맨 끝에서 첫 화면을 그림) → Firebase -->
     <script src="../js/data.js"></script>
     <script src="../js/draw.js"></script>
     <script src="../js/state.js"></script>
     <script src="../js/rules.js"></script>
     <script src="../js/turn.js"></script>
     <script src="../js/ai.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-    <script src="../js/firebase.js"></script>
     <script src="../js/settings.js"></script>
     <script src="../js/tutorial.js"></script>
     <script src="../js/click.js"></script>
+    <!-- Firebase는 맨 끝에 defer로: 게임판을 먼저 그리고 뒤에서 받음 (로그인 · 저장할 때만 씀) -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js" defer></script>
+    <script src="../js/firebase.js" defer></script>
 </body>
 
 </html>
