@@ -1,10 +1,10 @@
 /* =========================================================
    커피 러시 - 설정 (오른쪽 위 ⚙ 버튼)
-   - 구글 로그인: 닉네임 변경 · 내 기록(연승 · 승률) · 말 색 · 소리 · 로그아웃
+   - 구글 로그인: 닉네임 변경 · 내 기록(승률 · 전적) · 말 색 · 소리 · 로그아웃
    - 게스트: 소리 · "로그인하면 기록이 저장돼요" 안내
    설정과 기록은 이 브라우저에 저장됨 (localStorage)
-   구글 로그인을 연결하면 로그인할 때 saveSet()으로 user를 넣어 주면 됨
-     예) set.user = { nickname: '민지' }; saveSet();
+   로그인한 사람의 기록(닉네임 · 승 · 패 · 무)은 Firebase DB에도 저장 (firebase.js의 saveDB)
+   로그인은 메인 화면(main.js)에서 하고, 성공하면 user · 기록을 이 저장 칸에 넣어 줌
    ========================================================= */
 
 
@@ -20,7 +20,6 @@ function baseSet() {
     wins: 0,          // 이긴 판
     losses: 0,        // 진 판
     ties: 0,          // 비긴 판 (공동 승리)
-    streak: 0,        // 지금 몇 연승 중인지
   };
 }
 
@@ -69,17 +68,17 @@ function saveRecord() {
   game.recorded = true;   // 같은 판을 두 번 세지 않게
 
   const win = winner();
-  if (win === 'me') {
-    set.wins += 1;
-    set.streak += 1;
-  } else if (win === 'ai') {
-    set.losses += 1;
-    set.streak = 0;
-  } else {
-    set.ties += 1;
-    set.streak = 0;       // 비기면 연승이 끊김
-  }
+  if (win === 'me') set.wins += 1;
+  else if (win === 'ai') set.losses += 1;
+  else set.ties += 1;
+
   saveSet();
+  saveDB(myRec());   // DB에도 저장
+}
+
+// DB에 보낼 내 기록
+function myRec() {
+  return { nickname: set.user.nickname, wins: set.wins, losses: set.losses, ties: set.ties };
 }
 
 // 승률(%) = 이긴 판 ÷ 전체 판 (한 판도 안 했으면 0)
@@ -115,7 +114,7 @@ function drawSet() {
       <div class="set-box">${sound}</div>
       <div class="set-note">
         <b>로그인하면 기록이 저장돼요</b>
-        <small>닉네임 · 연승 · 승률 · 말 색을 쓸 수 있어요</small>
+        <small>닉네임 · 승률 · 말 색을 쓸 수 있어요</small>
         <a class="set-btn main" href="../index.html" id="toLogin">로그인하러 가기</a>
       </div>`;
     return;
@@ -140,7 +139,6 @@ function drawSet() {
     <div class="set-box">
       <span class="set-label">내 기록</span>
       <div class="rec">
-        <div><b>${set.streak}</b><small>연승</small></div>
         <div><b>${winRate()}<em>%</em></b><small>승률</small></div>
         <div><b>${set.wins}<em>승</em> ${set.losses}<em>패</em></b><small>전적</small></div>
       </div>
@@ -181,12 +179,14 @@ function changeNick() {
   set.user.nickname = text;
   nickname = text;
   saveSet();
+  saveDB(myRec());
   draw();        // 게임 화면의 "(닉네임) 바리스타"도 바뀜
   drawSet();
   $('nickMsg').textContent = '닉네임을 바꿨어요';
 }
 
 function logout() {
+  googleLogout();
   set.user = null;
   nickname = null;
   saveSet();

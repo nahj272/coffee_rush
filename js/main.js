@@ -46,10 +46,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 구글/게스트 로그인 버튼 (실제 로그인 로직은 추후 연결)
+  // 구글 로그인 버튼 → 성공하면 기록을 저장해 두고 게임 화면으로
   if (googleLoginBtn) {
-    googleLoginBtn.addEventListener('click', () => {
-      // TODO: 구글 로그인 연동
+    googleLoginBtn.addEventListener('click', async () => {
+      try {
+        const rec = await googleLogin();
+        // 게임 화면(settings.js)이 읽는 저장 칸에 로그인 정보 · 기록을 넣어 둠
+        const saved = JSON.parse(localStorage.getItem('coffeeRush')) || {};
+        saved.user = { nickname: rec.nickname };
+        saved.wins = rec.wins;
+        saved.losses = rec.losses;
+        saved.ties = rec.ties;
+        localStorage.setItem('coffeeRush', JSON.stringify(saved));
+        goGame();   // 게스트처럼 바로 게임 화면으로
+      } catch (e) {
+        console.log('로그인 취소 또는 실패', e);   // 창을 닫았을 때 등 → 그대로 둠
+      }
     });
   }
   if (guestLoginBtn) {

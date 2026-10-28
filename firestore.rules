@@ -1,0 +1,33 @@
+rules_version = '2';
+
+// 커피 러시 DB 규칙 (Firestore)
+// Firestore는 SQL처럼 표를 미리 만들지 않는다. 대신 이 규칙에서 "어떤 칸이 들어가야 하는지"를 정하고 검사한다.
+// 붙이는 곳: Firebase 콘솔 → Firestore Database → 규칙 탭 → 전체를 지우고 이 파일 내용 붙여넣기 → 게시
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 사용자: 한 사람당 문서 1개, 문서 이름 = 구글 로그인 uid
+    match /users/{uid} {
+      allow read: if isMe(uid);                                       // 자기 기록만 볼 수 있음
+      allow create, update: if isMe(uid) && isUser(request.resource.data);  // 자기 기록만, 정해진 칸으로만 저장
+      // 지우기는 막아 둠
+    }
+
+    // 로그인한 본인인지
+    function isMe(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // users 문서에 들어가는 칸
+    function isUser(d) {
+      return d.keys().hasAll(['nickname', 'wins', 'losses', 'ties'])   // 네 칸이 다 있어야 함
+        && d.keys().hasOnly(['nickname', 'wins', 'losses', 'ties'])    // 다른 칸은 못 넣음
+        && d.nickname is string                                       // 닉네임: 1~8글자
+        && d.nickname.size() >= 1 && d.nickname.size() <= 8
+        && d.wins is int && d.wins >= 0                               // 이긴 판
+        && d.losses is int && d.losses >= 0                           // 진 판
+        && d.ties is int && d.ties >= 0;                              // 비긴 판 (승률 계산에 필요)
+    }
+  }
+}
