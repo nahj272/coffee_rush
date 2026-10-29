@@ -1945,20 +1945,19 @@ button
 @media (max-height: 820px) { .panel.fix { height: 176px; } }
 @media (max-height: 720px) { .panel.fix { height: 168px; } }
 
-/* 노트북 (세로가 짧을 때): 단계 줄 대신 안내 칸 위 얇은 상태줄 · 안내 칸 낮게 → 재료판이 커짐 */
-@media (min-width: 1025px) and (max-height: 820px)
+/* PC (모든 크기): 글자 단계 줄(1 이동 · 2 담기 · 3 차례 끝내기) 대신 안내 칸 위 얇은 상태줄 + 제목 앞 번호
+   (글 없이 줄로만 · 전에는 노트북에서만 → 2026-10-29 모든 PC 크기로) */
+@media (min-width: 1025px)
 {
- .center { grid-template-rows: auto minmax(0, 1fr); gap: 8px; }
+ .center { grid-template-rows: auto minmax(0, 1fr); }
  .center .steps { display: none; }
 
- .panel { position: relative; min-height: 150px; padding: 16px 14px 10px; }
- .panel.fix { height: 150px; }
+ .panel { position: relative; padding-top: 20px; }
  .bar { position: absolute; top: 8px; left: 16px; right: 16px; display: flex; gap: 4px; }
  .bar span { flex: 1; height: 4px; border-radius: 2px; background: rgba(0, 0, 0, 0.08); }
  .bar span.on { background: var(--pawn-me); }
  .bar.ai span.on { background: var(--pawn-ai); }
 
- .panel-title { font-size: 17px; margin-bottom: 0; }
  .panel-title i
  {display: inline-grid;
   place-items: center;
@@ -1966,11 +1965,22 @@ button
   height: 22px;
   margin-right: 8px;
   border-radius: 50%;
-  background: var(--btn-orange);
+  background: var(--pawn-me);
   color: #fff;
   font-style: normal;
   font-size: 12px;
   vertical-align: 2px;}
+}
+
+/* 노트북 (세로가 짧을 때): 안내 칸 낮게 → 재료판이 커짐 */
+@media (min-width: 1025px) and (max-height: 820px)
+{
+ .center { gap: 8px; }
+
+ .panel { min-height: 150px; padding: 16px 14px 10px; }
+ .panel.fix { height: 150px; }
+
+ .panel-title { font-size: 17px; margin-bottom: 0; }
 
  .panel-text { line-height: 1.4; margin-bottom: 6px; }
  .up { padding: 6px 10px; margin-bottom: 6px; }

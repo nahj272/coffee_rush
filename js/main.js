@@ -82,11 +82,8 @@
     });
   }
   if (guestLoginBtn) {
-    // 게스트 → 게임 준비 화면으로 가서 게임 방법(?) 창을 바로 열기
-    guestLoginBtn.addEventListener('click', () => {
-      try { sessionStorage.setItem('coffeeRushHelp', '1'); } catch (e) {}
-      location.href = 'page/game.html';
-    });
+    // 게스트 → 바로 튜토리얼 (메인 [튜토리얼] 버튼과 같은 길 · 끝나면 게임 준비 화면)
+    guestLoginBtn.addEventListener('click', goTutorial);
   }
 
   /* ===== 게임 방법 모달 ===== */

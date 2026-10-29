@@ -343,10 +343,9 @@ document.addEventListener('keydown', (e) => {
 draw();
 
 // 메인에서 어떻게 들어왔는지에 따라 한 번만 (main.js가 남긴 표시를 읽자마자 지움 → 새로고침하면 게임 준비 화면만 나옴)
-//   [튜토리얼] → 튜토리얼 시작 / '게스트로 체험하기' → 게임 방법 창
+//   [튜토리얼] · '게스트로 체험하기' → 튜토리얼 시작
 //   구글 로그인 처음 → 닉네임 정하기 창 / 다시 옴 → 인사 / 메인의 닉네임 버튼 → 설정 창
 if (takeFlag('coffeeRushTut')) startTutorial();
-else if (takeFlag('coffeeRushHelp')) openHelp();
 else if (takeFlag('coffeeRushNew')) openWelcome();
 else if (takeFlag('coffeeRushHi')) sayHi();
 else if (takeFlag('coffeeRushSet')) openSet();
