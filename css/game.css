@@ -466,8 +466,9 @@ button
  height: 14px;}
 
 
-/* ----- AI 개인 판: 번호 띠는 AI 색 ----- */
-.orders.ai .rnum
+/* ----- AI 개인 판: 번호 띠는 AI 색 (게임 화면 · 게임 준비 화면 둘 다) ----- */
+.orders.ai .rnum,
+.seat.ai .rnum
 {background: var(--rnum-ai);}
 
 /* 지금 차례인 쪽 판 강조 (각자 말 색) */
