@@ -50,9 +50,10 @@ if (!set.user) mode = 'easy';
 
 
 /* ===== 말 색 =====
-   <html>에 blue 클래스가 있으면 내 말이 파랑, AI 말이 빨강 (css: --pawn-me · --pawn-ai) */
+   <html>에 blue 클래스가 있으면 내 말이 파랑, AI 말이 빨강 (css: --pawn-me · --pawn-ai)
+   말 색은 로그인한 사람만 → 게스트는 항상 빨강 · 고른 색은 DB에도 저장(다른 기기에서도 같은 색) */
 function applyPawn() {
-  document.documentElement.classList.toggle('blue', set.pawn === 'blue');
+  document.documentElement.classList.toggle('blue', !!set.user && set.pawn === 'blue');
 }
 applyPawn();
 
@@ -82,7 +83,7 @@ function saveRecord() {
 
 // DB에 보낼 내 기록
 function myRec() {
-  return { nickname: set.user.nickname, wins: set.wins, losses: set.losses, ties: set.ties };
+  return { nickname: set.user.nickname, wins: set.wins, losses: set.losses, ties: set.ties, pawn: set.pawn };
 }
 
 // 승률(%) = 이긴 판 ÷ 전체 판 (한 판도 안 했으면 0)
@@ -194,6 +195,8 @@ function logout() {
   if (window.googleLogout) googleLogout();
   set.user = null;
   nickname = null;
+  set.pawn = 'red';                // 게스트는 빨강 (내 색은 DB에 있어서 다시 로그인하면 돌아옴)
+  applyPawn();
   if (game.table) mode = 'easy';   // 게임 준비 중이면 바로 쉬움으로 (게임 중이면 다음 판부터)
   saveSet();
   draw();
@@ -240,6 +243,7 @@ async function gameLogin() {
     const rec = await googleLogin();   // 처음 온 사람은 null
     applyLogin(set, rec);
     saveSet();
+    applyPawn();                       // 다시 온 사람: 계정에 저장된 말 색으로
     if (rec) {
       game.recorded = true;
       game.login = 'back';
@@ -296,6 +300,7 @@ $('setBody').addEventListener('click', (e) => {
   if (color) {
     set.pawn = color.dataset.pawn;
     saveSet();
+    saveDB(myRec());   // 다른 기기에서도 같은 색
     applyPawn();
     drawSet();
   }

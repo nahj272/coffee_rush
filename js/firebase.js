@@ -33,6 +33,7 @@ function applyLogin(box, rec) {
   box.wins = rec ? rec.wins : 0;
   box.losses = rec ? rec.losses : 0;
   box.ties = rec ? rec.ties : 0;
+  box.pawn = rec && rec.pawn ? rec.pawn : 'red';   // 말 색도 계정을 따라옴 (예전 기록엔 없음 → 빨강)
 }
 
 // 로그인 확인이 끝날 때까지 기다림 (새로 연 페이지는 확인에 잠깐 걸림)

@@ -22,7 +22,8 @@ service cloud.firestore {
     // users 문서에 들어가는 칸
     function isUser(d) {
       return d.keys().hasAll(['nickname', 'wins', 'losses', 'ties'])   // 네 칸이 다 있어야 함
-        && d.keys().hasOnly(['nickname', 'wins', 'losses', 'ties'])    // 다른 칸은 못 넣음
+        && d.keys().hasOnly(['nickname', 'wins', 'losses', 'ties', 'pawn'])   // 다른 칸은 못 넣음 (말 색은 있어도 되고 없어도 됨)
+        && d.get('pawn', 'red') in ['red', 'blue']                    // 말 색: 빨강 · 파랑만
         && d.nickname is string                                       // 닉네임: 1~8글자
         && d.nickname.size() >= 1 && d.nickname.size() <= 8
         && d.wins is int && d.wins >= 0                               // 이긴 판
