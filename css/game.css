@@ -2362,7 +2362,7 @@ button
 .set-note .set-btn
 {margin-top: 10px;}
 
-/* 처음 온 사람: 닉네임 정하기 창 (설정 창 모양을 같이 씀) */
+/* 처음 온 사람: 닉네임 정하기 창 · 게임 중 로그아웃(가게 문 닫기) 창 (설정 창 모양을 같이 씀) */
 .hello h2
 {font-size: 20px;
  font-weight: 800;}

@@ -372,6 +372,18 @@
         </div>
     </div>
 
+    <!-- ===== 게임 중 로그아웃: 한 번 더 묻기 (settings.js · 로그아웃하면 메인으로) ===== -->
+    <div class="set" id="bye" hidden>
+        <div class="set-card hello" role="dialog" aria-modal="true" aria-labelledby="byeTitle">
+            <h2 id="byeTitle">가게 문을 닫을까요?</h2>
+            <p>로그아웃하면 지금 판은 기록되지 않아요.</p>
+            <div class="hello-btns">
+                <button class="set-btn" type="button" id="byeNo">계속 영업하기</button>
+                <button class="set-btn main" type="button" id="byeYes">로그아웃</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== 다시 온 사람: 인사 (2.5초 뒤 사라짐 · settings.js) ===== -->
     <div class="hi" id="hi" hidden></div>
 

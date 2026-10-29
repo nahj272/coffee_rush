@@ -191,16 +191,27 @@ function changeNick() {
   $('nickMsg').textContent = '닉네임을 바꿨어요';
 }
 
-function logout() {
-  if (window.googleLogout) googleLogout();
+// 로그아웃 버튼: 게임 중이면 "가게 문을 닫을까요?"로 한 번 묻고, 아니면 바로
+// (게임 준비 화면 · 결과 창 · 튜토리얼은 잃을 판이 없어서 묻지 않음)
+function askLogout() {
+  const playing = !game.table && !game.over && !tut;
+  if (playing) {
+    closeSet();
+    $('bye').hidden = false;
+  } else {
+    logout();
+  }
+}
+
+// 로그아웃 → 메인 화면으로 (로그아웃은 "그만할래"라서 · 하던 판은 기록되지 않음)
+async function logout() {
   set.user = null;
-  nickname = null;
   set.pawn = 'red';                // 게스트는 빨강 (내 색은 DB에 있어서 다시 로그인하면 돌아옴)
-  applyPawn();
-  if (game.table) mode = 'easy';   // 게임 준비 중이면 바로 쉬움으로 (게임 중이면 다음 판부터)
   saveSet();
-  draw();
-  drawSet();     // 게스트 화면으로
+  try {
+    if (window.googleLogout) await googleLogout();   // 구글 로그인도 풀릴 때까지 기다렸다가 이동
+  } catch (e) {}
+  location.href = '../index.html';
 }
 
 /* ===== 처음 온 사람: 닉네임 정하기 창 (구글 로그인 직후 한 번) =====
@@ -278,10 +289,17 @@ $('set').addEventListener('click', (e) => {
   if (e.target === $('set')) closeSet();   // 어두운 바깥을 누르면 닫힘
 });
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeSet();
+  if (e.key === 'Escape') {
+    closeSet();
+    $('bye').hidden = true;   // 가게 문 닫기 창도 ESC = 계속 영업하기
+  }
   if (e.key === 'Enter' && e.target.id === 'nickInput') changeNick();
   if (e.key === 'Enter' && e.target.id === 'helloInput') makeUser(false);
 });
+
+// 가게 문 닫기 창 (게임 중 로그아웃)
+$('byeNo').addEventListener('click', () => { $('bye').hidden = true; });
+$('byeYes').addEventListener('click', logout);
 
 $('resultLogin').addEventListener('click', (e) => {
   if (e.target.closest('.g-btn')) gameLogin();
@@ -306,5 +324,5 @@ $('setBody').addEventListener('click', (e) => {
   }
   if (e.target.closest('.g-btn')) gameLogin();
   if (e.target.closest('#nickBtn')) changeNick();
-  if (e.target.closest('#logoutBtn')) logout();
+  if (e.target.closest('#logoutBtn')) askLogout();
 });
