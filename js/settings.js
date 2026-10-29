@@ -16,7 +16,7 @@ const SET_KEY = 'coffeeRush';
 function baseSet() {
   return {
     user: null,       // 로그인한 사람 { nickname } · 게스트면 null
-    sound: true,      // 소리 켜기
+    sound: false,     // 소리 켜기 (효과음을 아직 안 넣어서 기본은 꺼 둠)
     pawn: 'red',      // 내 말 색: 'red' 또는 'blue' (AI는 반대 색)
     wins: 0,          // 이긴 판
     losses: 0,        // 진 판
