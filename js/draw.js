@@ -269,6 +269,7 @@ function cupImg(can) {
 
 // 상황마다 바뀌는 제목 · 설명 · 버튼 글자
 // sub: 왼쪽 버튼 글자 (없으면 버튼 숨김)
+// 1~3단계 설명은 한 줄 (안내 칸을 낮게 → 재료판이 커짐 · 좁으면 저절로 줄바꿈)
 const GUIDE = {
   0: { title: '내 말을 놓을 칸을 골라요',
        text: '재료판에서 원하는 칸을 눌러요.<br>AI 말(파랑)이 있는 칸은 안 돼요.' },
@@ -279,10 +280,10 @@ const GUIDE = {
        text: '1~3칸 이동해요.',
        sub: '되돌리기' },
   2: { title: '받은 재료를 컵에 담아요',
-       text: '재료를 고르고 담을 컵을 눌러요.<br>담기 싫은 재료는 버려요.',
+       text: '재료를 고르고 담을 컵을 눌러요. 담기 싫은 재료는 버려요.',
        next: '남은 재료 버리기', sub: '되돌리기' },
   3: { title: '주문을 내고 차례를 끝내요',
-       text: '초록 테두리 주문을 누르면 컵을 내요.<br>다 했으면 "차례 끝내기"를 눌러요.',
+       text: '초록 테두리 주문을 누르면 컵을 내요. 다 했으면 "차례 끝내기"를 눌러요.',
        next: '차례 끝내기', sub: '되돌리기' },
   ai: { title: 'AI 바리스타 차례예요',
         text: '잠시만 기다려 주세요.' },
@@ -416,7 +417,7 @@ function drawPanel() {
   let picks = '';
   game.picks.forEach((key, k) => {
     const on = k === game.picked ? 'on' : '';
-    picks += `<button class="pick ${on}" type="button" data-k="${k}">${icon(key)}<span>${ITEMS[key].name}</span></button>`;
+    picks += `<button class="pick ${on}" type="button" data-k="${k}" title="${ITEMS[key].name}">${icon(key)}<span>${ITEMS[key].name}</span></button>`;
   });
   $('picks').innerHTML = picks;
 
